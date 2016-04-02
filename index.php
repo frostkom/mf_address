@@ -1,13 +1,15 @@
 <?php
 /*
 Plugin Name: MF Address Book
-Plugin URI: 
+Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.1.5
+Version: 2.1.6
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
 Domain Path: /lang
+
+GitHub Plugin URI: frostkom/mf_address
 */
 
 include_once("include/classes.php");
