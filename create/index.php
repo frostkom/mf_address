@@ -105,7 +105,7 @@ echo "<div class='wrap'>
 				."<div class='flex_flow'>"
 					.show_textfield(array('name' => "strAddressAddress", 'text' => __("Address", 'lang_address'), 'value' => $strAddressAddress))
 					.show_textfield(array('name' => "strAddressCo", 'text' => __("C/O", 'lang_address'), 'value' => $strAddressCo))
-					.show_textfield(array('name' => "intAddressZipCode", 'text' => __("Zip Code", 'lang_address'), 'value' => $intAddressZipCode, 'type' => "number"))
+					.show_textfield(array('name' => "intAddressZipCode", 'text' => __("Zip Code", 'lang_address'), 'value' => $intAddressZipCode, 'type' => 'number'))
 					.show_textfield(array('name' => "strAddressCity", 'text' => __("City", 'lang_address'), 'value' => $strAddressCity))
 				."</div>"
 				."<div class='flex_flow'>"

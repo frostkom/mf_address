@@ -185,7 +185,7 @@ class mf_address_table extends mf_list_table
 			//'cb' => '<input type="checkbox">',
 		);
 
-		if(function_exists('is_plugin_active') && is_plugin_active('mf_group/index.php'))
+		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php"))
 		{
 			if($intGroupID > 0)
 			{
