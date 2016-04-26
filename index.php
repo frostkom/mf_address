@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.1.8
+Version: 2.1.10
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -77,18 +77,6 @@ function activate_address()
 	$arr_update_tables[$wpdb->base_prefix."address"]['addressError'] = "ALTER TABLE [table] ADD [column] INT unsigned NOT NULL DEFAULT '0' AFTER addressPublic";
 
 	add_columns($arr_update_tables);
-
-	$arr_update_existing_columns = array();
-
-	//$arr_update_existing_columns[$wpdb->base_prefix."query"]['queryTypePublic'] = "ALTER TABLE [table] DROP [column]";
-
-	update_columns($arr_update_existing_columns);
-
-	$arr_insert_tables = array();
-
-	//$arr_insert_tables[] = "INSERT IGNORE INTO ".$wpdb->base_prefix."query_check VALUES('1','1','".__("Number", 'lang_address')."','int','[0-9]')";
-
-	run_queries($arr_insert_tables);
 
 	delete_base(array(
 		'table' => "address",

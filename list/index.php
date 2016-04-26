@@ -1,6 +1,5 @@
 <?php
 
-//$intAddressID = check_var('intAddressID');
 $intGroupID = check_var('intGroupID');
 
 $obj_group = new mf_group();
