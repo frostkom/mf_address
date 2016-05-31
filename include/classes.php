@@ -241,7 +241,7 @@ class mf_address_table extends mf_list_table
 
 					else if($intGroupID == $intGroupID_check && $intGroupUnsubscribed == 1)
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$intGroupID, 'address_remove')."'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$intGroupID, 'address_remove')."' rel='confirm'>
 							<span class='fa-stack fa-lg'>
 								<i class='fa fa-envelope fa-stack-1x'></i>
 								<i class='fa fa-ban fa-stack-2x red'></i>

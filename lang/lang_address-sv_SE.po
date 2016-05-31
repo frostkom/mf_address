@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: MF Slideshow\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-28 13:51+0100\n"
+"POT-Creation-Date: 2016-04-27 15:33+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
-"Language-Team: Martin Fors\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,79 +29,79 @@ msgstr "Informationen lades inte in, kontakta en administratör om problemet kva
 #: ../include/functions.php:18
 #: ../include/functions.php:19
 #: ../include/functions.php:20
-#: ../include/functions.php:57
-#: ../include/functions.php:96
-#: ../list/index.php:22
+#: ../include/functions.php:59
+#: ../include/functions.php:84
+#: ../list/index.php:21
 msgid "Address Book"
 msgstr "Adressbok"
 
 #: ../create/index.php:61
-#: ../create/index.php:121
+#: ../create/index.php:117
 msgid "Add"
 msgstr "Lägg till"
 
-#: ../create/index.php:100
+#: ../create/index.php:96
 #: ../include/classes.php:440
 msgid "MemberID"
 msgstr "Medlemsnummer"
 
-#: ../create/index.php:103
+#: ../create/index.php:99
 #: ../include/classes.php:413
 msgid "Social Security Number"
 msgstr "Personnummer"
 
-#: ../create/index.php:106
+#: ../create/index.php:102
 #: ../include/classes.php:414
 msgid "First Name"
 msgstr "Förnamn"
 
-#: ../create/index.php:107
+#: ../create/index.php:103
 #: ../include/classes.php:415
 msgid "Last Name"
 msgstr "Efternamn"
 
-#: ../create/index.php:110
+#: ../create/index.php:106
 #: ../include/classes.php:200
 #: ../include/classes.php:417
 msgid "Address"
 msgstr "Adress"
 
-#: ../create/index.php:111
+#: ../create/index.php:107
 #: ../include/classes.php:416
 msgid "C/O"
 msgstr "C/0"
 
-#: ../create/index.php:112
+#: ../create/index.php:108
 #: ../include/classes.php:418
 msgid "Zip Code"
 msgstr "Postnummer"
 
-#: ../create/index.php:113
+#: ../create/index.php:109
 #: ../include/classes.php:419
 msgid "City"
 msgstr "Ort"
 
-#: ../create/index.php:116
+#: ../create/index.php:112
 #: ../include/classes.php:420
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
-#: ../create/index.php:117
+#: ../create/index.php:113
 #: ../include/classes.php:422
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
-#: ../create/index.php:118
+#: ../create/index.php:114
 #: ../include/classes.php:421
 msgid "Work Number"
 msgstr "Jobbnummer"
 
-#: ../create/index.php:120
+#: ../create/index.php:116
 #: ../include/classes.php:423
 msgid "E-mail"
 msgstr "E-post"
 
-#: ../create/index.php:121
+#: ../create/index.php:117
 msgid "Update"
 msgstr "Uppdatera"
 
@@ -174,38 +174,35 @@ msgstr "Namn på adressbokens extrafält"
 msgid "Show memberID"
 msgstr "Visa medlemsnummer"
 
-#: ../include/functions.php:66
-msgid "Yes"
-msgstr "Ja"
-
-#: ../include/functions.php:67
-msgid "No"
-msgstr "Nej"
-
-#: ../include/functions.php:83
-msgid "Settings"
-msgstr "Inställningar"
-
-#: ../include/functions.php:98
+#: ../include/functions.php:86
 msgid "List"
 msgstr "Lista"
 
-#: ../include/functions.php:99
-#: ../list/index.php:31
+#: ../include/functions.php:87
+#: ../list/index.php:30
 msgid "Add New"
 msgstr "Lägg till ny"
 
-#: ../include/functions.php:103
+#: ../include/functions.php:91
 msgid "Import"
 msgstr "Importera"
 
-#: ../include/functions.php:114
+#: ../include/functions.php:106
 msgid "Address Permissions to Users"
 msgstr "Behörighet för användare till adressbok"
 
-#: ../list/index.php:26
+#: ../list/index.php:25
 msgid "for"
 msgstr "för"
+
+#~ msgid "Yes"
+#~ msgstr "Ja"
+
+#~ msgid "No"
+#~ msgstr "Nej"
+
+#~ msgid "Settings"
+#~ msgstr "Inställningar"
 
 #~ msgid "The e-mail address doesn't seam to be valid"
 #~ msgstr "E-postadressen verkar inte vara en giltig adress"
