@@ -36,7 +36,7 @@ echo "<div class='wrap'>
 	$tbl_group = new mf_address_table();
 
 	$tbl_group->select_data(array(
-		//'select' => "*", 
+		//'select' => "*",
 	));
 
 	$tbl_group->do_display();
