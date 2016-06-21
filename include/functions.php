@@ -15,8 +15,8 @@ function init_address()
 	}
 
 	$labels = array(
-		'name' => _x(__('Address Book', 'lang_address'), 'post type general name'),
-		'singular_name' => _x(__('Address Book', 'lang_address'), 'post type singular name'),
+		'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
+		'singular_name' => _x(__("Address Book", 'lang_address'), 'post type singular name'),
 		'menu_name' => __("Address Book", 'lang_address')
 	);
 
@@ -103,7 +103,7 @@ function show_profile_address($user)
 	{
 		echo "<table class='form-table'>
 			<tr class='user-address-permission-wrap'>
-				<th><label for='profile_address_permission'>".__('Address Permissions to Users', 'lang_address').":</label></th>
+				<th><label for='profile_address_permission'>".__("Address Permissions to Users", 'lang_address').":</label></th>
 				<td>";
 
 					$profile_address_permission = get_the_author_meta('profile_address_permission', $user->ID);
