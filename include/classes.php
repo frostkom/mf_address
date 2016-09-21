@@ -157,7 +157,7 @@ class mf_address_table extends mf_list_table
 
 		$this->arr_settings['has_autocomplete'] = true;
 		$this->arr_settings['plugin_name'] = 'mf_address';
-		
+
 		$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
 
 		if($this->search != '')
@@ -225,7 +225,7 @@ class mf_address_table extends mf_list_table
 					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupUnsubscribed FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $intGroupID));
 
 					$intGroupID_check = $intGroupUnsubscribed = 0;
-					
+
 					foreach($result_check as $r)
 					{
 						$intGroupID_check = $r->groupID;

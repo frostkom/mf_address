@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-22 11:30+0100\n"
+"POT-Creation-Date: 2016-09-10 16:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -174,20 +174,20 @@ msgstr "Namn på adressbokens extrafält"
 msgid "Show memberID"
 msgstr "Visa medlemsnummer"
 
-#: ../include/functions.php:86
+#: ../include/functions.php:87
 msgid "List"
 msgstr "Lista"
 
-#: ../include/functions.php:87
+#: ../include/functions.php:90
 #: ../list/index.php:30
 msgid "Add New"
 msgstr "Lägg till ny"
 
-#: ../include/functions.php:91
+#: ../include/functions.php:95
 msgid "Import"
 msgstr "Importera"
 
-#: ../include/functions.php:106
+#: ../include/functions.php:111
 msgid "Address Permissions to Users"
 msgstr "Behörighet för användare till adressbok"
 

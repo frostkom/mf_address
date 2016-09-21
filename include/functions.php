@@ -64,7 +64,7 @@ function setting_show_member_id_callback()
 	$setting_key = get_setting_key(__FUNCTION__);
 	$option = get_option($setting_key, 'yes');
 
-	echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'compare' => $option));
+	echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
 }
 
 function setting_address_extra_callback()
@@ -81,14 +81,19 @@ function menu_address()
 	$menu_start = $menu_root."list/index.php";
 	$menu_capability = "edit_posts";
 
-	add_menu_page("", __("Address Book", 'lang_address'), $menu_capability, $menu_start, '', 'dashicons-email-alt');
+	$menu_title = __("Address Book", 'lang_address');
+	add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt');
 
-	add_submenu_page($menu_start, __("List", 'lang_address'), __("List", 'lang_address'), $menu_capability, $menu_start);
-	add_submenu_page($menu_start, __("Add New", 'lang_address'), __("Add New", 'lang_address'), $menu_capability, $menu_root."create/index.php");
+	$menu_title = __("List", 'lang_address');
+	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_start);
+
+	$menu_title = __("Add New", 'lang_address');
+	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."create/index.php");
 
 	$menu_capability = "edit_pages";
 
-	add_submenu_page($menu_start, __("Import", 'lang_address'), __("Import", 'lang_address'), $menu_capability, $menu_root."import/index.php");
+	$menu_title = __("Import", 'lang_address');
+	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
 }
 
 function show_profile_address($user)
@@ -121,7 +126,7 @@ function show_profile_address($user)
 						}
 					}
 
-					echo show_select(array('data' => $arr_data, 'name' => 'profile_address_permission[]', 'compare' => $profile_address_permission))
+					echo show_select(array('data' => $arr_data, 'name' => 'profile_address_permission[]', 'value' => $profile_address_permission))
 				."</td>
 			</tr>
 		</table>";
