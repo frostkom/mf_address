@@ -114,7 +114,7 @@ echo "<div class='wrap'>
 					.show_textfield(array('name' => "strAddressWorkNo", 'text' => __("Work Number", 'lang_address'), 'value' => $strAddressWorkNo))
 				."</div>"
 				.show_textfield(array('name' => "strAddressEmail", 'text' => __("E-mail", 'lang_address'), 'value' => $strAddressEmail))
-				.show_submit(array('name' => "btnAddressUpdate", 'text' => $intAddressID > 0 ? __("Update", 'lang_address') : __("Add", 'lang_address')))
+				.show_button(array('name' => "btnAddressUpdate", 'text' => $intAddressID > 0 ? __("Update", 'lang_address') : __("Add", 'lang_address')))
 				.input_hidden(array('name' => "intAddressID", 'value' => $intAddressID))
 				.wp_nonce_field('address_update', '_wpnonce', true, false)
 			."</form>
