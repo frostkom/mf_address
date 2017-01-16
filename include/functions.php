@@ -40,8 +40,8 @@ function settings_address()
 	add_settings_section($options_area, "", $options_area."_callback", BASE_OPTIONS_PAGE);
 
 	$arr_settings = array(
-		"setting_address_extra" => __("Name for extra address field", 'lang_address'),
-		"setting_show_member_id" => __("Show memberID", 'lang_address'),
+		'setting_address_extra' => __("Name for extra address field", 'lang_address'),
+		'setting_show_member_id' => __("Show memberID", 'lang_address'),
 	);
 
 	foreach($arr_settings as $handle => $text)
