@@ -160,7 +160,17 @@ function group_name($id)
 {
 	global $wpdb;
 
-	return $wpdb->get_var($wpdb->prepare("SELECT post_title FROM ".$wpdb->posts." WHERE post_type = 'mf_group' AND ID = '%d'", $id));
+	$name = $wpdb->get_var($wpdb->prepare("SELECT post_title FROM ".$wpdb->posts." WHERE post_type = 'mf_group' AND ID = '%d'", $id));
+
+	if($name != '')
+	{
+		return $name;
+	}
+
+	else
+	{
+		return "(".$id.")";
+	}
 }
 
 function get_address_search_query($strSearch)
