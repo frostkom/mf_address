@@ -175,7 +175,7 @@ function group_name($id)
 
 function get_address_search_query($strSearch)
 {
-	global $wpdb, $is_part_of_group, $intGroupID;
+	global $wpdb, $is_part_of_group, $obj_group;
 
 	$query_join = $query_where = "";
 
@@ -205,7 +205,7 @@ function get_address_search_query($strSearch)
 	if($is_part_of_group)
 	{
 		$query_join .= " INNER JOIN ".$wpdb->base_prefix."address2group USING (addressID)";
-		$query_where .= ($query_where != '' ? " AND " : "")."groupID = '".$intGroupID."'";
+		$query_where .= ($query_where != '' ? " AND " : "")."groupID = '".$obj_group->id."'";
 	}
 
 	if(!IS_EDITOR)

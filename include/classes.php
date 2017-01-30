@@ -145,7 +145,7 @@ class mf_address_table extends mf_list_table
 {
 	function set_default()
 	{
-		global $wpdb, $intGroupID;
+		global $wpdb, $is_part_of_group, $obj_group;
 
 		$this->arr_settings['query_from'] = $wpdb->base_prefix."address";
 		$this->post_type = "";
@@ -165,11 +165,11 @@ class mf_address_table extends mf_list_table
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressBirthDate LIKE '%".$this->search."%' OR addressFirstName LIKE '%".$this->search."%' OR addressSurName LIKE '%".$this->search."%' OR addressAddress LIKE '%".$this->search."%')";
 		}
 
-		if(isset($_GET['no_ses'])){	$is_part_of_group = check_var('is_part_of_group', 'int', true, '', false, 'get');}
+		/*if(isset($_GET['no_ses'])){	$is_part_of_group = check_var('is_part_of_group', 'int', true, '', false, 'get');}
 		else{						$is_part_of_group = check_var('is_part_of_group', 'int');}
 
 		if($is_part_of_group){		$_SESSION['is_part_of_group'] = $is_part_of_group;}
-		else{						unset($_SESSION['is_part_of_group']);}
+		else{						unset($_SESSION['is_part_of_group']);}*/
 
 		list($this->query_join, $this->query_where) = get_address_search_query($this->search);
 
@@ -187,9 +187,11 @@ class mf_address_table extends mf_list_table
 
 		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php"))
 		{
-			if($intGroupID > 0)
+			if($obj_group->id > 0)
 			{
-				$arr_columns['is_part_of_group'] = "<a href='?page=mf_address/list/index.php&is_part_of_group=0&no_ses'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='?page=mf_address/list/index.php&is_part_of_group=1&no_ses'><i class='fa fa-minus-square'></i></a>";
+				$group_url = "?page=mf_address/list/index.php&no_ses&is_part_of_group=%d"; //&intGroupID=".$obj_group->id."
+
+				$arr_columns['is_part_of_group'] = "<a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a>";
 			}
 
 			$arr_columns['groups'] = "";
@@ -211,7 +213,7 @@ class mf_address_table extends mf_list_table
 
 	function column_default($item, $column_name)
 	{
-		global $wpdb, $intGroupID;
+		global $wpdb, $obj_group;
 
 		$out = "";
 
@@ -220,9 +222,9 @@ class mf_address_table extends mf_list_table
 		switch($column_name)
 		{
 			case 'is_part_of_group':
-				if($intGroupID > 0)
+				if($obj_group->id > 0)
 				{
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupUnsubscribed FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $intGroupID));
+					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupUnsubscribed FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
 
 					$intGroupID_check = $intGroupUnsubscribed = 0;
 
@@ -232,16 +234,16 @@ class mf_address_table extends mf_list_table
 						$intGroupUnsubscribed = $r->groupUnsubscribed;
 					}
 
-					if($intGroupID == $intGroupID_check && $intGroupUnsubscribed == 0)
+					if($obj_group->id == $intGroupID_check && $intGroupUnsubscribed == 0)
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$intGroupID, 'address_remove')."' rel='confirm'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove')."' rel='confirm'>
 							<i class='fa fa-lg fa-minus-square red'></i>
 						</a>";
 					}
 
-					else if($intGroupID == $intGroupID_check && $intGroupUnsubscribed == 1)
+					else if($obj_group->id == $intGroupID_check && $intGroupUnsubscribed == 1)
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$intGroupID, 'address_remove')."' rel='confirm'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove')."' rel='confirm'>
 							<span class='fa-stack fa-lg'>
 								<i class='fa fa-envelope fa-stack-1x'></i>
 								<i class='fa fa-ban fa-stack-2x red'></i>
@@ -251,7 +253,7 @@ class mf_address_table extends mf_list_table
 
 					else
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressAdd&intAddressID=".$intAddressID."&intGroupID=".$intGroupID, 'address_add')."'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressAdd&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_add')."'>
 							<i class='fa fa-lg fa-plus-square green'></i>
 						</a>";
 					}

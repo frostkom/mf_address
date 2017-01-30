@@ -1,8 +1,8 @@
 <?php
 
-$intGroupID = check_var('intGroupID');
+//$intGroupID = check_var('intGroupID');
 
-$has_group_plugin = is_plugin_active("mf_group");
+$has_group_plugin = is_plugin_active("mf_group/index.php");
 
 if($has_group_plugin)
 {
