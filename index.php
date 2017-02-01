@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.3.4
+Version: 2.3.5
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -49,17 +49,17 @@ function activate_address()
 		addressPublic ENUM('0','1') NOT NULL DEFAULT '1',
 		addressError INT unsigned NOT NULL DEFAULT '0',
 		addressMemberID INT unsigned NOT NULL DEFAULT '0',
-		addressBirthDate varchar(12) DEFAULT NULL,
-		addressFirstName varchar(25) DEFAULT NULL,
-		addressSurName varchar(25) DEFAULT NULL,
-		addressCo varchar(30) DEFAULT NULL,
-		addressAddress varchar(60) DEFAULT NULL,
+		addressBirthDate VARCHAR(12) DEFAULT NULL,
+		addressFirstName VARCHAR(25) DEFAULT NULL,
+		addressSurName VARCHAR(25) DEFAULT NULL,
+		addressCo VARCHAR(30) DEFAULT NULL,
+		addressAddress VARCHAR(60) DEFAULT NULL,
 		addressZipCode INT unsigned DEFAULT NULL,
 		addressCity VARCHAR(100),
-		addressTelNo varchar(13) DEFAULT NULL,
-		addressWorkNo varchar(13) DEFAULT NULL,
-		addressCellNo varchar(13) DEFAULT NULL,
-		addressEmail varchar(60) DEFAULT NULL,
+		addressTelNo VARCHAR(13) DEFAULT NULL,
+		addressWorkNo VARCHAR(13) DEFAULT NULL,
+		addressCellNo VARCHAR(13) DEFAULT NULL,
+		addressEmail VARCHAR(60) DEFAULT NULL,
 		addressExtra VARCHAR(100),
 		addressCreated DATETIME DEFAULT NULL,
 		userID INT unsigned NOT NULL DEFAULT '0',
