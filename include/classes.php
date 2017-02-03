@@ -13,6 +13,8 @@ class mf_address
 		{
 			$this->id = check_var('intAddressID');
 		}
+
+		$this->has_group_plugin = is_plugin_active("mf_group/index.php");
 	}
 
 	function fetch_request()
@@ -24,7 +26,10 @@ class mf_address
 	{
 		global $wpdb, $error_text, $done_text;
 
-		$obj_group = new mf_group();
+		if($this->has_group_plugin)
+		{
+			$obj_group = new mf_group();
+		}
 
 		$out = "";
 
@@ -41,7 +46,10 @@ class mf_address
 
 			if($wpdb->num_rows == 0)
 			{
-				$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
+				if($this->has_group_plugin)
+				{
+					$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
+				}
 
 				$done_text = __("The address was added to the group", 'lang_address');
 			}
@@ -53,7 +61,10 @@ class mf_address
 
 			if($wpdb->num_rows > 0)
 			{
-				$obj_group->remove_address($this->id, $this->group_id);
+				if($this->has_group_plugin)
+				{
+					$obj_group->remove_address($this->id, $this->group_id);
+				}
 
 				$done_text = __("The address was removed from the group", 'lang_address');
 			}
@@ -189,7 +200,7 @@ class mf_address_table extends mf_list_table
 		{
 			if($obj_group->id > 0)
 			{
-				$group_url = "?page=mf_address/list/index.php&no_ses&is_part_of_group=%d"; //&intGroupID=".$obj_group->id."
+				$group_url = "?page=mf_address/list/index.php&no_ses&is_part_of_group=%d";
 
 				$arr_columns['is_part_of_group'] = "<a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a>";
 			}
