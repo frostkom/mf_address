@@ -196,9 +196,9 @@ class mf_address_table extends mf_list_table
 			//'cb' => '<input type="checkbox">',
 		);
 
-		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php"))
+		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
 		{
-			if($obj_group->id > 0)
+			if(isset($obj_group->id) && $obj_group->id > 0)
 			{
 				$group_url = "?page=mf_address/list/index.php&no_ses&is_part_of_group=%d";
 
