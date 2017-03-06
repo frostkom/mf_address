@@ -22,7 +22,8 @@ function init_address()
 
 	$args = array(
 		'labels' => $labels,
-		'public' => false
+		'public' => false,
+		'exclude_from_search' => true,
 	);
 
 	register_post_type('mf_address', $args);
