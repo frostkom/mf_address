@@ -33,14 +33,14 @@ class mf_address
 
 		$out = "";
 
-		if(isset($_REQUEST['btnAddressDelete']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_delete'))
+		if(isset($_REQUEST['btnAddressDelete']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_delete_'.$this->id))
 		{
 			$this->trash();
 
 			$done_text = __("The address was deleted", 'lang_address');
 		}
 
-		else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_add'))
+		else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_add_'.$this->id.'_'.$this->group_id))
 		{
 			$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d'", $this->id, $this->group_id));
 
@@ -55,7 +55,7 @@ class mf_address
 			}
 		}
 
-		else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_remove'))
+		else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_remove_'.$this->id.'_'.$this->group_id))
 		{
 			$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d'", $this->id, $this->group_id));
 
@@ -247,14 +247,14 @@ class mf_address_table extends mf_list_table
 
 					if($obj_group->id == $intGroupID_check && $intGroupUnsubscribed == 0)
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove')."' rel='confirm'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
 							<i class='fa fa-lg fa-minus-square red'></i>
 						</a>";
 					}
 
 					else if($obj_group->id == $intGroupID_check && $intGroupUnsubscribed == 1)
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove')."' rel='confirm'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
 							<span class='fa-stack fa-lg'>
 								<i class='fa fa-envelope fa-stack-1x'></i>
 								<i class='fa fa-ban fa-stack-2x red'></i>
@@ -264,7 +264,7 @@ class mf_address_table extends mf_list_table
 
 					else
 					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressAdd&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_add')."'>
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressAdd&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_add_'.$intAddressID.'_'.$obj_group->id)."'>
 							<i class='fa fa-lg fa-plus-square green'></i>
 						</a>";
 					}
@@ -331,7 +331,7 @@ class mf_address_table extends mf_list_table
 					{
 						$actions['edit'] = "<a href='".$post_edit_url."'>".__("Edit", 'lang_address')."</a>";
 
-						$actions['delete'] = "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressDelete&intAddressID=".$intAddressID, 'address_delete')."'>".__("Delete", 'lang_address')."</a>";
+						$actions['delete'] = "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressDelete&intAddressID=".$intAddressID, 'address_delete_'.$intAddressID)."'>".__("Delete", 'lang_address')."</a>";
 					}
 				}
 
