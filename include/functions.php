@@ -45,12 +45,7 @@ function settings_address()
 		'setting_show_member_id' => __("Show memberID", 'lang_address'),
 	);
 
-	foreach($arr_settings as $handle => $text)
-	{
-		add_settings_field($handle, $text, $handle."_callback", BASE_OPTIONS_PAGE, $options_area);
-
-		register_setting(BASE_OPTIONS_PAGE, $handle);
-	}
+	show_settings_fields(array('area' => $options_area, 'settings' => $arr_settings));
 }
 
 function settings_address_callback()

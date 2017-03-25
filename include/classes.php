@@ -176,12 +176,6 @@ class mf_address_table extends mf_list_table
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressBirthDate LIKE '%".$this->search."%' OR addressFirstName LIKE '%".$this->search."%' OR addressSurName LIKE '%".$this->search."%' OR addressAddress LIKE '%".$this->search."%')";
 		}
 
-		/*if(isset($_GET['no_ses'])){	$is_part_of_group = check_var('is_part_of_group', 'int', true, '', false, 'get');}
-		else{						$is_part_of_group = check_var('is_part_of_group', 'int');}
-
-		if($is_part_of_group){		$_SESSION['is_part_of_group'] = $is_part_of_group;}
-		else{						unset($_SESSION['is_part_of_group']);}*/
-
 		list($this->query_join, $this->query_where) = get_address_search_query($this->search);
 
 		$this->set_views(array(
@@ -302,14 +296,6 @@ class mf_address_table extends mf_list_table
 				$intAddressMemberID = $item['addressMemberID'];
 				$intAddressDeleted = $item['addressDeleted'];
 				$dteAddressDeletedDate = $item['addressDeletedDate'];
-
-				/*if($intAddressDeleted == 1 && $dteAddressDeletedDate < date("Y-m-d H:i:s", strtotime("-1 month")))
-				{
-					global $obj_group, $obj_address;
-
-					$obj_group->remove_address($intAddressID);
-					$obj_address->delete($intAddressID);
-				}*/
 
 				if($strAddressFirstName != '' || $strAddressSurName != '')
 				{
