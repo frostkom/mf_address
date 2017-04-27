@@ -40,6 +40,13 @@ class mf_address
 			$done_text = __("The address was deleted", 'lang_address');
 		}
 
+		else if(isset($_REQUEST['btnAddressRecover']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_recover_'.$this->id))
+		{
+			$this->recover();
+
+			$done_text = __("I recovered the address for you", 'lang_address');
+		}
+
 		else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_add_'.$this->id.'_'.$this->group_id))
 		{
 			$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d'", $this->id, $this->group_id));
@@ -95,6 +102,18 @@ class mf_address
 
 			return $wpdb->insert_id;
 		}
+	}
+
+	function recover($id = 0)
+	{
+		global $wpdb;
+
+		if($id > 0)
+		{
+			$this->id = $id;
+		}
+
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
 	}
 
 	function trash($id = 0)
@@ -323,7 +342,7 @@ class mf_address_table extends mf_list_table
 
 				else
 				{
-					$actions['recover'] = "<a href='".$post_edit_url."&recover'>".__("Recover", 'lang_address')."</a>";
+					$actions['recover'] = "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRecover&intAddressID=".$intAddressID, 'address_recover_'.$intAddressID)."'>".__("Recover", 'lang_address')."</a>"; //".$post_edit_url."&recover
 				}
 
 				if($intAddressMemberID > 0)
