@@ -29,7 +29,7 @@ echo "<div class='wrap'>
 
 		if($has_group_plugin && $obj_group->id > 0)
 		{
-			echo " ".__("for", 'lang_address')." ".get_group_name($obj_group->id)." <a href='?page=mf_group/list/index.php'><i class='fa fa-lg fa-close red'></i></a>";
+			echo " ".__("for", 'lang_address')." ".$obj_group->get_name()." <a href='?page=mf_group/list/index.php'><i class='fa fa-lg fa-close red'></i></a>";
 		}
 
 		else

@@ -209,6 +209,9 @@ class mf_address_table extends mf_list_table
 			//'cb' => '<input type="checkbox">',
 		);
 
+		$arr_columns['addressSurName'] = __("Name", 'lang_address');
+		$arr_columns['addressAddress'] = __("Address", 'lang_address');
+
 		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
 		{
 			if(isset($obj_group->id) && $obj_group->id > 0)
@@ -222,8 +225,7 @@ class mf_address_table extends mf_list_table
 		}
 
 		$arr_columns['addressError'] = "";
-		$arr_columns['addressSurName'] = __("Name", 'lang_address');
-		$arr_columns['addressAddress'] = __("Address", 'lang_address');
+
 		$arr_columns['addressContact'] = __("Contact", 'lang_address');
 		$arr_columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
 
@@ -285,13 +287,15 @@ class mf_address_table extends mf_list_table
 			break;
 
 			case 'groups':
+				$obj_group = new mf_group();
+
 				$str_groups = "";
 
 				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $intAddressID));
 
 				foreach($resultGroups as $r)
 				{
-					$str_groups .= ($str_groups != '' ? ", " : "").group_name($r->groupID);
+					$str_groups .= ($str_groups != '' ? ", " : "").$obj_group->get_name($r->groupID);
 				}
 
 				if($str_groups != '')

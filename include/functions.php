@@ -152,7 +152,7 @@ function save_register_address($user_id)
 	}
 }
 
-function group_name($id)
+/*function group_name($id)
 {
 	global $wpdb;
 
@@ -167,7 +167,7 @@ function group_name($id)
 	{
 		return "(".$id.")";
 	}
-}
+}*/
 
 function get_address_search_query($strSearch)
 {
