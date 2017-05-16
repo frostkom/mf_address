@@ -218,7 +218,7 @@ class mf_address_table extends mf_list_table
 			{
 				$group_url = "?page=mf_address/list/index.php&no_ses&is_part_of_group=%d";
 
-				$arr_columns['is_part_of_group'] = "<a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a>";
+				$arr_columns['is_part_of_group'] = "<span class='nowrap'><a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a></span>";
 			}
 
 			$arr_columns['groups'] = "";
@@ -287,7 +287,7 @@ class mf_address_table extends mf_list_table
 			break;
 
 			case 'groups':
-				$obj_group = new mf_group();
+				$obj_group_temp = new mf_group();
 
 				$str_groups = "";
 
@@ -295,7 +295,7 @@ class mf_address_table extends mf_list_table
 
 				foreach($resultGroups as $r)
 				{
-					$str_groups .= ($str_groups != '' ? ", " : "").$obj_group->get_name($r->groupID);
+					$str_groups .= ($str_groups != '' ? ", " : "").$obj_group_temp->get_name($r->groupID);
 				}
 
 				if($str_groups != '')
