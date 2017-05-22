@@ -90,6 +90,18 @@ class mf_address
 		return $out;
 	}
 
+	function get_address($id)
+	{
+		global $wpdb;
+
+		if($id > 0)
+		{
+			$this->id = $id;
+		}
+
+		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".$wpdb->base_prefix."address WHERE addressID = '%d'", $this->id));
+	}
+
 	function insert($data)
 	{
 		global $wpdb;

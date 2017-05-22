@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-24 08:10+0100\n"
+"POT-Creation-Date: 2017-05-22 10:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -41,63 +41,63 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: ../create/index.php:96
-#: ../include/classes.php:439
+#: ../include/classes.php:474
 msgid "MemberID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:99
-#: ../include/classes.php:412
+#: ../include/classes.php:447
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:102
-#: ../include/classes.php:413
+#: ../include/classes.php:448
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:103
-#: ../include/classes.php:414
+#: ../include/classes.php:449
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:106
-#: ../include/classes.php:207
-#: ../include/classes.php:416
+#: ../include/classes.php:225
+#: ../include/classes.php:451
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:107
-#: ../include/classes.php:415
+#: ../include/classes.php:450
 msgid "C/O"
 msgstr "C/0"
 
 #: ../create/index.php:108
-#: ../include/classes.php:417
+#: ../include/classes.php:452
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:109
-#: ../include/classes.php:418
+#: ../include/classes.php:453
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:112
-#: ../include/classes.php:419
+#: ../include/classes.php:454
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:113
-#: ../include/classes.php:421
+#: ../include/classes.php:456
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:114
-#: ../include/classes.php:420
+#: ../include/classes.php:455
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:116
-#: ../include/classes.php:422
+#: ../include/classes.php:457
 msgid "E-mail"
 msgstr "E-post"
 
@@ -109,60 +109,64 @@ msgstr "Uppdatera"
 msgid "The address was deleted"
 msgstr "Adressen raderades"
 
-#: ../include/classes.php:54
+#: ../include/classes.php:47
+msgid "I recovered the address for you"
+msgstr "Jag återställda adressen åt dig"
+
+#: ../include/classes.php:61
 msgid "The address was added to the group"
 msgstr "Adressen las till i gruppen"
 
-#: ../include/classes.php:69
+#: ../include/classes.php:76
 msgid "The address was removed from the group"
 msgstr "Adressen togs bort från gruppen"
 
-#: ../include/classes.php:75
+#: ../include/classes.php:82
 msgid "The address was created"
 msgstr "Adressen skapades"
 
-#: ../include/classes.php:80
+#: ../include/classes.php:87
 msgid "The address was updated"
 msgstr "Adressen uppdaterades"
 
-#: ../include/classes.php:184
+#: ../include/classes.php:215
 msgid "All"
 msgstr "Alla"
 
-#: ../include/classes.php:185
+#: ../include/classes.php:216
 msgid "Trash"
 msgstr "Papperskorg"
 
-#: ../include/classes.php:206
+#: ../include/classes.php:224
 msgid "Name"
 msgstr "Namn"
 
-#: ../include/classes.php:208
+#: ../include/classes.php:241
 msgid "Contact"
 msgstr "Kontakt"
 
-#: ../include/classes.php:209
-#: ../include/classes.php:423
+#: ../include/classes.php:242
+#: ../include/classes.php:458
 msgid "Extra"
 msgstr "Extra"
 
-#: ../include/classes.php:287
+#: ../include/classes.php:322
 msgid "Errors"
 msgstr "Fel"
 
-#: ../include/classes.php:307
+#: ../include/classes.php:342
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../include/classes.php:318
+#: ../include/classes.php:353
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../include/classes.php:320
+#: ../include/classes.php:355
 msgid "Delete"
 msgstr "Radera"
 
-#: ../include/classes.php:326
+#: ../include/classes.php:361
 msgid "Recover"
 msgstr "Återställ"
 
