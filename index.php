@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.3.17
+Version: 2.3.19
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -44,6 +44,8 @@ function activate_address()
 
 	$default_charset = DB_CHARSET != '' ? DB_CHARSET : "utf8";
 
+	$arr_add_column = $arr_update_column = array();
+
 	$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."address (
 		addressID INT unsigned NOT NULL AUTO_INCREMENT,
 		addressPublic ENUM('0','1') NOT NULL DEFAULT '1',
@@ -70,13 +72,18 @@ function activate_address()
 		KEY userID (userID)
 	) DEFAULT CHARSET=".$default_charset);
 
-	$arr_update_tables = array();
+	$arr_add_column[$wpdb->base_prefix."address"] = array(
+		'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
+		'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
+		'addressError' => "ALTER TABLE [table] ADD [column] INT unsigned NOT NULL DEFAULT '0' AFTER addressPublic",
+	);
 
-	$arr_update_tables[$wpdb->base_prefix."address"]['addressCity'] = "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode";
-	$arr_update_tables[$wpdb->base_prefix."address"]['addressExtra'] = "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail";
-	$arr_update_tables[$wpdb->base_prefix."address"]['addressError'] = "ALTER TABLE [table] ADD [column] INT unsigned NOT NULL DEFAULT '0' AFTER addressPublic";
+	$arr_update_column[$wpdb->base_prefix."address"] = array(
+		'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
+	);
 
-	add_columns($arr_update_tables);
+	add_columns($arr_add_column);
+	update_columns($arr_update_column);
 
 	delete_base(array(
 		'table' => "address",
