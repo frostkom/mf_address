@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.3.19
+Version: 2.3.20
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -69,7 +69,8 @@ function activate_address()
 		addressDeletedDate DATETIME DEFAULT NULL,
 		addressDeletedID INT unsigned DEFAULT NULL,
 		PRIMARY KEY (addressID),
-		KEY userID (userID)
+		KEY userID (userID),
+		KEY addressDeleted (addressDeleted)
 	) DEFAULT CHARSET=".$default_charset);
 
 	$arr_add_column[$wpdb->base_prefix."address"] = array(
