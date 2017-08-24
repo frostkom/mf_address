@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.3.21
+Version: 2.3.22
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -106,6 +106,7 @@ function uninstall_address()
 {
 	mf_uninstall_plugin(array(
 		'options' => array('setting_address_extra', 'setting_show_member_id'),
+		'post_types' => array('mf_address'),
 		'tables' => array('address'),
 	));
 }
