@@ -35,7 +35,12 @@ if(get_current_user_id() > 0)
 			$strAddressFirstName = $r['addressFirstName'];
 			$strAddressSurName = $r['addressSurName'];
 
-			$json_output[] = $strAddressFirstName." ".$strAddressSurName;
+			$strAddressName = $strAddressFirstName." ".$strAddressSurName;
+
+			if(!in_array($strAddressName, $json_output))
+			{
+				$json_output[] = $strAddressName;
+			}
 		}
 	}
 }
