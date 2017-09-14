@@ -152,24 +152,7 @@ function save_register_address($user_id)
 	}
 }
 
-/*function group_name($id)
-{
-	global $wpdb;
-
-	$name = $wpdb->get_var($wpdb->prepare("SELECT post_title FROM ".$wpdb->posts." WHERE post_type = 'mf_group' AND ID = '%d'", $id));
-
-	if($name != '')
-	{
-		return $name;
-	}
-
-	else
-	{
-		return "(".$id.")";
-	}
-}*/
-
-function get_address_search_query($strSearch)
+/*function get_address_search_query($strSearch)
 {
 	global $wpdb, $is_part_of_group, $obj_group;
 
@@ -212,4 +195,4 @@ function get_address_search_query($strSearch)
 	}
 
 	return array($query_join, $query_where);
-}
+}*/

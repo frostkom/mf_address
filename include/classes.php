@@ -200,14 +200,30 @@ class mf_address_table extends mf_list_table
 		$this->arr_settings['has_autocomplete'] = true;
 		$this->arr_settings['plugin_name'] = 'mf_address';
 
-		$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
+		if(!IS_ADMIN)
+		{
+			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
+		}
 
 		if($this->search != '')
 		{
-			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressBirthDate LIKE '%".$this->search."%' OR addressFirstName LIKE '%".$this->search."%' OR addressSurName LIKE '%".$this->search."%' OR addressAddress LIKE '%".$this->search."%')";
+			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressBirthDate LIKE '%".$this->search."%' OR addressFirstName LIKE '%".$this->search."%' OR addressSurName LIKE '%".$this->search."%' OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$this->search."%' OR addressAddress LIKE '%".$this->search."%' OR addressZipCode LIKE '%".$this->search."%' OR addressCity LIKE '%".$this->search."%' OR addressTelNo LIKE '%".$this->search."%' OR addressWorkNo LIKE '%".$this->search."%' OR addressCellNo LIKE '%".$this->search."%' OR addressEmail LIKE '%".$this->search."%')";
 		}
 
-		list($this->query_join, $this->query_where) = get_address_search_query($this->search);
+		if($is_part_of_group)
+		{
+			$this->query_join .= " INNER JOIN ".$wpdb->base_prefix."address2group USING (addressID)";
+			$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID = '".$obj_group->id."'";
+		}
+
+		if(!IS_EDITOR)
+		{
+			$profile_address_permission = get_the_author_meta('profile_address_permission', get_current_user_id());
+
+			$this->query_where .= ($this->query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $profile_address_permission)."')";
+		}
+
+		//list($this->query_join, $this->query_where) = get_address_search_query($this->search);
 
 		$this->set_views(array(
 			'db_field' => 'addressDeleted',

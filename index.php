@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.3.24
+Version: 2.4.1
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -100,6 +100,95 @@ function activate_address()
 			),
 		),
 	));
+
+	//Remove duplicates
+	if(1 == 1)
+	{
+		$result = $wpdb->get_results("SELECT addressID, addressBirthDate, addressFirstName, addressSurName, addressEmail, SUBSTRING(addressBirthDate, 1, 10) AS birthDate, COUNT(addressID) AS addressAmount FROM ".$wpdb->base_prefix."address WHERE addressPublic = '1' AND addressDeleted = '0' AND addressBirthDate IS NOT NULL GROUP BY (birthDate) ORDER BY addressAmount DESC");
+
+		$i = 0;
+
+		foreach($result as $r)
+		{
+			$arr_address = array();
+
+			$intAddressID = $r->addressID;
+
+			$wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $intAddressID));
+
+			$arr_address[$intAddressID] = array(
+				'birthdate' => $r->addressBirthDate,
+				'name' => $r->addressFirstName." ".$r->addressSurName,
+				'email' => $r->addressEmail,
+				'groups' => $wpdb->num_rows,
+			);
+
+			$strBirthDate = $r->birthDate;
+			$intAddressAmount = $r->addressAmount;
+
+			if($intAddressAmount > 1)
+			{
+				if($i < 20)
+				{
+					$result2 = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressBirthDate, addressFirstName, addressSurName, addressEmail FROM ".$wpdb->base_prefix."address WHERE addressPublic = '1' AND addressDeleted = '0' AND addressBirthDate LIKE %s AND addressID != '%d'", $arr_address[$intAddressID]['birthdate']."%", $intAddressID));
+
+					foreach($result2 as $r)
+					{
+						$intAddressID_2 = $r->addressID;
+
+						$wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $intAddressID_2));
+
+						$arr_address[$intAddressID]['not_id'] = $r->addressID;
+
+						$arr_address[$intAddressID_2] = array(
+							'not_id' => $intAddressID,
+							'birthdate' => $r->addressBirthDate,
+							'name' => $r->addressFirstName." ".$r->addressSurName,
+							'email' => $r->addressEmail,
+							'groups' => $wpdb->num_rows,
+						);
+
+						if($arr_address[$intAddressID]['name'] == $arr_address[$intAddressID_2]['name'] || $arr_address[$intAddressID]['email'] == $arr_address[$intAddressID_2]['email'])
+						{
+							$intAddressID_birthdate = strlen($arr_address[$intAddressID_2]['birthdate']) > strlen($arr_address[$intAddressID]['birthdate']) ? $intAddressID_2 : $intAddressID;
+							$intAddressID_group = $arr_address[$intAddressID_2]['groups'] > $arr_address[$intAddressID]['groups'] ? $intAddressID_2 : $intAddressID;
+
+							if($intAddressID_birthdate == $intAddressID_group)
+							{
+								$not_id = $arr_address[$intAddressID_birthdate]['not_id'];
+
+								$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressDeleted = '1', addressDeletedDate = NOW() WHERE addressPublic = '1' AND addressDeleted = '0' AND addressID = '%d'", $not_id));
+
+								if($wpdb->rows_affected > 0)
+								{
+									do_log(sprintf("Kept %d (%s, %d) but removed %d (%s, %d)", $intAddressID_birthdate, $arr_address[$intAddressID_birthdate]['birthdate'], $arr_address[$intAddressID_birthdate]['groups'], $not_id, $arr_address[$not_id]['birthdate'], $arr_address[$not_id]['groups']));
+								}
+							}
+
+							else
+							{
+								$not_id = $arr_address[$intAddressID_birthdate]['not_id'];
+
+								$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressBirthDate = %s WHERE addressPublic = '1' AND addressDeleted = '0' AND addressID = '%d'", $arr_address[$intAddressID_birthdate]['birthdate'], $not_id));
+
+								if($wpdb->rows_affected > 0)
+								{
+									do_log(sprintf("Updated BirthDate on %d (%s -> %s)", $not_id, $arr_address[$not_id]['birthdate'], $arr_address[$intAddressID_birthdate]['birthdate']));
+								}
+							}
+						}
+
+						$i++;
+					}
+				}
+
+				else
+				{
+					break;
+				}
+			}
+		}
+	}
 }
 
 function uninstall_address()

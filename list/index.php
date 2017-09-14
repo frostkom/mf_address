@@ -44,6 +44,7 @@ echo "<div class='wrap'>
 
 	$tbl_group->select_data(array(
 		//'select' => "*",
+		//'debug' => true,
 	));
 
 	$tbl_group->do_display();
