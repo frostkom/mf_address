@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.4.2
+Version: 2.4.3
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
@@ -33,8 +33,8 @@ if(is_admin())
 	add_action('deleted_user', 'deleted_user_address');
 }
 
-add_action('wp_logout', 'uninit_address');
 add_action('wp_login', 'uninit_address');
+add_action('wp_logout', 'uninit_address');
 
 load_plugin_textdomain('lang_address', false, dirname(plugin_basename(__FILE__)).'/lang/');
 
