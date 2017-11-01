@@ -275,70 +275,6 @@ class mf_address_table extends mf_list_table
 
 		switch($column_name)
 		{
-			case 'is_part_of_group':
-				if($obj_group->id > 0)
-				{
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupUnsubscribed FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
-
-					$intGroupID_check = $intGroupUnsubscribed = 0;
-
-					foreach($result_check as $r)
-					{
-						$intGroupID_check = $r->groupID;
-						$intGroupUnsubscribed = $r->groupUnsubscribed;
-					}
-
-					if($obj_group->id == $intGroupID_check && $intGroupUnsubscribed == 0)
-					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
-							<i class='fa fa-lg fa-minus-square red'></i>
-						</a>";
-					}
-
-					else if($obj_group->id == $intGroupID_check && $intGroupUnsubscribed == 1)
-					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
-							<span class='fa-stack fa-lg'>
-								<i class='fa fa-envelope fa-stack-1x'></i>
-								<i class='fa fa-ban fa-stack-2x red'></i>
-							</span>
-						</a>";
-					}
-
-					else
-					{
-						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressAdd&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_add_'.$intAddressID.'_'.$obj_group->id)."'>
-							<i class='fa fa-lg fa-plus-square green'></i>
-						</a>";
-					}
-				}
-			break;
-
-			case 'groups':
-				$obj_group_temp = new mf_group();
-
-				$str_groups = "";
-
-				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $intAddressID));
-
-				foreach($resultGroups as $r)
-				{
-					$str_groups .= ($str_groups != '' ? ", " : "").$obj_group_temp->get_name($r->groupID);
-				}
-
-				if($str_groups != '')
-				{
-					$out .= "<i class='fa fa-group' title='".$str_groups."'></i>";
-				}
-			break;
-
-			case 'addressError':
-				if($item[$column_name] > 0)
-				{
-					$out .= "<i class='fa fa-close red' title='".$item[$column_name]." ".__("Errors", 'lang_address')."'></i>";
-				}
-			break;
-
 			case 'addressSurName':
 				$intAddressPublic = $item['addressPublic'];
 				$strAddressBirthDate = $item['addressBirthDate'];
@@ -405,6 +341,80 @@ class mf_address_table extends mf_list_table
 				}
 
 				$out .= $intAddressZipCode." ".$strAddressCity;
+			break;
+
+			case 'is_part_of_group':
+				if($obj_group->id > 0)
+				{
+					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
+
+					$intGroupID_check = $intGroupAccepted = $intGroupUnsubscribed = 0;
+
+					foreach($result_check as $r)
+					{
+						$intGroupID_check = $r->groupID;
+						$intGroupAccepted = $r->groupAccepted;
+						$intGroupUnsubscribed = $r->groupUnsubscribed;
+					}
+
+					if($obj_group->id == $intGroupID_check)
+					{
+						if($intGroupUnsubscribed == 0)
+						{
+							$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
+								<i class='fa fa-lg fa-minus-square red'></i>";
+
+								if($intGroupAccepted == 0)
+								{
+									$out .= "&nbsp;<i class='fa fa-lg fa-info-circle' title='".__("The address has not been accepted to this group yet", 'lang_address')."'></i>";
+								}
+
+							$out .= "</a>";
+						}
+
+						else
+						{
+							$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
+								<span class='fa-stack fa-lg'>
+									<i class='fa fa-envelope fa-stack-1x'></i>
+									<i class='fa fa-ban fa-stack-2x red'></i>
+								</span>
+							</a>";
+						}
+					}
+
+					else
+					{
+						$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressAdd&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_add_'.$intAddressID.'_'.$obj_group->id)."'>
+							<i class='fa fa-lg fa-plus-square green'></i>
+						</a>";
+					}
+				}
+			break;
+
+			case 'groups':
+				$obj_group_temp = new mf_group();
+
+				$str_groups = "";
+
+				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $intAddressID));
+
+				foreach($resultGroups as $r)
+				{
+					$str_groups .= ($str_groups != '' ? ", " : "").$obj_group_temp->get_name($r->groupID);
+				}
+
+				if($str_groups != '')
+				{
+					$out .= "<i class='fa fa-group' title='".$str_groups."'></i>";
+				}
+			break;
+
+			case 'addressError':
+				if($item[$column_name] > 0)
+				{
+					$out .= "<i class='fa fa-close red' title='".$item[$column_name]." ".__("Errors", 'lang_address')."'></i>";
+				}
 			break;
 
 			case 'addressContact':

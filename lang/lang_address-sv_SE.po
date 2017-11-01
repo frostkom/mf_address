@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-12 14:57+0100\n"
+"POT-Creation-Date: 2017-11-01 08:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -41,63 +41,63 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: ../create/index.php:96
-#: ../include/classes.php:474
+#: ../include/classes.php:500
 msgid "MemberID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:99
-#: ../include/classes.php:447
+#: ../include/classes.php:473
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:102
-#: ../include/classes.php:448
+#: ../include/classes.php:474
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:103
-#: ../include/classes.php:449
+#: ../include/classes.php:475
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:106
-#: ../include/classes.php:225
-#: ../include/classes.php:451
+#: ../include/classes.php:241
+#: ../include/classes.php:477
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:107
-#: ../include/classes.php:450
+#: ../include/classes.php:476
 msgid "C/O"
 msgstr "C/O"
 
 #: ../create/index.php:108
-#: ../include/classes.php:452
+#: ../include/classes.php:478
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:109
-#: ../include/classes.php:453
+#: ../include/classes.php:479
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:112
-#: ../include/classes.php:454
+#: ../include/classes.php:480
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:113
-#: ../include/classes.php:456
+#: ../include/classes.php:482
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:114
-#: ../include/classes.php:455
+#: ../include/classes.php:481
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:116
-#: ../include/classes.php:457
+#: ../include/classes.php:483
 msgid "E-mail"
 msgstr "E-post"
 
@@ -129,46 +129,50 @@ msgstr "Adressen skapades"
 msgid "The address was updated"
 msgstr "Adressen uppdaterades"
 
-#: ../include/classes.php:215
+#: ../include/classes.php:231
 msgid "All"
 msgstr "Alla"
 
-#: ../include/classes.php:216
+#: ../include/classes.php:232
 msgid "Trash"
 msgstr "Papperskorg"
 
-#: ../include/classes.php:224
+#: ../include/classes.php:240
 msgid "Name"
 msgstr "Namn"
 
-#: ../include/classes.php:241
+#: ../include/classes.php:257
 msgid "Contact"
 msgstr "Kontakt"
 
-#: ../include/classes.php:242
-#: ../include/classes.php:458
+#: ../include/classes.php:258
+#: ../include/classes.php:484
 msgid "Extra"
 msgstr "Extra"
 
-#: ../include/classes.php:322
-msgid "Errors"
-msgstr "Fel"
-
-#: ../include/classes.php:342
+#: ../include/classes.php:294
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../include/classes.php:353
+#: ../include/classes.php:305
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../include/classes.php:355
+#: ../include/classes.php:307
 msgid "Delete"
 msgstr "Radera"
 
-#: ../include/classes.php:361
+#: ../include/classes.php:313
 msgid "Recover"
 msgstr "Återställ"
+
+#: ../include/classes.php:369
+msgid "The address has not been accepted to this group yet"
+msgstr "Adressen har inte accepterats i gruppen ännu"
+
+#: ../include/classes.php:416
+msgid "Errors"
+msgstr "Fel"
 
 #: ../include/functions.php:44
 msgid "Name for extra address field"
