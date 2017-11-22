@@ -49,7 +49,7 @@ class mf_address
 
 		else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_add_'.$this->id.'_'.$this->group_id))
 		{
-			$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d'", $this->id, $this->group_id));
+			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
 			if($wpdb->num_rows == 0)
 			{
@@ -64,7 +64,7 @@ class mf_address
 
 		else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_remove_'.$this->id.'_'.$this->group_id))
 		{
-			$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d'", $this->id, $this->group_id));
+			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
 			if($wpdb->num_rows > 0)
 			{
@@ -507,7 +507,7 @@ class mf_address_import extends mf_import
 	{
 		global $wpdb;
 
-		$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $id));
+		$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' LIMIT 0, 1", $id));
 
 		if($wpdb->num_rows == 0)
 		{
