@@ -43,7 +43,7 @@ if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'add
 
 			if($intAddressID > 0)
 			{
-				mf_redirect("/wp-admin/admin.php?page=mf_address/list/index.php&".$type);
+				mf_redirect(admin_url("admin.php?page=mf_address/list/index.php&".$type));
 			}
 
 			else
