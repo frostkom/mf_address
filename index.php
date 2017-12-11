@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.4.9
+Version: 2.4.10
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
