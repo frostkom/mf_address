@@ -60,6 +60,11 @@ class mf_address
 
 				$done_text = __("The address was added to the group", 'lang_address');
 			}
+
+			else
+			{
+				$error_text = __("The address already exists in the group", 'lang_address');
+			}
 		}
 
 		else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_remove_'.$this->id.'_'.$this->group_id))
@@ -74,6 +79,26 @@ class mf_address
 				}
 
 				$done_text = __("The address was removed from the group", 'lang_address');
+			}
+
+			else
+			{
+				$error_text = __("The address could not be removed since it didn't exist in the group", 'lang_address');
+			}
+		}
+
+		else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_resend_'.$this->id.'_'.$this->group_id))
+		{
+			if($this->has_group_plugin)
+			{
+				$obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id));
+				
+				$done_text = __("The message was sent", 'lang_address');
+			}
+			
+			else
+			{
+				$error_text = __("The group plugin does not seam to be in use", 'lang_address');
 			}
 		}
 
@@ -362,14 +387,25 @@ class mf_address_table extends mf_list_table
 						if($intGroupUnsubscribed == 0)
 						{
 							$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressRemove&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_remove_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
-								<i class='fa fa-lg fa-minus-square red'></i>";
+								<i class='fa fa-lg fa-minus-square red'></i>
+							</a>";
 
-								if($intGroupAccepted == 0)
+							if($intGroupAccepted == 0)
+							{
+								$out .= "&nbsp;";
+
+								if(IS_SUPER_ADMIN)
 								{
-									$out .= "&nbsp;<i class='fa fa-lg fa-info-circle' title='".__("The address has not been accepted to this group yet", 'lang_address')."'></i>";
+									$out .= "<a href='".wp_nonce_url("?page=mf_address/list/index.php&btnAddressResend&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id, 'address_resend_'.$intAddressID.'_'.$obj_group->id)."' rel='confirm'>
+										<i class='fa fa-lg fa-info-circle' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
+									</a>";
 								}
 
-							$out .= "</a>";
+								else
+								{
+									$out .= "<i class='fa fa-lg fa-info-circle' title='".__("The address has not been accepted to this group yet.", 'lang_address')."'></i>";
+								}
+							}
 						}
 
 						else

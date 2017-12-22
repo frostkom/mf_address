@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-01 08:26+0100\n"
+"POT-Creation-Date: 2017-12-20 14:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -41,63 +41,63 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: ../create/index.php:96
-#: ../include/classes.php:500
+#: ../include/classes.php:536
 msgid "MemberID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:99
-#: ../include/classes.php:473
+#: ../include/classes.php:509
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:102
-#: ../include/classes.php:474
+#: ../include/classes.php:510
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:103
-#: ../include/classes.php:475
+#: ../include/classes.php:511
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:106
-#: ../include/classes.php:241
-#: ../include/classes.php:477
+#: ../include/classes.php:266
+#: ../include/classes.php:513
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:107
-#: ../include/classes.php:476
+#: ../include/classes.php:512
 msgid "C/O"
 msgstr "C/O"
 
 #: ../create/index.php:108
-#: ../include/classes.php:478
+#: ../include/classes.php:514
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:109
-#: ../include/classes.php:479
+#: ../include/classes.php:515
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:112
-#: ../include/classes.php:480
+#: ../include/classes.php:516
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:113
-#: ../include/classes.php:482
+#: ../include/classes.php:518
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:114
-#: ../include/classes.php:481
+#: ../include/classes.php:517
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:116
-#: ../include/classes.php:483
+#: ../include/classes.php:519
 msgid "E-mail"
 msgstr "E-post"
 
@@ -117,60 +117,81 @@ msgstr "Jag återställda adressen åt dig"
 msgid "The address was added to the group"
 msgstr "Adressen las till i gruppen"
 
-#: ../include/classes.php:76
+#: ../include/classes.php:66
+msgid "The address already exists in the group"
+msgstr "Adressen fanns redan i gruppen"
+
+#: ../include/classes.php:81
 msgid "The address was removed from the group"
 msgstr "Adressen togs bort från gruppen"
 
-#: ../include/classes.php:82
+#: ../include/classes.php:86
+msgid "The address could not be removed since it didn't exist in the group"
+msgstr "Adressen kunde inte tas bort eftersom den inte fanns i gruppen"
+
+#: ../include/classes.php:96
+msgid "The message was sent"
+msgstr "Meddelandet skickades"
+
+#: ../include/classes.php:101
+msgid "The group plugin does not seam to be in use"
+msgstr "Grupp-pluginet verkar inte användas"
+
+#: ../include/classes.php:107
 msgid "The address was created"
 msgstr "Adressen skapades"
 
-#: ../include/classes.php:87
+#: ../include/classes.php:112
 msgid "The address was updated"
 msgstr "Adressen uppdaterades"
 
-#: ../include/classes.php:231
+#: ../include/classes.php:256
 msgid "All"
 msgstr "Alla"
 
-#: ../include/classes.php:232
+#: ../include/classes.php:257
 msgid "Trash"
 msgstr "Papperskorg"
 
-#: ../include/classes.php:240
+#: ../include/classes.php:265
 msgid "Name"
 msgstr "Namn"
 
-#: ../include/classes.php:257
+#: ../include/classes.php:282
 msgid "Contact"
 msgstr "Kontakt"
 
-#: ../include/classes.php:258
-#: ../include/classes.php:484
+#: ../include/classes.php:283
+#: ../include/classes.php:520
 msgid "Extra"
 msgstr "Extra"
 
-#: ../include/classes.php:294
+#: ../include/classes.php:319
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../include/classes.php:305
+#: ../include/classes.php:330
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../include/classes.php:307
+#: ../include/classes.php:332
 msgid "Delete"
 msgstr "Radera"
 
-#: ../include/classes.php:313
+#: ../include/classes.php:338
 msgid "Recover"
 msgstr "Återställ"
 
-#: ../include/classes.php:369
-msgid "The address has not been accepted to this group yet"
-msgstr "Adressen har inte accepterats i gruppen ännu"
+#: ../include/classes.php:400
+#: ../include/classes.php:406
+msgid "The address has not been accepted to this group yet."
+msgstr "Adressen har inte accepterats i gruppen ännu."
 
-#: ../include/classes.php:416
+#: ../include/classes.php:400
+msgid "Do you want to send it again?"
+msgstr "Vill du skicka det igen?"
+
+#: ../include/classes.php:452
 msgid "Errors"
 msgstr "Fel"
 
