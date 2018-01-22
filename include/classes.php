@@ -92,10 +92,10 @@ class mf_address
 			if($this->has_group_plugin)
 			{
 				$obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id));
-				
+
 				$done_text = __("The message was sent", 'lang_address');
 			}
-			
+
 			else
 			{
 				$error_text = __("The group plugin does not seam to be in use", 'lang_address');
