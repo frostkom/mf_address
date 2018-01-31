@@ -96,7 +96,7 @@ function show_profile_address($user)
 {
 	global $wpdb;
 
-	$profile_address_permission = get_the_author_meta('profile_address_permission', $user->ID);
+	$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
 
 	$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->base_prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -104,11 +104,11 @@ function show_profile_address($user)
 	{
 		echo "<table class='form-table'>
 			<tr class='user-address-permission-wrap'>
-				<th><label for='profile_address_permission'>".__("Address Permissions to Users", 'lang_address').":</label></th>
+				<th><label for='meta_address_permission'>".__("Address Permissions to Users", 'lang_address').":</label></th>
 				<td>";
 
-					$profile_address_permission = get_the_author_meta('profile_address_permission', $user->ID);
-					$profile_address_permission = explode(",", $profile_address_permission);
+					$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
+					$meta_address_permission = explode(",", $meta_address_permission);
 
 					$arr_data = array();
 
@@ -122,7 +122,7 @@ function show_profile_address($user)
 						}
 					}
 
-					echo show_select(array('data' => $arr_data, 'name' => 'profile_address_permission[]', 'value' => $profile_address_permission))
+					echo show_select(array('data' => $arr_data, 'name' => 'meta_address_permission[]', 'value' => $meta_address_permission))
 				."</td>
 			</tr>
 		</table>";
@@ -139,16 +139,16 @@ function save_portfolio_address($user_id)
 
 function save_register_address($user_id)
 {
-	$profile_address_permission = isset($_POST['profile_address_permission']) ? $_POST['profile_address_permission'] : "";
+	$meta_address_permission = isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : "";
 
-	if(is_array($profile_address_permission))
+	if(is_array($meta_address_permission))
 	{
-		update_user_meta($user_id, 'profile_address_permission', implode(",", $profile_address_permission));
+		update_user_meta($user_id, 'meta_address_permission', implode(",", $meta_address_permission));
 	}
 
 	else
 	{
-		delete_user_meta($user_id, 'profile_address_permission');
+		delete_user_meta($user_id, 'meta_address_permission');
 	}
 }
 
@@ -189,9 +189,9 @@ function save_register_address($user_id)
 
 	if(!IS_EDITOR)
 	{
-		$profile_address_permission = get_the_author_meta('profile_address_permission', get_current_user_id());
+		$meta_address_permission = get_user_meta(get_current_user_id(), 'meta_address_permission', true);
 
-		$query_where .= ($query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $profile_address_permission)."')";
+		$query_where .= ($query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $meta_address_permission)."')";
 	}
 
 	return array($query_join, $query_where);

@@ -243,9 +243,9 @@ class mf_address_table extends mf_list_table
 
 		if(!IS_EDITOR)
 		{
-			$profile_address_permission = get_the_author_meta('profile_address_permission', get_current_user_id());
+			$meta_address_permission = get_user_meta(get_current_user_id(), 'meta_address_permission', true);
 
-			$this->query_where .= ($this->query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $profile_address_permission)."')";
+			$this->query_where .= ($this->query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $meta_address_permission)."')";
 		}
 
 		//list($this->query_join, $this->query_where) = get_address_search_query($this->search);

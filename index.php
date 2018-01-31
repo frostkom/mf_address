@@ -3,13 +3,14 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.4.12
+Version: 2.4.14
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_address
 Domain Path: /lang
 
+Depends: MF Base
 GitHub Plugin URI: frostkom/mf_address
 */
 
@@ -101,12 +102,15 @@ function activate_address()
 			),
 		),
 	));
+
+	replace_user_meta(array('old' => 'profile_address_permission', 'new' => 'meta_address_permission'));
 }
 
 function uninstall_address()
 {
 	mf_uninstall_plugin(array(
 		'options' => array('setting_address_extra', 'setting_show_member_id'),
+		'meta' => array('meta_address_permission'),
 		'post_types' => array('mf_address'),
 		'tables' => array('address'),
 	));
