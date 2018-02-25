@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.4.14
+Version: 2.5.0
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: http://frostkom.se
@@ -48,7 +48,7 @@ function activate_address()
 
 	$arr_add_column = $arr_add_index = array();
 
-	$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->base_prefix."address (
+	$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->prefix."address (
 		addressID INT unsigned NOT NULL AUTO_INCREMENT,
 		addressPublic ENUM('0','1') NOT NULL DEFAULT '1',
 		addressError INT unsigned NOT NULL DEFAULT '0',
@@ -75,13 +75,13 @@ function activate_address()
 		KEY addressDeleted (addressDeleted)
 	) DEFAULT CHARSET=".$default_charset);
 
-	$arr_add_column[$wpdb->base_prefix."address"] = array(
+	$arr_add_column[$wpdb->prefix."address"] = array(
 		'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
 		'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
 		'addressError' => "ALTER TABLE [table] ADD [column] INT unsigned NOT NULL DEFAULT '0' AFTER addressPublic",
 	);
 
-	$arr_add_index[$wpdb->base_prefix."address"] = array(
+	$arr_add_index[$wpdb->prefix."address"] = array(
 		'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
 	);
 

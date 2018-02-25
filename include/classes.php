@@ -49,7 +49,7 @@ class mf_address
 
 		else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_add_'.$this->id.'_'.$this->group_id))
 		{
-			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
+			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
 			if($wpdb->num_rows == 0)
 			{
@@ -69,7 +69,7 @@ class mf_address
 
 		else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce'], 'address_remove_'.$this->id.'_'.$this->group_id))
 		{
-			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
+			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
 			if($wpdb->num_rows > 0)
 			{
@@ -124,7 +124,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".$wpdb->base_prefix."address WHERE addressID = '%d'", $this->id));
+		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
 	}
 
 	function insert($data)
@@ -135,7 +135,7 @@ class mf_address
 
 		if($data['email'] != '')
 		{
-			$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->base_prefix."address SET addressPublic = '%d', addressEmail = %s, addressCreated = NOW(), userID = '%d'", $data['public'], $data['email'], get_current_user_id()));
+			$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressPublic = '%d', addressEmail = %s, addressCreated = NOW(), userID = '%d'", $data['public'], $data['email'], get_current_user_id()));
 
 			return $wpdb->insert_id;
 		}
@@ -150,7 +150,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
 	}
 
 	function trash($id = 0)
@@ -162,7 +162,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
 	}
 
 	function delete($id = 0)
@@ -174,7 +174,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->base_prefix."address WHERE addressID = '%d'", $this->id));
+		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
 	}
 
 	function update_errors($data = array())
@@ -198,7 +198,7 @@ class mf_address
 
 		if($address_error != '')
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressError = 0 WHERE addressID = '%d'", $this->id));
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressError = 0 WHERE addressID = '%d'", $this->id));
 		}
 	}
 }
@@ -214,7 +214,7 @@ class mf_address_table extends mf_list_table
 	{
 		global $wpdb, $is_part_of_group, $obj_group;
 
-		$this->arr_settings['query_from'] = $wpdb->base_prefix."address";
+		$this->arr_settings['query_from'] = $wpdb->prefix."address";
 		$this->post_type = "";
 
 		$this->arr_settings['query_select_id'] = "addressID";
@@ -237,7 +237,7 @@ class mf_address_table extends mf_list_table
 
 		if($is_part_of_group)
 		{
-			$this->query_join .= " INNER JOIN ".$wpdb->base_prefix."address2group USING (addressID)";
+			$this->query_join .= " INNER JOIN ".$wpdb->prefix."address2group USING (addressID)";
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID = '".$obj_group->id."'";
 		}
 
@@ -371,7 +371,7 @@ class mf_address_table extends mf_list_table
 			case 'is_part_of_group':
 				if($obj_group->id > 0)
 				{
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
+					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
 
 					$intGroupID_check = $intGroupAccepted = $intGroupUnsubscribed = 0;
 
@@ -433,7 +433,7 @@ class mf_address_table extends mf_list_table
 
 				$str_groups = "";
 
-				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d'", $intAddressID));
+				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d'", $intAddressID));
 
 				foreach($resultGroups as $r)
 				{
@@ -543,7 +543,7 @@ class mf_address_import extends mf_import
 	{
 		global $wpdb;
 
-		$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->base_prefix."address2group WHERE addressID = '%d' LIMIT 0, 1", $id));
+		$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' LIMIT 0, 1", $id));
 
 		if($wpdb->num_rows == 0)
 		{

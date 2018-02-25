@@ -27,14 +27,14 @@ if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'add
 		{
 			if($intAddressID > 0)
 			{
-				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d' AND (addressPublic = '1' OR addressPublic = '0' AND userID = '%d')", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID, get_current_user_id()));
+				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d' AND (addressPublic = '1' OR addressPublic = '0' AND userID = '%d')", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID, get_current_user_id()));
 
 				$type = "updated";
 			}
 
 			else
 			{
-				$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->base_prefix."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, get_current_user_id()));
+				$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, get_current_user_id()));
 
 				$intAddressID = $wpdb->insert_id;
 
@@ -64,7 +64,7 @@ echo "<div class='wrap'>
 
 				if($intAddressID > 0 && !isset($_POST['btnAddressUpdate']))
 				{
-					$result = $wpdb->get_results($wpdb->prepare("SELECT addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".$wpdb->base_prefix."address WHERE addressID = '%d'", $intAddressID));
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $intAddressID));
 
 					foreach($result as $r)
 					{
@@ -84,7 +84,7 @@ echo "<div class='wrap'>
 
 						if($intAddressDeleted == 1)
 						{
-							$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET addressDeleted = '0', addressDeletedID = '', addressDeletedDate = '' WHERE addressPublic = '0' AND addressID = '%d' AND userID = '%d'", $intAddressID, get_current_user_id()));
+							$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '0', addressDeletedID = '', addressDeletedDate = '' WHERE addressPublic = '0' AND addressID = '%d' AND userID = '%d'", $intAddressID, get_current_user_id()));
 						}
 					}
 				}

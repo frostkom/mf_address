@@ -4,7 +4,7 @@ function deleted_user_address($user_id)
 {
 	global $wpdb;
 
-	$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->base_prefix."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
+	$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
 }
 
 function init_address()
@@ -98,7 +98,7 @@ function show_profile_address($user)
 
 	$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
 
-	$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->base_prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
+	$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
 	if($wpdb->num_rows > 0)
 	{
@@ -183,7 +183,7 @@ function save_register_address($user_id)
 
 	if($is_part_of_group)
 	{
-		$query_join .= " INNER JOIN ".$wpdb->base_prefix."address2group USING (addressID)";
+		$query_join .= " INNER JOIN ".$wpdb->prefix."address2group USING (addressID)";
 		$query_where .= ($query_where != '' ? " AND " : "")."groupID = '".$obj_group->id."'";
 	}
 
