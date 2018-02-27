@@ -115,6 +115,22 @@ class mf_address
 		return $out;
 	}
 
+	function search($data)
+	{
+		global $wpdb;
+
+		$result = array();
+
+		switch($data['type'])
+		{
+			case 'sms':
+				$result = $wpdb->get_results("SELECT addressCellNo FROM ".get_address_table_prefix()."address WHERE addressCellNo != '' AND (addressFirstName LIKE '%".$data['string']."%' OR addressSurName LIKE '%".$data['string']."%' OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$data['string']."%' OR REPLACE(REPLACE(REPLACE(addressCellNo, '/', ''), '-', ''), ' ', '') LIKE '%".$data['string']."%') GROUP BY addressCellNo ORDER BY addressSurName ASC, addressFirstName ASC");
+			break;
+		}
+
+		return $result;
+	}
+
 	function get_address($id)
 	{
 		global $wpdb;
@@ -124,7 +140,14 @@ class mf_address
 			$this->id = $id;
 		}
 
-		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
+		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+	}
+
+	function get_address_id($data)
+	{
+		global $wpdb;
+
+		$this->id = $wpdb->get_var($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressEmail = %s", $data['email']));
 	}
 
 	function insert($data)
@@ -135,7 +158,7 @@ class mf_address
 
 		if($data['email'] != '')
 		{
-			$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressPublic = '%d', addressEmail = %s, addressCreated = NOW(), userID = '%d'", $data['public'], $data['email'], get_current_user_id()));
+			$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '%d', addressEmail = %s, addressCreated = NOW(), userID = '%d'", $data['public'], $data['email'], get_current_user_id()));
 
 			return $wpdb->insert_id;
 		}
@@ -150,7 +173,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
 	}
 
 	function trash($id = 0)
@@ -162,7 +185,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
 	}
 
 	function delete($id = 0)
@@ -174,7 +197,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
+		$wpdb->query($wpdb->prepare("DELETE FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
 	}
 
 	function update_errors($data = array())
@@ -198,7 +221,7 @@ class mf_address
 
 		if($address_error != '')
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressError = 0 WHERE addressID = '%d'", $this->id));
+			$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressError = 0 WHERE addressID = '%d'", $this->id));
 		}
 	}
 }
@@ -214,7 +237,7 @@ class mf_address_table extends mf_list_table
 	{
 		global $wpdb, $is_part_of_group, $obj_group;
 
-		$this->arr_settings['query_from'] = $wpdb->prefix."address";
+		$this->arr_settings['query_from'] = get_address_table_prefix()."address";
 		$this->post_type = "";
 
 		$this->arr_settings['query_select_id'] = "addressID";
@@ -247,8 +270,6 @@ class mf_address_table extends mf_list_table
 
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $meta_address_permission)."')";
 		}
-
-		//list($this->query_join, $this->query_where) = get_address_search_query($this->search);
 
 		$this->set_views(array(
 			'db_field' => 'addressDeleted',

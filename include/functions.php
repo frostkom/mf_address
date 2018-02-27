@@ -1,10 +1,19 @@
 <?php
 
+function get_address_table_prefix()
+{
+	global $wpdb;
+
+	$setting_address_site_wide = get_site_option('setting_address_site_wide', 'yes');
+
+	return $setting_address_site_wide == 'yes' ? $wpdb->base_prefix : $wpdb->prefix;
+}
+
 function deleted_user_address($user_id)
 {
 	global $wpdb;
 
-	$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
+	$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
 }
 
 function init_address()
@@ -40,10 +49,15 @@ function settings_address()
 
 	add_settings_section($options_area, "", $options_area."_callback", BASE_OPTIONS_PAGE);
 
-	$arr_settings = array(
-		'setting_address_extra' => __("Name for extra address field", 'lang_address'),
-		'setting_show_member_id' => __("Show memberID", 'lang_address'),
-	);
+	$arr_settings = array();
+
+	if(IS_SUPER_ADMIN)
+	{
+		$arr_settings['setting_address_site_wide'] = __("Use the master table on all sites", 'lang_address');
+	}
+
+	$arr_settings['setting_address_extra'] = __("Name for extra address field", 'lang_address');
+	$arr_settings['setting_show_member_id'] = __("Show memberID", 'lang_address');
 
 	show_settings_fields(array('area' => $options_area, 'settings' => $arr_settings));
 }
@@ -53,6 +67,15 @@ function settings_address_callback()
 	$setting_key = get_setting_key(__FUNCTION__);
 
 	echo settings_header($setting_key, __("Address Book", 'lang_address'));
+}
+
+function setting_address_site_wide_callback()
+{
+	$setting_key = get_setting_key(__FUNCTION__);
+	settings_save_site_wide($setting_key);
+	$option = get_site_option($setting_key, 'yes');
+
+	echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
 }
 
 function setting_show_member_id_callback()
@@ -98,7 +121,7 @@ function show_profile_address($user)
 
 	$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
 
-	$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
+	$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
 
 	if($wpdb->num_rows > 0)
 	{
@@ -151,48 +174,3 @@ function save_register_address($user_id)
 		delete_user_meta($user_id, 'meta_address_permission');
 	}
 }
-
-/*function get_address_search_query($strSearch)
-{
-	global $wpdb, $is_part_of_group, $obj_group;
-
-	$query_join = $query_where = "";
-
-	if($strSearch != '')
-	{
-		$query_where .= ($query_where != '' ? " AND " : "")."(addressFirstName LIKE '%".$strSearch."%' OR addressSurName LIKE '%".$strSearch."%' OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$strSearch."%'";
-
-		$arr_address_search = explode(" ", $strSearch);
-
-		$count_temp = count($arr_address_search);
-
-		if($count_temp > 1)
-		{
-			$query_where .= " OR (";
-
-				for($i = 0; $i < $count_temp; $i++)
-				{
-					$query_where .= ($i > 0 ? " AND " : "")."CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$arr_address_search[$i]."%'";
-				}
-
-			$query_where .= ")";
-		}
-
-		$query_where .= " OR addressAddress LIKE '%".$strSearch."%' OR addressZipCode LIKE '%".$strSearch."%' OR addressCity LIKE '%".$strSearch."%' OR addressTelNo LIKE '%".$strSearch."%' OR addressWorkNo LIKE '%".$strSearch."%' OR addressCellNo LIKE '%".$strSearch."%' OR addressEmail LIKE '%".$strSearch."%')";
-	}
-
-	if($is_part_of_group)
-	{
-		$query_join .= " INNER JOIN ".$wpdb->prefix."address2group USING (addressID)";
-		$query_where .= ($query_where != '' ? " AND " : "")."groupID = '".$obj_group->id."'";
-	}
-
-	if(!IS_EDITOR)
-	{
-		$meta_address_permission = get_user_meta(get_current_user_id(), 'meta_address_permission', true);
-
-		$query_where .= ($query_where != '' ? " AND " : "")."addressExtra IN('".str_replace(",", "','", $meta_address_permission)."')";
-	}
-
-	return array($query_join, $query_where);
-}*/
