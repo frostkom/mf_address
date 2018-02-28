@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-27 17:07+0100\n"
+"POT-Creation-Date: 2018-02-28 08:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -20,11 +20,15 @@ msgstr ""
 msgid "The e-mail address doesn't seam to be valid because the response is that the domain doesn't have e-mails connected to it"
 msgstr "E-postadressen verkar inte stämma för servern svarar att domänen inte har e-postadresser kopplade till sig"
 
-#: ../create/index.php:51
+#: ../create/index.php:41
+msgid "I could not update the address for you. Either you don't have the permission to update this address or you didn't change any of the fields before saving"
+msgstr "Jag kunde inte uppdatera adressen åt dig. Antingen har du inte behörighet att uppdatera adressen eller så ändrade du inget av fälten innan du sparade"
+
+#: ../create/index.php:61
 msgid "The information was not submitted, contact an admin if this persists"
 msgstr "Informationen lades inte in, kontakta en administratör om problemet kvarstår"
 
-#: ../create/index.php:58
+#: ../create/index.php:68
 #: ../import/index.php:6
 #: ../include/functions.php:27
 #: ../include/functions.php:28
@@ -35,73 +39,73 @@ msgstr "Informationen lades inte in, kontakta en administratör om problemet kva
 msgid "Address Book"
 msgstr "Adressbok"
 
-#: ../create/index.php:61
-#: ../create/index.php:117
+#: ../create/index.php:71
+#: ../create/index.php:127
 msgid "Add"
 msgstr "Lägg till"
 
-#: ../create/index.php:96
+#: ../create/index.php:106
 #: ../include/classes.php:557
 msgid "MemberID"
 msgstr "Medlemsnummer"
 
-#: ../create/index.php:99
+#: ../create/index.php:109
 #: ../include/classes.php:530
 msgid "Social Security Number"
 msgstr "Personnummer"
 
-#: ../create/index.php:102
+#: ../create/index.php:112
 #: ../include/classes.php:531
 msgid "First Name"
 msgstr "Förnamn"
 
-#: ../create/index.php:103
+#: ../create/index.php:113
 #: ../include/classes.php:532
 msgid "Last Name"
 msgstr "Efternamn"
 
-#: ../create/index.php:106
+#: ../create/index.php:116
 #: ../include/classes.php:287
 #: ../include/classes.php:534
 msgid "Address"
 msgstr "Adress"
 
-#: ../create/index.php:107
+#: ../create/index.php:117
 #: ../include/classes.php:533
 msgid "C/O"
 msgstr "C/O"
 
-#: ../create/index.php:108
+#: ../create/index.php:118
 #: ../include/classes.php:535
 msgid "Zip Code"
 msgstr "Postnummer"
 
-#: ../create/index.php:109
+#: ../create/index.php:119
 #: ../include/classes.php:536
 msgid "City"
 msgstr "Ort"
 
-#: ../create/index.php:112
+#: ../create/index.php:122
 #: ../include/classes.php:537
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
-#: ../create/index.php:113
+#: ../create/index.php:123
 #: ../include/classes.php:539
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
-#: ../create/index.php:114
+#: ../create/index.php:124
 #: ../include/classes.php:538
 msgid "Work Number"
 msgstr "Jobbnummer"
 
-#: ../create/index.php:116
+#: ../create/index.php:126
 #: ../include/classes.php:540
 msgid "E-mail"
 msgstr "E-post"
 
-#: ../create/index.php:117
+#: ../create/index.php:127
 msgid "Update"
 msgstr "Uppdatera"
 

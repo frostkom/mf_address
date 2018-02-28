@@ -27,9 +27,19 @@ if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'add
 		{
 			if($intAddressID > 0)
 			{
-				$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d' AND (addressPublic = '1' OR addressPublic = '0' AND userID = '%d')", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID, get_current_user_id()));
+				$query_where = (IS_SUPER_ADMIN ? "" : " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')");
 
-				$type = "updated";
+				$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'".$query_where, $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
+
+				if($wpdb->rows_affected > 0)
+				{
+					$type = 'updated';
+				}
+
+				else
+				{
+					$error_text = __("I could not update the address for you. Either you don't have the permission to update this address or you didn't change any of the fields before saving", 'lang_address');
+				}
 			}
 
 			else
@@ -38,7 +48,7 @@ if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'add
 
 				$intAddressID = $wpdb->insert_id;
 
-				$type = "created";
+				$type = 'created';
 			}
 
 			if($intAddressID > 0)
