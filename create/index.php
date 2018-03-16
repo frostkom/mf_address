@@ -1,5 +1,7 @@
 <?php
 
+$obj_address = new mf_address();
+
 $intAddressID = check_var('intAddressID');
 $intAddressMemberID = check_var('intAddressMemberID');
 $strAddressBirthDate = check_var('strAddressBirthDate');
@@ -9,6 +11,7 @@ $strAddressAddress = check_var('strAddressAddress');
 $strAddressCo = check_var('strAddressCo');
 $intAddressZipCode = check_var('intAddressZipCode');
 $strAddressCity = check_var('strAddressCity');
+$intAddressCountry = check_var('intAddressCountry');
 $strAddressTelNo = check_var('strAddressTelNo');
 $strAddressCellNo = check_var('strAddressCellNo');
 $strAddressWorkNo = check_var('strAddressWorkNo');
@@ -29,7 +32,7 @@ if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'add
 			{
 				$query_where = (IS_SUPER_ADMIN ? "" : " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')");
 
-				$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'".$query_where, $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
+				$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'".$query_where, $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
 
 				if($wpdb->rows_affected > 0)
 				{
@@ -44,7 +47,7 @@ if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'add
 
 			else
 			{
-				$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, get_current_user_id()));
+				$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, get_current_user_id()));
 
 				$intAddressID = $wpdb->insert_id;
 
@@ -74,7 +77,7 @@ echo "<div class='wrap'>
 
 				if($intAddressID > 0 && !isset($_POST['btnAddressUpdate']))
 				{
-					$result = $wpdb->get_results($wpdb->prepare("SELECT addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $intAddressID));
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $intAddressID));
 
 					foreach($result as $r)
 					{
@@ -86,6 +89,7 @@ echo "<div class='wrap'>
 						$strAddressCo = $r->addressCo;
 						$intAddressZipCode = $r->addressZipCode;
 						$strAddressCity = $r->addressCity;
+						$intAddressCountry = $r->addressCountry;
 						$strAddressTelNo = $r->addressTelNo;
 						$strAddressCellNo = $r->addressCellNo;
 						$strAddressWorkNo = $r->addressWorkNo;
@@ -117,6 +121,7 @@ echo "<div class='wrap'>
 					.show_textfield(array('name' => "strAddressCo", 'text' => __("C/O", 'lang_address'), 'value' => $strAddressCo))
 					.show_textfield(array('name' => "intAddressZipCode", 'text' => __("Zip Code", 'lang_address'), 'value' => $intAddressZipCode, 'type' => 'number'))
 					.show_textfield(array('name' => "strAddressCity", 'text' => __("City", 'lang_address'), 'value' => $strAddressCity))
+					.show_select(array('data' => $obj_address->get_countries_for_select(), 'name' => "intAddressCountry", 'text' => __("Country", 'lang_address'), 'value' => $intAddressCountry))
 				."</div>"
 				."<div class='flex_flow'>"
 					.show_textfield(array('name' => "strAddressTelNo", 'text' => __("Phone Number", 'lang_address'), 'value' => $strAddressTelNo))

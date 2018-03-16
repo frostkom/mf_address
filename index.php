@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.6.1
+Version: 2.6.3
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: http://frostkom.se
@@ -60,6 +60,7 @@ function activate_address()
 		addressAddress VARCHAR(60) DEFAULT NULL,
 		addressZipCode INT unsigned DEFAULT NULL,
 		addressCity VARCHAR(100),
+		addressCountry TINYINT UNSIGNED DEFAULT NULL,
 		addressTelNo VARCHAR(13) DEFAULT NULL,
 		addressWorkNo VARCHAR(13) DEFAULT NULL,
 		addressCellNo VARCHAR(13) DEFAULT NULL,
@@ -79,6 +80,7 @@ function activate_address()
 		'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
 		'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
 		'addressError' => "ALTER TABLE [table] ADD [column] INT unsigned NOT NULL DEFAULT '0' AFTER addressPublic",
+		'addressCountry' => "ALTER TABLE [table] ADD [column] TINYINT UNSIGNED DEFAULT NULL AFTER addressCity",
 	);
 
 	$arr_add_index[get_address_table_prefix()."address"] = array(
