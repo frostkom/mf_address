@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.6.3
+Version: 2.6.5
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: http://frostkom.se
@@ -46,19 +46,19 @@ function activate_address()
 
 	$default_charset = DB_CHARSET != '' ? DB_CHARSET : "utf8";
 
-	$arr_add_column = $arr_add_index = array();
+	$arr_add_column = $arr_update_column = $arr_add_index = array();
 
 	$wpdb->query("CREATE TABLE IF NOT EXISTS ".get_address_table_prefix()."address (
-		addressID INT unsigned NOT NULL AUTO_INCREMENT,
+		addressID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 		addressPublic ENUM('0','1') NOT NULL DEFAULT '1',
-		addressError INT unsigned NOT NULL DEFAULT '0',
-		addressMemberID INT unsigned NOT NULL DEFAULT '0',
+		addressError INT UNSIGNED NOT NULL DEFAULT '0',
+		addressMemberID INT UNSIGNED NOT NULL DEFAULT '0',
 		addressBirthDate VARCHAR(12) DEFAULT NULL,
 		addressFirstName VARCHAR(25) DEFAULT NULL,
 		addressSurName VARCHAR(25) DEFAULT NULL,
 		addressCo VARCHAR(30) DEFAULT NULL,
 		addressAddress VARCHAR(60) DEFAULT NULL,
-		addressZipCode INT unsigned DEFAULT NULL,
+		addressZipCode MEDIUMINT UNSIGNED DEFAULT NULL,
 		addressCity VARCHAR(100),
 		addressCountry TINYINT UNSIGNED DEFAULT NULL,
 		addressTelNo VARCHAR(13) DEFAULT NULL,
@@ -67,10 +67,10 @@ function activate_address()
 		addressEmail VARCHAR(60) DEFAULT NULL,
 		addressExtra VARCHAR(100),
 		addressCreated DATETIME DEFAULT NULL,
-		userID INT unsigned NOT NULL DEFAULT '0',
+		userID INT UNSIGNED NOT NULL DEFAULT '0',
 		addressDeleted ENUM('0','1') NOT NULL DEFAULT '0',
 		addressDeletedDate DATETIME DEFAULT NULL,
-		addressDeletedID INT unsigned DEFAULT NULL,
+		addressDeletedID INT UNSIGNED DEFAULT NULL,
 		PRIMARY KEY (addressID),
 		KEY userID (userID),
 		KEY addressDeleted (addressDeleted)
@@ -79,14 +79,19 @@ function activate_address()
 	$arr_add_column[get_address_table_prefix()."address"] = array(
 		'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
 		'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
-		'addressError' => "ALTER TABLE [table] ADD [column] INT unsigned NOT NULL DEFAULT '0' AFTER addressPublic",
+		'addressError' => "ALTER TABLE [table] ADD [column] INT UNSIGNED NOT NULL DEFAULT '0' AFTER addressPublic",
 		'addressCountry' => "ALTER TABLE [table] ADD [column] TINYINT UNSIGNED DEFAULT NULL AFTER addressCity",
+	);
+
+	$arr_update_column[get_address_table_prefix()."address"] = array(
+		'addressZipCode' => "ALTER TABLE [table] CHANGE [column] [column] MEDIUMINT UNSIGNED DEFAULT NULL",
 	);
 
 	$arr_add_index[get_address_table_prefix()."address"] = array(
 		'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
 	);
 
+	update_columns($arr_update_column);
 	add_columns($arr_add_column);
 	add_index($arr_add_index);
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-16 10:06+0100\n"
+"POT-Creation-Date: 2018-03-31 08:00+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -33,8 +33,8 @@ msgstr "Informationen lades inte in, kontakta en administratör om problemet kva
 #: ../include/functions.php:27
 #: ../include/functions.php:28
 #: ../include/functions.php:29
-#: ../include/functions.php:69
-#: ../include/functions.php:103
+#: ../include/functions.php:70
+#: ../include/functions.php:112
 #: ../list/index.php:28
 msgid "Address Book"
 msgstr "Adressbok"
@@ -45,68 +45,68 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: ../create/index.php:110
-#: ../include/classes.php:832
+#: ../include/classes.php:835
 msgid "MemberID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:113
-#: ../include/classes.php:804
+#: ../include/classes.php:807
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:116
-#: ../include/classes.php:805
+#: ../include/classes.php:808
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:117
-#: ../include/classes.php:806
+#: ../include/classes.php:809
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:120
 #: ../include/classes.php:552
-#: ../include/classes.php:808
+#: ../include/classes.php:811
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:121
-#: ../include/classes.php:807
+#: ../include/classes.php:810
 msgid "C/O"
 msgstr "C/O"
 
 #: ../create/index.php:122
-#: ../include/classes.php:809
+#: ../include/classes.php:812
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:123
-#: ../include/classes.php:810
+#: ../include/classes.php:813
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:124
-#: ../include/classes.php:811
+#: ../include/classes.php:814
 msgid "Country"
 msgstr "Land"
 
 #: ../create/index.php:127
-#: ../include/classes.php:812
+#: ../include/classes.php:815
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:128
-#: ../include/classes.php:814
+#: ../include/classes.php:817
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:129
-#: ../include/classes.php:813
+#: ../include/classes.php:816
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:131
-#: ../include/classes.php:815
+#: ../include/classes.php:818
 msgid "E-mail"
 msgstr "E-post"
 
@@ -419,9 +419,8 @@ msgid "Equatorial Guinea"
 msgstr ""
 
 #: ../include/classes.php:196
-#, fuzzy
 msgid "Eritrea"
-msgstr "Extra"
+msgstr ""
 
 #: ../include/classes.php:197
 msgid "Estonia"
@@ -720,9 +719,8 @@ msgid "Moldova, Republic of"
 msgstr "Moldavien"
 
 #: ../include/classes.php:271
-#, fuzzy
 msgid "Monaco"
-msgstr "Kontakt"
+msgstr ""
 
 #: ../include/classes.php:272
 msgid "Mongolia"
@@ -1077,9 +1075,8 @@ msgid "Venezuela"
 msgstr ""
 
 #: ../include/classes.php:360
-#, fuzzy
-msgid "Viet Nam"
-msgstr "Förnamn"
+msgid "Vietnam"
+msgstr ""
 
 #: ../include/classes.php:361
 msgid "Virgin Islands (British)"
@@ -1134,7 +1131,7 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #: ../include/classes.php:569
-#: ../include/classes.php:816
+#: ../include/classes.php:819
 msgid "Extra"
 msgstr "Extra"
 
@@ -1154,45 +1151,49 @@ msgstr "Radera"
 msgid "Recover"
 msgstr "Återställ"
 
-#: ../include/classes.php:695
-#: ../include/classes.php:701
+#: ../include/classes.php:698
+#: ../include/classes.php:704
 msgid "The address has not been accepted to this group yet."
 msgstr "Adressen har inte accepterats i gruppen ännu."
 
-#: ../include/classes.php:695
+#: ../include/classes.php:698
 msgid "Do you want to send it again?"
 msgstr "Vill du skicka det igen?"
 
-#: ../include/classes.php:747
+#: ../include/classes.php:750
 msgid "Errors"
 msgstr "Fel"
 
 #: ../include/functions.php:56
-msgid "Use the master table on all sites"
+msgid "Use Master Table on All Sites"
 msgstr "Använd huvudtabell för alla webbplatser"
 
 #: ../include/functions.php:59
-msgid "Name for extra address field"
+msgid "Name for Extra Address Field"
 msgstr "Namn på adressbokens extrafält"
 
 #: ../include/functions.php:60
-msgid "Show memberID"
+msgid "Display Settings for Extra in Profile"
+msgstr "Visa inställningar för extrafält i profilen"
+
+#: ../include/functions.php:61
+msgid "Display Member ID"
 msgstr "Visa medlemsnummer"
 
-#: ../include/functions.php:106
+#: ../include/functions.php:115
 msgid "List"
 msgstr "Lista"
 
-#: ../include/functions.php:109
+#: ../include/functions.php:118
 #: ../list/index.php:37
 msgid "Add New"
 msgstr "Skapa ny"
 
-#: ../include/functions.php:114
+#: ../include/functions.php:123
 msgid "Import"
 msgstr "Importera"
 
-#: ../include/functions.php:130
+#: ../include/functions.php:141
 msgid "Address Permissions to Users"
 msgstr "Behörighet för användare till adressbok"
 
@@ -1200,3 +1201,5 @@ msgstr "Behörighet för användare till adressbok"
 msgid "for"
 msgstr "för"
 
+#~ msgid "Show memberID"
+#~ msgstr "Visa medlemsnummer"

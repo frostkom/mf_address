@@ -121,7 +121,7 @@ class mf_address
 		if(!isset($data['exclude'])){			$data['exclude'] = array();}
 
 		$arr_data = array();
-		
+
 		if($data['add_choose_here'] == true)
 		{
 			$arr_data[''] = "-- ".__("Choose here", 'lang_users')." --";
