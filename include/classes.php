@@ -832,7 +832,7 @@ class mf_address_import extends mf_import
 
 		if($option != 'no')
 		{
-			$this->columns['addressMemberID'] = __("MemberID", 'lang_address');
+			$this->columns['addressMemberID'] = __("Member ID", 'lang_address');
 
 			$this->unique_columns[] = 'addressMemberID';
 		}

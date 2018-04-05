@@ -107,7 +107,7 @@ echo "<div class='wrap'>
 
 					if(get_option('setting_show_member_id') != 'no')
 					{
-						echo show_textfield(array('name' => "intAddressMemberID", 'text' => __("MemberID", 'lang_address'), 'value' => $intAddressMemberID));
+						echo show_textfield(array('name' => "intAddressMemberID", 'text' => __("Member ID", 'lang_address'), 'value' => $intAddressMemberID));
 					}
 
 					echo show_textfield(array('name' => "strAddressBirthDate", 'text' => __("Social Security Number", 'lang_address'), 'value' => $strAddressBirthDate))
