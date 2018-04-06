@@ -798,6 +798,7 @@ class mf_address_import extends mf_import
 {
 	function get_defaults()
 	{
+		$this->prefix = get_address_table_prefix();
 		$this->table = "address";
 		$this->actions = array(
 			'delete',
