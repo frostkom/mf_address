@@ -28,10 +28,13 @@ if(is_admin())
 
 	add_action('admin_init', 'settings_address');
 	add_action('admin_menu', 'menu_address');
+
 	add_action('show_user_profile', 'show_profile_address');
 	add_action('edit_user_profile', 'show_profile_address');
+
 	add_action('personal_options_update', 'save_portfolio_address');
 	add_action('edit_user_profile_update', 'save_portfolio_address');
+
 	add_action('deleted_user', 'deleted_user_address');
 }
 

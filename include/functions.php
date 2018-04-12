@@ -110,7 +110,7 @@ function menu_address()
 	$menu_capability = "edit_posts";
 
 	$menu_title = __("Address Book", 'lang_address');
-	add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt');
+	add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt', 99);
 
 	$menu_title = __("List", 'lang_address');
 	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_start);
