@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.6.7
+Version: 2.6.8
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: http://frostkom.se
@@ -99,6 +99,7 @@ function activate_address()
 	add_index($arr_add_index);
 
 	delete_base(array(
+		'table_prefix' => get_address_table_prefix(),
 		'table' => "address",
 		'field_prefix' => "address",
 		'child_tables' => array(
