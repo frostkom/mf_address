@@ -56,9 +56,14 @@ class mf_address
 				if($this->has_group_plugin)
 				{
 					$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
+
+					$done_text = __("The address was added to the group", 'lang_address');
 				}
 
-				$done_text = __("The address was added to the group", 'lang_address');
+				else
+				{
+					$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+				}
 			}
 
 			else
@@ -76,9 +81,14 @@ class mf_address
 				if($this->has_group_plugin)
 				{
 					$obj_group->remove_address($this->id, $this->group_id);
+
+					$done_text = __("The address was removed from the group", 'lang_address');
 				}
 
-				$done_text = __("The address was removed from the group", 'lang_address');
+				else
+				{
+					$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+				}
 			}
 
 			else
@@ -151,7 +161,7 @@ class mf_address
 
 		if($data['add_choose_here'] == true)
 		{
-			$arr_data[''] = "-- ".__("Choose here", 'lang_users')." --";
+			$arr_data[''] = "-- ".__("Choose here", 'lang_address')." --";
 		}
 
 		$arr_countries = array(
@@ -895,7 +905,6 @@ class mf_address_import extends mf_import
 		$option = get_option('setting_group_import');
 
 		$obj_group = new mf_group();
-
 		$obj_group->add_address(array('address_id' => $id, 'group_id' => $option));
 	}
 }
