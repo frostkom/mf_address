@@ -40,7 +40,9 @@ echo "<div class='wrap'>
 	echo "</h2>"
 	.get_notification();
 
-	$tbl_group = new mf_address_table();
+	$tbl_group = new mf_address_table(array(
+		'remember_search' => true,
+	));
 
 	$tbl_group->select_data(array(
 		//'select' => "*",

@@ -537,8 +537,6 @@ class mf_address_table extends mf_list_table
 {
 	function set_default()
 	{
-		global $wpdb, $is_part_of_group, $obj_group;
-
 		$this->arr_settings['query_from'] = get_address_table_prefix()."address";
 		$this->post_type = "";
 
@@ -549,6 +547,11 @@ class mf_address_table extends mf_list_table
 
 		$this->arr_settings['has_autocomplete'] = true;
 		$this->arr_settings['plugin_name'] = 'mf_address';
+	}
+
+	function init_fetch()
+	{
+		global $wpdb, $is_part_of_group, $obj_group;
 
 		if(!IS_ADMIN)
 		{
