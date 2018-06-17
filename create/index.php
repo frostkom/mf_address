@@ -17,7 +17,7 @@ $strAddressCellNo = check_var('strAddressCellNo');
 $strAddressWorkNo = check_var('strAddressWorkNo');
 $strAddressEmail = check_var('strAddressEmail');
 
-if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce'], 'address_update_'.$intAddressID))
+if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce_address_update'], 'address_update_'.$intAddressID))
 {
 	if($intAddressMemberID != '' || $strAddressBirthDate != '' || $strAddressFirstName != '' || $strAddressSurName != '' || $intAddressZipCode != '' || $strAddressAddress != '' || $strAddressCo != '' || $strAddressTelNo != '' || $strAddressCellNo != '' || $strAddressWorkNo != '' || $strAddressEmail != '')
 	{
@@ -131,7 +131,7 @@ echo "<div class='wrap'>
 				.show_textfield(array('name' => "strAddressEmail", 'text' => __("E-mail", 'lang_address'), 'value' => $strAddressEmail))
 				.show_button(array('name' => "btnAddressUpdate", 'text' => $intAddressID > 0 ? __("Update", 'lang_address') : __("Add", 'lang_address')))
 				.input_hidden(array('name' => "intAddressID", 'value' => $intAddressID))
-				.wp_nonce_field('address_update_'.$intAddressID, '_wpnonce', true, false)
+				.wp_nonce_field('address_update_'.$intAddressID, '_wpnonce_address_update', true, false)
 			."</form>
 		</div>
 	</div>
