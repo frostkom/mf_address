@@ -107,7 +107,7 @@ function menu_address()
 {
 	$menu_root = 'mf_address/';
 	$menu_start = $menu_root."list/index.php";
-	$menu_capability = "edit_posts";
+	$menu_capability = override_capability(array('page' => $menu_start, 'default' => 'edit_posts'));
 
 	$menu_title = __("Address Book", 'lang_address');
 	add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt', 99);
@@ -118,7 +118,7 @@ function menu_address()
 	$menu_title = __("Add New", 'lang_address');
 	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."create/index.php");
 
-	$menu_capability = "edit_pages";
+	$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
 
 	$menu_title = __("Import", 'lang_address');
 	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
