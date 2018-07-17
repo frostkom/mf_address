@@ -3,10 +3,10 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.6.14
+Version: 2.7.2
 Licence: GPLv2 or later
 Author: Martin Fors
-Author URI: http://frostkom.se
+Author URI: https://frostkom.se
 Text Domain: lang_address
 Domain Path: /lang
 
@@ -16,6 +16,8 @@ GitHub Plugin URI: frostkom/mf_address
 
 include_once("include/classes.php");
 include_once("include/functions.php");
+
+$obj_address = new mf_address();
 
 add_action('cron_base', 'activate_address', mt_rand(1, 10));
 
@@ -36,6 +38,9 @@ if(is_admin())
 	add_action('edit_user_profile_update', 'save_portfolio_address');
 
 	add_action('deleted_user', 'deleted_user_address');
+
+	add_filter('wp_privacy_personal_data_exporters', array($obj_address, 'wp_privacy_personal_data_exporters'), 10);
+	add_filter('wp_privacy_personal_data_erasers', array($obj_address, 'wp_privacy_personal_data_erasers'), 10);
 }
 
 add_action('wp_login', 'uninit_address');
@@ -70,7 +75,7 @@ function activate_address()
 		addressEmail VARCHAR(60) DEFAULT NULL,
 		addressExtra VARCHAR(100),
 		addressCreated DATETIME DEFAULT NULL,
-		userID INT UNSIGNED NOT NULL DEFAULT '0',
+		userID INT UNSIGNED NOT NULL DEFAULT NULL,
 		addressDeleted ENUM('0','1') NOT NULL DEFAULT '0',
 		addressDeletedDate DATETIME DEFAULT NULL,
 		addressDeletedID INT UNSIGNED DEFAULT NULL,

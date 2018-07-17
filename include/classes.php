@@ -11,10 +11,105 @@ class mf_address
 
 		else
 		{
-			$this->id = check_var('intAddressID');
+			if(function_exists('check_var')) //MF Base might not be loaded yet
+			{
+				$this->id = check_var('intAddressID');
+			}
 		}
 
 		$this->has_group_plugin = is_plugin_active("mf_group/index.php");
+
+		$this->meta_prefix = 'mf_address';
+	}
+
+	function export_personal_data($email_address, $page = 1)
+	{
+		global $wpdb;
+
+		$number = 200;
+		$page = (int)$page;
+
+		$group_id = $this->meta_prefix;
+		$group_label = __("Address Book", 'lang_address');
+
+		$export_items = array();
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".get_address_table_prefix()."address WHERE addressEmail = %s AND addressDeleted = '0' LIMIT ".(($page - 1) * $number).", ".$number, $email_address));
+
+		foreach($result as $r)
+		{
+			$item_id = $this->meta_prefix."-".$r->addressID;
+
+			$data = array(
+				array(
+					'name' => __("First Name"),
+					'value' => $r->addressFirstName,
+				),
+				array(
+					'name' => __("Last Name"),
+					'value' => $r->addressSurName,
+				),
+			);
+
+			$export_items[] = array(
+				'group_id' => $group_id,
+				'group_label' => $group_label,
+				'item_id' => $item_id,
+				'data' => $data,
+			);
+		}
+
+		return array(
+			'data' => $export_items,
+			'done' => (count($result) < $number),
+		);
+	}
+
+	function wp_privacy_personal_data_exporters($exporters)
+	{
+		$exporters[$this->meta_prefix] = array(
+			'exporter_friendly_name' => __("Address Book", 'lang_address'),
+			'callback' => array($this, 'export_personal_data'),
+		);
+
+		return $exporters;
+	}
+
+	function erase_personal_data($email_address, $page = 1)
+	{
+		global $wpdb;
+
+		$number = 200;
+		$page = (int)$page;
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressEmail = %s AND addressDeleted = '0' LIMIT ".(($page - 1) * $number).", ".$number, $email_address));
+
+		$items_removed = false;
+
+		foreach($result as $r)
+		{
+			//$this->trash($r->addressID);
+			do_log("Trash address ".$r->addressID." (".$wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
+
+			$items_removed = true;
+		}
+
+		return array(
+			'items_removed' => $items_removed,
+			'items_retained' => false, // always false in this example
+			'messages' => array(), // no messages in this example
+			'done' => (count($result) < $number),
+		);
+	}
+
+	function wp_privacy_personal_data_erasers($erasers)
+	{
+		$erasers[$this->meta_prefix] = array(
+			'eraser_friendly_name' => __("Address Book", 'lang_address'),
+			'callback' => array($this, 'erase_personal_data'),
+		);
+
+		return $erasers;
 	}
 
 	function fetch_request()
