@@ -105,7 +105,7 @@ echo "<div class='wrap'>
 
 				echo "<div class='flex_flow'>";
 
-					if(get_option('setting_show_member_id') != 'no')
+					if(get_option('setting_address_display_member_id') != 'no')
 					{
 						echo show_textfield(array('name' => "intAddressMemberID", 'text' => __("Member ID", 'lang_address'), 'value' => $intAddressMemberID));
 					}

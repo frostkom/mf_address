@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.7.3
+Version: 2.7.5
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -20,6 +20,7 @@ include_once("include/functions.php");
 $obj_address = new mf_address();
 
 add_action('cron_base', 'activate_address', mt_rand(1, 10));
+add_action('cron_base', array($obj_address, 'run_cron'), mt_rand(1, 10));
 
 if(is_admin())
 {
@@ -28,7 +29,7 @@ if(is_admin())
 
 	add_action('init', 'init_address');
 
-	add_action('admin_init', 'settings_address');
+	add_action('admin_init', array($obj_address, 'settings_address'));
 	add_action('admin_menu', 'menu_address');
 
 	add_action('show_user_profile', 'show_profile_address');
@@ -119,13 +120,15 @@ function activate_address()
 		),
 	));
 
+	replace_option(array('old' => 'setting_show_member_id', 'new' => 'setting_address_display_member_id'));
+
 	replace_user_meta(array('old' => 'profile_address_permission', 'new' => 'meta_address_permission'));
 }
 
 function uninstall_address()
 {
 	mf_uninstall_plugin(array(
-		'options' => array('setting_address_extra', 'setting_show_member_id'),
+		'options' => array('setting_address_site_wide', 'setting_address_extra', 'setting_address_extra_profile', 'setting_address_display_member_id', 'setting_address_api_url', 'option_address_api_used'),
 		'meta' => array('meta_address_permission'),
 		'post_types' => array('mf_address'),
 		'tables' => array('address'),

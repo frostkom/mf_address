@@ -19,7 +19,106 @@ class mf_address
 
 		$this->has_group_plugin = is_plugin_active("mf_group/index.php");
 
-		$this->meta_prefix = 'mf_address';
+		$this->meta_prefix = 'mf_address_';
+	}
+
+	function run_cron()
+	{
+		$obj_cron = new mf_cron();
+		$obj_cron->start(__FUNCTION__);
+
+		if($obj_cron->is_running == false)
+		{
+			$setting_address_api_url = get_option('setting_address_api_url');
+
+			if($setting_address_api_url != '')
+			{
+				/*$option_address_api_used = get_option('option_address_api_used', date('Y-m-d H:i:s', strtotime("-1 year")));
+
+				list($content, $headers) = get_url_content(array(
+					'url' => str_replace("[datetime]", $option_address_api_used, $setting_address_api_url),
+					'catch_head' => true,
+				));
+				
+				if($this->headers['http_code'] == 200)
+				{
+					do_log("Address API: ".htmlspecialchars(var_export($content, true)));
+
+					update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+				}*/
+			}
+		}
+
+		$obj_cron->end();
+	}
+
+	function settings_address()
+	{
+		$options_area = __FUNCTION__;
+
+		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
+
+		$arr_settings = array();
+
+		if(IS_SUPER_ADMIN && is_multisite())
+		{
+			$arr_settings['setting_address_site_wide'] = __("Use Master Table on All Sites", 'lang_address');
+		}
+
+		$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", 'lang_address');
+		$arr_settings['setting_address_extra_profile'] = __("Display Settings for Extra in Profile", 'lang_address');
+		$arr_settings['setting_address_display_member_id'] = __("Display Member ID", 'lang_address');
+		$arr_settings['setting_address_api_url'] = __("API URL", 'lang_address');
+
+		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
+	}
+
+	function settings_address_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+
+		echo settings_header($setting_key, __("Address Book", 'lang_address'));
+	}
+
+	function setting_address_site_wide_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		settings_save_site_wide($setting_key);
+		$option = get_site_option($setting_key, 'yes');
+
+		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_address_extra_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_address_extra_profile_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key, 'yes');
+
+		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_address_display_member_id_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key, 'yes');
+
+		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_address_api_url_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
 	}
 
 	function export_personal_data($email_address, $page = 1)
@@ -82,14 +181,14 @@ class mf_address
 		$number = 200;
 		$page = (int)$page;
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressEmail = %s AND addressDeleted = '0' LIMIT ".(($page - 1) * $number).", ".$number, $email_address));
-
 		$items_removed = false;
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressEmail = %s AND addressDeleted = '0'", $email_address)); // LIMIT ".(($page - 1) * $number).", ".$number
 
 		foreach($result as $r)
 		{
 			//$this->trash($r->addressID);
-			do_log("Trash address ".$r->addressID." (".$wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
+			do_log("Trash Address ".$r->addressID." (".$wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
 
 			$items_removed = true;
 		}
@@ -971,7 +1070,7 @@ class mf_address_import extends mf_import
 			'addressEmail' => 'email',
 		);
 
-		$option = get_option('setting_show_member_id');
+		$option = get_option('setting_address_display_member_id');
 
 		if($option != 'no')
 		{

@@ -43,66 +43,6 @@ function uninit_address()
 	@session_destroy();
 }
 
-function settings_address()
-{
-	$options_area = __FUNCTION__;
-
-	add_settings_section($options_area, "", $options_area."_callback", BASE_OPTIONS_PAGE);
-
-	$arr_settings = array();
-
-	if(IS_SUPER_ADMIN && is_multisite())
-	{
-		$arr_settings['setting_address_site_wide'] = __("Use Master Table on All Sites", 'lang_address');
-	}
-
-	$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", 'lang_address');
-	$arr_settings['setting_address_extra_profile'] = __("Display Settings for Extra in Profile", 'lang_address');
-	$arr_settings['setting_show_member_id'] = __("Display Member ID", 'lang_address');
-
-	show_settings_fields(array('area' => $options_area, 'settings' => $arr_settings));
-}
-
-function settings_address_callback()
-{
-	$setting_key = get_setting_key(__FUNCTION__);
-
-	echo settings_header($setting_key, __("Address Book", 'lang_address'));
-}
-
-function setting_address_site_wide_callback()
-{
-	$setting_key = get_setting_key(__FUNCTION__);
-	settings_save_site_wide($setting_key);
-	$option = get_site_option($setting_key, 'yes');
-
-	echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
-}
-
-function setting_show_member_id_callback()
-{
-	$setting_key = get_setting_key(__FUNCTION__);
-	$option = get_option($setting_key, 'yes');
-
-	echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
-}
-
-function setting_address_extra_callback()
-{
-	$setting_key = get_setting_key(__FUNCTION__);
-	$option = get_option($setting_key);
-
-	echo show_textfield(array('name' => $setting_key, 'value' => $option));
-}
-
-function setting_address_extra_profile_callback()
-{
-	$setting_key = get_setting_key(__FUNCTION__);
-	$option = get_option($setting_key, 'yes');
-
-	echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
-}
-
 function menu_address()
 {
 	$menu_root = 'mf_address/';
