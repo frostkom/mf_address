@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.7.2
+Version: 2.7.3
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -75,7 +75,7 @@ function activate_address()
 		addressEmail VARCHAR(60) DEFAULT NULL,
 		addressExtra VARCHAR(100),
 		addressCreated DATETIME DEFAULT NULL,
-		userID INT UNSIGNED NOT NULL DEFAULT NULL,
+		userID INT UNSIGNED DEFAULT NULL,
 		addressDeleted ENUM('0','1') NOT NULL DEFAULT '0',
 		addressDeletedDate DATETIME DEFAULT NULL,
 		addressDeletedID INT UNSIGNED DEFAULT NULL,
