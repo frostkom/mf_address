@@ -40,16 +40,43 @@ class mf_address
 					'catch_head' => true,
 				));
 				
-				if($this->headers['http_code'] == 200)
+				if($headers['http_code'] == 200)
 				{
 					do_log("Address API: ".htmlspecialchars(var_export($content, true)));
 
 					update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+				}
+
+				else
+				{
+					do_log(__("I could not get a successful result from the API", 'lang_address')." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
 				}*/
 			}
 		}
 
 		$obj_cron->end();
+	}
+
+	function init()
+	{
+		if(!session_id())
+		{
+			@session_start();
+		}
+
+		$labels = array(
+			'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
+			'singular_name' => _x(__("Address Book", 'lang_address'), 'post type singular name'),
+			'menu_name' => __("Address Book", 'lang_address')
+		);
+
+		$args = array(
+			'labels' => $labels,
+			'public' => false,
+			'exclude_from_search' => true,
+		);
+
+		register_post_type('mf_address', $args);
 	}
 
 	function settings_address()
@@ -119,6 +146,92 @@ class mf_address
 		$option = get_option($setting_key);
 
 		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+	}
+
+	function admin_menu()
+	{
+		$menu_root = 'mf_address/';
+		$menu_start = $menu_root."list/index.php";
+		$menu_capability = override_capability(array('page' => $menu_start, 'default' => 'edit_posts'));
+
+		$menu_title = __("Address Book", 'lang_address');
+		add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt', 99);
+
+		$menu_title = __("List", 'lang_address');
+		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_start);
+
+		$menu_title = __("Add New", 'lang_address');
+		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."create/index.php");
+
+		$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
+
+		$menu_title = __("Import", 'lang_address');
+		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
+	}
+
+	function edit_user_profile($user)
+	{
+		global $wpdb;
+
+		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		{
+			$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
+
+			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
+
+			if($wpdb->num_rows > 0)
+			{
+				echo "<table class='form-table'>
+					<tr class='user-address-permission-wrap'>
+						<th><label for='meta_address_permission'>".__("Address Permissions to Users", 'lang_address').":</label></th>
+						<td>";
+
+							$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
+							$meta_address_permission = explode(",", $meta_address_permission);
+
+							$arr_data = array();
+
+							foreach($result as $r)
+							{
+								$strTableValue = $r->addressExtra;
+
+								if($strTableValue != '')
+								{
+									$arr_data[$strTableValue] = $strTableValue;
+								}
+							}
+
+							echo show_select(array('data' => $arr_data, 'name' => 'meta_address_permission[]', 'value' => $meta_address_permission))
+						."</td>
+					</tr>
+				</table>";
+			}
+		}
+	}
+
+	function edit_user_profile_update($user_id)
+	{
+		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		{
+			$meta_address_permission = isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : "";
+
+			if(is_array($meta_address_permission))
+			{
+				update_user_meta($user_id, 'meta_address_permission', implode(",", $meta_address_permission));
+			}
+
+			else
+			{
+				delete_user_meta($user_id, 'meta_address_permission');
+			}
+		}
+	}
+
+	function deleted_user($user_id)
+	{
+		global $wpdb;
+
+		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
 	}
 
 	function export_personal_data($email_address, $page = 1)
@@ -209,6 +322,11 @@ class mf_address
 		);
 
 		return $erasers;
+	}
+
+	function wp_login()
+	{
+		@session_destroy();
 	}
 
 	function fetch_request()

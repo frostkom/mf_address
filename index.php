@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 2.7.5
+Version: 2.7.6
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -27,25 +27,25 @@ if(is_admin())
 	register_activation_hook(__FILE__, 'activate_address');
 	register_uninstall_hook(__FILE__, 'uninstall_address');
 
-	add_action('init', 'init_address');
+	add_action('init', array($obj_address, 'init'));
 
 	add_action('admin_init', array($obj_address, 'settings_address'));
-	add_action('admin_menu', 'menu_address');
+	add_action('admin_menu', array($obj_address, 'admin_menu'));
 
-	add_action('show_user_profile', 'show_profile_address');
-	add_action('edit_user_profile', 'show_profile_address');
+	add_action('show_user_profile', array($obj_address, 'edit_user_profile'));
+	add_action('edit_user_profile', array($obj_address, 'edit_user_profile'));
 
-	add_action('personal_options_update', 'save_portfolio_address');
-	add_action('edit_user_profile_update', 'save_portfolio_address');
+	add_action('personal_options_update', array($obj_address, 'edit_user_profile_update'));
+	add_action('edit_user_profile_update', array($obj_address, 'edit_user_profile_update'));
 
-	add_action('deleted_user', 'deleted_user_address');
+	add_action('deleted_user', array($obj_address, 'deleted_user'));
 
 	add_filter('wp_privacy_personal_data_exporters', array($obj_address, 'wp_privacy_personal_data_exporters'), 10);
 	add_filter('wp_privacy_personal_data_erasers', array($obj_address, 'wp_privacy_personal_data_erasers'), 10);
 }
 
-add_action('wp_login', 'uninit_address');
-add_action('wp_logout', 'uninit_address');
+add_action('wp_login', array($obj_address, 'wp_login'));
+add_action('wp_logout', array($obj_address, 'wp_login'));
 
 load_plugin_textdomain('lang_address', false, dirname(plugin_basename(__FILE__)).'/lang/');
 
