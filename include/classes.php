@@ -33,24 +33,46 @@ class mf_address
 
 			if($setting_address_api_url != '')
 			{
-				/*$option_address_api_used = get_option('option_address_api_used', date('Y-m-d H:i:s', strtotime("-1 year")));
+				$option_address_api_used = get_option('option_address_api_used', date('Y-m-d H:i:s', strtotime("-1 year")));
+
+				$url = str_replace("[datetime]", urlencode($option_address_api_used), $setting_address_api_url);
 
 				list($content, $headers) = get_url_content(array(
-					'url' => str_replace("[datetime]", $option_address_api_used, $setting_address_api_url),
+					'url' => $url,
 					'catch_head' => true,
 				));
 				
-				if($headers['http_code'] == 200)
+				switch($headers['http_code'])
 				{
-					do_log("Address API: ".htmlspecialchars(var_export($content, true)));
+					case 200:
+						$json = json_decode($content, true);
 
-					update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+						switch($json['status'])
+						{
+							case 'true':
+								if(isset($json['data']) && count($json['data']) > 0)
+								{
+									do_log("Address API: ".$url." -> ".htmlspecialchars(var_export($json['data'], true)));
+
+									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+								}
+
+								else
+								{
+									// Do nothing since there's nothing new
+								}
+							break;
+
+							default:
+								do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json['data'], true)));
+							break;
+						}
+					break;
+
+					default:
+						do_log(__("I could not get a successful result from the API", 'lang_address')." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
+					break;
 				}
-
-				else
-				{
-					do_log(__("I could not get a successful result from the API", 'lang_address')." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
-				}*/
 			}
 		}
 
