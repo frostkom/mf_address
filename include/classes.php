@@ -52,7 +52,68 @@ class mf_address
 							case 'true':
 								if(isset($json['data']) && count($json['data']) > 0)
 								{
-									do_log("Address API: ".$url." -> ".htmlspecialchars(var_export($json['data'], true)));
+									//do_log("Address API: ".$url." -> ".htmlspecialchars(var_export($json['data'], true)));
+
+									foreach($json['data'] as $item)
+									{
+										$strAddressBirthDate = $item['memberSSN'];
+										$strAddressFirstName = $item['memberFirstName'];
+										$strAddressSurName = $item['memberSurName'];
+										$strAddressAddress = $item['memberAddress'];
+										$strAddressCo = $item['memberCo'];
+										$intAddressZipCode = $item['memberZipCode'];
+										$strAddressCity = $item['memberCity'];
+										$intAddressCountry = $item['memberCountry'];
+
+										$strAddressTelNo = $strAddressCellNo = $strAddressWorkNo = $strAddressEmail = '';
+
+										foreach($item['contact'] as $contact)
+										{
+											switch($contact['memberContactType'])
+											{
+												case 'phone':
+													switch($contact['memberContactLocation'])
+													{
+														case 'home':
+															$strAddressTelNo = $contact['memberContactInformation'];
+														break;
+
+														case 'sms':
+															$strAddressCellNo = $contact['memberContactInformation'];
+														break;
+
+														case 'work':
+															$strAddressWorkNo = $contact['memberContactInformation'];
+														break;
+													}
+												break;
+
+												case 'email':
+													$strAddressEmail = $contact['memberContactInformation'];
+												break;
+											}
+										}
+
+										$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s", $strAddressBirthDate));
+
+										if($wpdb->num_rows > 0)
+										{
+											foreach($result as $r)
+											{
+												$intAddressID = $r->addressID;
+
+												$query = $wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID);
+
+												do_log("Update through API: ".$query);
+												//$wpdb->query($query);
+											}
+										}
+
+										/*else
+										{
+											do_log(__("There were %d addresses with the same Social Security Number", 'lang_address')." (".$wpdb->last_query.")");
+										}*/
+									}
 
 									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
 								}
