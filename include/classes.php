@@ -41,7 +41,7 @@ class mf_address
 					'url' => $url,
 					'catch_head' => true,
 				));
-				
+
 				switch($headers['http_code'])
 				{
 					case 200:
@@ -125,7 +125,7 @@ class mf_address
 							break;
 
 							default:
-								do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json['data'], true)));
+								do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json, true)));
 							break;
 						}
 					break;
