@@ -24,6 +24,8 @@ class mf_address
 
 	function run_cron()
 	{
+		global $wpdb;
+
 		$obj_cron = new mf_cron();
 		$obj_cron->start(__FUNCTION__);
 
@@ -96,7 +98,9 @@ class mf_address
 
 										$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s", $strAddressBirthDate));
 
-										if($wpdb->num_rows > 0)
+										$rows = $wpdb->num_rows;
+
+										if($rows == 1)
 										{
 											foreach($result as $r)
 											{
@@ -104,15 +108,14 @@ class mf_address
 
 												$query = $wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID);
 
-												do_log("Update through API: ".$query);
-												//$wpdb->query($query);
+												$wpdb->query($query);
 											}
 										}
 
-										/*else
+										else
 										{
-											do_log(__("There were %d addresses with the same Social Security Number", 'lang_address')." (".$wpdb->last_query.")");
-										}*/
+											do_log(sprintf(__("There were %d addresses with the same Social Security Number", 'lang_address')." (".$wpdb->last_query.")", $rows));
+										}
 									}
 
 									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
