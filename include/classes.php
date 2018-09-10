@@ -928,7 +928,7 @@ class mf_address
 
 if(!class_exists('mf_list_table'))
 {
-	require_once(ABSPATH.'wp-content/plugins/mf_base/include/classes.php');
+	require_once(ABSPATH."wp-content/plugins/mf_base/include/classes.php");
 }
 
 class mf_address_table extends mf_list_table
