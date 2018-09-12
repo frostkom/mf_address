@@ -1155,7 +1155,7 @@ class mf_address_table extends mf_list_table
 						{
 							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_remove')."' rel='confirm'>
 								<span class='fa-stack fa-lg'>
-									<i class='far fa-envelope fa-stack-1x'></i>
+									<i class='fa fa-envelope fa-stack-1x'></i>
 									<i class='fa fa-ban fa-stack-2x red'></i>
 								</span>
 							</a>";
@@ -1192,7 +1192,7 @@ class mf_address_table extends mf_list_table
 			case 'addressError':
 				if($item[$column_name] > 0)
 				{
-					$out .= "<i class='fa fa-close red' title='".$item[$column_name]." ".__("Errors", 'lang_address')."'></i>";
+					$out .= "<i class='fa fa-times red' title='".$item[$column_name]." ".__("Errors", 'lang_address')."'></i>";
 				}
 			break;
 
