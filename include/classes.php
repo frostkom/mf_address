@@ -261,34 +261,29 @@ class mf_address
 
 		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
-			$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
-
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
 
 			if($wpdb->num_rows > 0)
 			{
+				$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
+				$meta_address_permission = explode(",", $meta_address_permission);
+
+				$arr_data = array();
+
+				foreach($result as $r)
+				{
+					$strTableValue = $r->addressExtra;
+
+					if($strTableValue != '')
+					{
+						$arr_data[$strTableValue] = $strTableValue;
+					}
+				}
+
 				echo "<table class='form-table'>
 					<tr class='user-address-permission-wrap'>
 						<th><label for='meta_address_permission'>".__("Address Permissions to Users", 'lang_address').":</label></th>
-						<td>";
-
-							$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
-							$meta_address_permission = explode(",", $meta_address_permission);
-
-							$arr_data = array();
-
-							foreach($result as $r)
-							{
-								$strTableValue = $r->addressExtra;
-
-								if($strTableValue != '')
-								{
-									$arr_data[$strTableValue] = $strTableValue;
-								}
-							}
-
-							echo show_select(array('data' => $arr_data, 'name' => 'meta_address_permission[]', 'value' => $meta_address_permission))
-						."</td>
+						<td>".show_select(array('data' => $arr_data, 'name' => 'meta_address_permission[]', 'value' => $meta_address_permission))."</td>
 					</tr>
 				</table>";
 			}
