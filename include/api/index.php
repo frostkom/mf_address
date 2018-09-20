@@ -23,7 +23,7 @@ if(get_current_user_id() > 0)
 		$tbl_group = new mf_address_table();
 
 		$tbl_group->select_data(array(
-			'select' => "addressFirstName, addressSurName",
+			'select' => "addressFirstName, addressSurName, addressEmail, addressCellNo",
 			'limit' => 0, 'amount' => 10
 		));
 
@@ -31,8 +31,28 @@ if(get_current_user_id() > 0)
 		{
 			$strAddressFirstName = $r['addressFirstName'];
 			$strAddressSurName = $r['addressSurName'];
+			$strAddressEmail = $r['addressEmail'];
+			$strAddressCellNo = $r['addressCellNo'];
 
-			$strAddressName = $strAddressFirstName." ".$strAddressSurName;
+			if($strAddressFirstName != '' && $strAddressSurName != '')
+			{
+				$strAddressName = $strAddressFirstName." ".$strAddressSurName;
+			}
+
+			else if($strAddressEmail != '')
+			{
+				$strAddressName = $strAddressEmail;
+			}
+
+			else if($strAddressCellNo != '')
+			{
+				$strAddressName = $strAddressCellNo;
+			}
+
+			else
+			{
+				$strAddressName = "(".__("Unknown", 'lang_address').")";
+			}
 
 			if(!in_array($strAddressName, $json_output))
 			{
