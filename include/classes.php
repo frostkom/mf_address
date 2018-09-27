@@ -990,7 +990,7 @@ class mf_address_table extends mf_list_table
 			{
 				$group_url = admin_url("admin.php?page=mf_address/list/index.php&no_ses&is_part_of_group=%d");
 
-				$arr_columns['is_part_of_group'] = "<span class='nowrap'><a href='".sprintf($group_url, '0')."'><i class='far fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='far fa-minus-square'></i></a></span>";
+				$arr_columns['is_part_of_group'] = "<span class='nowrap'><a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a></span>";
 			}
 
 			$arr_columns['groups'] = "";
@@ -1121,7 +1121,7 @@ class mf_address_table extends mf_list_table
 						if($intGroupUnsubscribed == 0)
 						{
 							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_remove')."' rel='confirm'>
-								<i class='far fa-minus-square fa-lg red'></i>
+								<i class='fa fa-minus-square fa-lg red'></i>
 							</a>";
 
 							if($intGroupAccepted == 0)
@@ -1160,7 +1160,7 @@ class mf_address_table extends mf_list_table
 					else
 					{
 						$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_add')."'>
-							<i class='far fa-plus-square fa-lg green'></i>
+							<i class='fa fa-plus-square fa-lg green'></i>
 						</a>";
 					}
 				}
@@ -1180,7 +1180,7 @@ class mf_address_table extends mf_list_table
 
 				if($str_groups != '')
 				{
-					$out .= "<i class='fas fa-users' title='".$str_groups."'></i>";
+					$out .= "<i class='fa fa-users' title='".$str_groups."'></i>";
 				}
 			break;
 
