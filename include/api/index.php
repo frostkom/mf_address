@@ -9,9 +9,6 @@ if(!defined('ABSPATH'))
 	require_once($folder."wp-load.php");
 }
 
-/*require_once("classes.php");
-require_once("functions.php");*/
-
 $json_output = array();
 
 $type = check_var('type', 'char');

@@ -953,7 +953,27 @@ class mf_address_table extends mf_list_table
 
 		if($this->search != '')
 		{
-			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressBirthDate LIKE '%".$this->search."%' OR addressFirstName LIKE '%".$this->search."%' OR addressSurName LIKE '%".$this->search."%' OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$this->search."%' OR addressAddress LIKE '%".$this->search."%' OR addressZipCode LIKE '%".$this->search."%' OR addressCity LIKE '%".$this->search."%' OR addressTelNo LIKE '%".$this->search."%' OR addressWorkNo LIKE '%".$this->search."%' OR addressCellNo LIKE '%".$this->search."%' OR addressEmail LIKE '%".$this->search."%')";
+			@list($first_name, $sur_name) = explode(" ", $this->search);
+
+			$this->query_where .= ($this->query_where != '' ? " AND " : "")."("
+				."addressBirthDate LIKE '%".$this->search."%'"
+				." OR addressFirstName LIKE '%".$this->search."%'"
+				." OR addressSurName LIKE '%".$this->search."%'"
+				." OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$this->search."%'"
+				." OR addressFirstName LIKE '%".$first_name."%' AND addressSurName LIKE '%".$sur_name."%'"
+				." OR addressAddress LIKE '%".$this->search."%'"
+				." OR addressZipCode LIKE '%".$this->search."%'"
+				." OR addressCity LIKE '%".$this->search."%'"
+				." OR addressTelNo LIKE '%".$this->search."%'"
+				." OR addressWorkNo LIKE '%".$this->search."%'"
+				." OR addressCellNo LIKE '%".$this->search."%'"
+				." OR addressEmail LIKE '%".$this->search."%'"
+			.")";
+
+			/*$this->query_where .= ($this->query_where != '' ? " AND " : "")."("
+				."MATCH (addressFirstName, addressSurName, addressAddress, addressZipCode, addressCity, addressTelNo, addressWorkNo, addressCellNo, addressEmail) AGAINST ('%".$this->search."%' IN BOOLEAN MODE)"
+				." OR addressFirstName LIKE '%".$first_name."%' AND addressSurName LIKE '%".$sur_name."%'"
+			.")";*/
 		}
 
 		if($is_part_of_group)
