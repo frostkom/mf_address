@@ -22,7 +22,7 @@ class mf_address
 		$this->meta_prefix = 'mf_address_';
 	}
 
-	function run_cron()
+	function cron_base()
 	{
 		global $wpdb;
 
