@@ -2,9 +2,9 @@
 
 class mf_address
 {
-	function __construct($id = 0)
+	function __construct($data = array()) //$id = 0
 	{
-		if($id > 0)
+		if(isset($data['id']) && $data['id'] > 0)
 		{
 			$this->id = $id;
 		}
@@ -16,6 +16,8 @@ class mf_address
 				$this->id = check_var('intAddressID');
 			}
 		}
+
+		$this->type = isset($data['type']) ? $data['type'] : '';
 
 		$this->has_group_plugin = is_plugin_active("mf_group/index.php");
 
@@ -412,7 +414,29 @@ class mf_address
 
 	function fetch_request()
 	{
-		$this->group_id = check_var('intGroupID');
+		switch($this->type)
+		{
+			case 'create':
+				//$this->id = check_var('intAddressID'); //Is checked in __construct()
+				$this->member_id = check_var('intAddressMemberID');
+				$this->birthdate = check_var('strAddressBirthDate');
+				$this->first_name = check_var('strAddressFirstName');
+				$this->sur_name = check_var('strAddressSurName');
+				$this->address = check_var('strAddressAddress');
+				$this->co = check_var('strAddressCo');
+				$this->zipcode = check_var('intAddressZipCode');
+				$this->city = check_var('strAddressCity');
+				$this->country = check_var('intAddressCountry');
+				$this->telno = check_var('strAddressTelNo');
+				$this->cellno = check_var('strAddressCellNo');
+				$this->workno = check_var('strAddressWorkNo');
+				$this->email = check_var('strAddressEmail');
+			break;
+
+			case 'list':
+				$this->group_id = check_var('intGroupID');
+			break;
+		}
 	}
 
 	function save_data()
@@ -426,123 +450,218 @@ class mf_address
 
 		$out = "";
 
-		if(isset($_REQUEST['btnAddressDelete']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_delete'], 'address_delete_'.$this->id))
+		switch($this->type)
 		{
-			$this->trash();
-
-			$done_text = __("The address was deleted", 'lang_address');
-		}
-
-		else if(isset($_REQUEST['btnAddressRecover']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_recover'], 'address_recover_'.$this->id))
-		{
-			$this->recover();
-
-			$done_text = __("I recovered the address for you", 'lang_address');
-		}
-
-		else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id))
-		{
-			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
-
-			if($wpdb->num_rows == 0)
-			{
-				if($this->has_group_plugin)
+			case 'create':
+				if(isset($_POST['btnAddressUpdate']) && wp_verify_nonce($_POST['_wpnonce_address_update'], 'address_update_'.$this->id))
 				{
-					$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
+					if($this->member_id != '' || $this->birthdate != '' || $this->first_name != '' || $this->sur_name != '' || $this->zipcode != '' || $this->address != '' || $this->co != '' || $this->telno != '' || $this->cellno != '' || $this->workno != '' || $this->email != '')
+					{
+						if($this->email != '' && !is_domain_valid($this->email))
+						{
+							$error_text = __("The e-mail address doesn't seam to be valid because the response is that the domain doesn't have e-mails connected to it", 'lang_address');
+						}
 
-					$done_text = __("The address was added to the group", 'lang_address');
+						else
+						{
+							if($this->id > 0)
+							{
+								$query_where = (IS_SUPER_ADMIN ? "" : " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')");
+
+								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'".$query_where, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, $this->id));
+
+								if($wpdb->rows_affected > 0)
+								{
+									$type = 'updated';
+								}
+
+								else
+								{
+									$error_text = __("I could not update the address for you. Either you don't have the permission to update this address or you didn't change any of the fields before saving", 'lang_address');
+								}
+							}
+
+							else
+							{
+								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
+
+								$this->id = $wpdb->insert_id;
+
+								$type = 'created';
+							}
+
+							if($this->id > 0)
+							{
+								mf_redirect(admin_url("admin.php?page=mf_address/list/index.php&".$type));
+							}
+
+							else
+							{
+								$error_text = __("The information was not submitted, contact an admin if this persists", 'lang_address');
+							}
+						}
+					}
+				}
+			break;
+
+			case 'list':
+				if(isset($_REQUEST['btnAddressDelete']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_delete'], 'address_delete_'.$this->id))
+				{
+					$this->trash();
+
+					$done_text = __("The address was deleted", 'lang_address');
 				}
 
-				else
+				else if(isset($_REQUEST['btnAddressRecover']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_recover'], 'address_recover_'.$this->id))
 				{
-					$error_text = __("The group plugin does not seam to be in use", 'lang_address');
-				}
-			}
+					$this->recover();
 
-			else
-			{
-				$error_text = __("The address already exists in the group", 'lang_address');
-			}
-		}
-
-		else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_remove'], 'address_remove_'.$this->id.'_'.$this->group_id))
-		{
-			$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
-
-			if($wpdb->num_rows > 0)
-			{
-				if($this->has_group_plugin)
-				{
-					$obj_group->remove_address($this->id, $this->group_id);
-
-					$done_text = __("The address was removed from the group", 'lang_address');
+					$done_text = __("I recovered the address for you", 'lang_address');
 				}
 
-				else
+				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id))
 				{
-					$error_text = __("The group plugin does not seam to be in use", 'lang_address');
-				}
-			}
+					$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
-			else
-			{
-				$error_text = __("The address could not be removed since it didn't exist in the group", 'lang_address');
-			}
-		}
+					if($wpdb->num_rows == 0)
+					{
+						if($this->has_group_plugin)
+						{
+							$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
-		else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id))
-		{
-			if($this->has_group_plugin)
-			{
-				if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
-				{
-					$done_text = __("The address has been manually accepted", 'lang_address');
-				}
+							$done_text = __("The address was added to the group", 'lang_address');
+						}
 
-				else
-				{
-					$error_text = __("I could not manually accept the address for you", 'lang_address');
-				}
-			}
+						else
+						{
+							$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+						}
+					}
 
-			else
-			{
-				$error_text = __("The group plugin does not seam to be in use", 'lang_address');
-			}
-		}
-
-		else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id))
-		{
-			if($this->has_group_plugin)
-			{
-				if($obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id)))
-				{
-					$done_text = __("The message was sent", 'lang_address');
+					else
+					{
+						$error_text = __("The address already exists in the group", 'lang_address');
+					}
 				}
 
-				else
+				else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_remove'], 'address_remove_'.$this->id.'_'.$this->group_id))
 				{
-					$error_text = __("I could not send the message for you", 'lang_address');
+					$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
+
+					if($wpdb->num_rows > 0)
+					{
+						if($this->has_group_plugin)
+						{
+							$obj_group->remove_address($this->id, $this->group_id);
+
+							$done_text = __("The address was removed from the group", 'lang_address');
+						}
+
+						else
+						{
+							$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+						}
+					}
+
+					else
+					{
+						$error_text = __("The address could not be removed since it didn't exist in the group", 'lang_address');
+					}
 				}
-			}
 
-			else
-			{
-				$error_text = __("The group plugin does not seam to be in use", 'lang_address');
-			}
-		}
+				else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id))
+				{
+					if($this->has_group_plugin)
+					{
+						if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
+						{
+							$done_text = __("The address has been manually accepted", 'lang_address');
+						}
 
-		else if(isset($_GET['created']))
-		{
-			$done_text = __("The address was created", 'lang_address');
-		}
+						else
+						{
+							$error_text = __("I could not manually accept the address for you", 'lang_address');
+						}
+					}
 
-		else if(isset($_GET['updated']))
-		{
-			$done_text = __("The address was updated", 'lang_address');
+					else
+					{
+						$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+					}
+				}
+
+				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id))
+				{
+					if($this->has_group_plugin)
+					{
+						if($obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id)))
+						{
+							$done_text = __("The message was sent", 'lang_address');
+						}
+
+						else
+						{
+							$error_text = __("I could not send the message for you", 'lang_address');
+						}
+					}
+
+					else
+					{
+						$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+					}
+				}
+
+				else if(isset($_GET['created']))
+				{
+					$done_text = __("The address was created", 'lang_address');
+				}
+
+				else if(isset($_GET['updated']))
+				{
+					$done_text = __("The address was updated", 'lang_address');
+				}
+			break;
 		}
 
 		return $out;
+	}
+
+	function get_from_db()
+	{
+		global $wpdb;
+
+		switch($this->type)
+		{
+			case 'create':
+				if($this->id > 0 && !isset($_POST['btnAddressUpdate']))
+				{
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+
+					foreach($result as $r)
+					{
+						$this->member_id = $r->addressMemberID;
+						$this->birthdate = $r->addressBirthDate;
+						$this->first_name = $r->addressFirstName;
+						$this->sur_name = $r->addressSurName;
+						$this->address = $r->addressAddress;
+						$this->co = $r->addressCo;
+						$this->zipcode = $r->addressZipCode;
+						$this->city = $r->addressCity;
+						$this->country = $r->addressCountry;
+						$this->telno = $r->addressTelNo;
+						$this->cellno = $r->addressCellNo;
+						$this->workno = $r->addressWorkNo;
+						$this->email = $r->addressEmail;
+						$intAddressDeleted = $r->addressDeleted;
+
+						if($intAddressDeleted == 1)
+						{
+							$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedID = '', addressDeletedDate = '' WHERE addressPublic = '0' AND addressID = '%d' AND userID = '%d'", $this->id, get_current_user_id()));
+						}
+					}
+				}
+			break;
+		}
 	}
 
 	function get_countries_for_select($data = array())
