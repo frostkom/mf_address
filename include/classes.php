@@ -1400,6 +1400,7 @@ class mf_address_import extends mf_import
 		);
 		$this->unique_columns = array(
 			'addressBirthDate',
+			'addressEmail',
 		);
 		$this->validate_columns = array(
 			'addressTelNo' => 'telno',
