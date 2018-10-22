@@ -55,8 +55,19 @@ echo "<div class='wrap'>
 							}
 
 						echo "</div>
-					</div>
-					<div class='postbox'>
+					</div>";
+
+					if(IS_ADMIN)
+					{
+						echo "<div class='postbox'>
+							<h3 class='hndle'><span>".__("Settings", 'lang_address')."</span></h3>
+							<div class='inside'>"
+								.show_select(array('data' => get_yes_no_for_select(array('return_integer' => true)), 'name' => "intAddressPublic", 'text' => __("Public", 'lang_address'), 'value' => $obj_address->public))
+							."</div>
+						</div>";
+					}
+
+					echo "<div class='postbox'>
 						<h3 class='hndle'><span>".__("Address", 'lang_address')."</span></h3>
 						<div class='inside'>"
 							.show_textfield(array('name' => "strAddressAddress", 'text' => __("Address", 'lang_address'), 'value' => $obj_address->address))

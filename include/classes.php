@@ -2,7 +2,7 @@
 
 class mf_address
 {
-	function __construct($data = array()) //$id = 0
+	function __construct($data = array())
 	{
 		if(isset($data['id']) && $data['id'] > 0)
 		{
@@ -418,6 +418,7 @@ class mf_address
 		{
 			case 'create':
 				//$this->id = check_var('intAddressID'); //Is checked in __construct()
+				$this->public = check_var('intAddressPublic');
 				$this->member_id = check_var('intAddressMemberID');
 				$this->birthdate = check_var('strAddressBirthDate');
 				$this->first_name = check_var('strAddressFirstName');
@@ -464,11 +465,23 @@ class mf_address
 
 						else
 						{
+							$query_set = "";
+
+							if(IS_ADMIN)
+							{
+								$query_set .= ", addressPublic = '".esc_sql($this->public)."'";
+							}
+
 							if($this->id > 0)
 							{
-								$query_where = (IS_SUPER_ADMIN ? "" : " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')");
+								$query_where = "";
+								
+								if(!IS_SUPER_ADMIN)
+								{
+									$query_where .= " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
+								}
 
-								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'".$query_where, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, $this->id));
+								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s".$query_set." WHERE addressID = '%d'".$query_where, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, $this->id));
 
 								if($wpdb->rows_affected > 0)
 								{
@@ -483,7 +496,7 @@ class mf_address
 
 							else
 							{
-								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
+								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'".$query_set, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
 
 								$this->id = $wpdb->insert_id;
 
@@ -635,10 +648,11 @@ class mf_address
 			case 'create':
 				if($this->id > 0 && !isset($_POST['btnAddressUpdate']))
 				{
-					$result = $wpdb->get_results($wpdb->prepare("SELECT addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressPublic, addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
 
 					foreach($result as $r)
 					{
+						$this->public = $r->addressPublic;
 						$this->member_id = $r->addressMemberID;
 						$this->birthdate = $r->addressBirthDate;
 						$this->first_name = $r->addressFirstName;
@@ -1112,13 +1126,18 @@ class mf_address_table extends mf_list_table
 			'db_field' => 'addressDeleted',
 			'types' => array(
 				'0' => __("All", 'lang_address'),
-				'1' => __("Trash", 'lang_address')
+				'1' => __("Trash", 'lang_address'),
 			),
 		));
 
 		$arr_columns = array(
-			//'cb' => '<input type="checkbox">',
+			'cb' => '<input type="checkbox">',
 		);
+
+		if(IS_ADMIN)
+		{
+			$arr_columns['addressPublic'] = __("Public", 'lang_address');
+		}
 
 		$arr_columns['addressSurName'] = __("Name", 'lang_address');
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
@@ -1136,7 +1155,6 @@ class mf_address_table extends mf_list_table
 		}
 
 		$arr_columns['addressError'] = "";
-
 		$arr_columns['addressContact'] = __("Contact", 'lang_address');
 		$arr_columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
 
@@ -1146,6 +1164,153 @@ class mf_address_table extends mf_list_table
 			'addressSurName',
 			'addressExtra'
 		));
+	}
+
+	function column_cb($item)
+	{
+		return "<input type='checkbox' name='".$this->arr_settings['query_from']."[]' value='".$item[$this->arr_settings['query_select_id']]."'>";
+	}
+
+	function get_bulk_actions()
+	{
+		$actions = array();
+
+		if(isset($this->columns['cb']))
+		{
+			/*if(!isset($_GET['post_status']) || $_GET['post_status'] != 'trash')
+			{*/
+				$actions['delete'] = __("Delete", 'lang_address');
+			/*}
+
+			if(!isset($_GET['post_status']) || $_GET['post_status'] != 'ignore')
+			{*/
+				$actions['merge'] = __("Merge", 'lang_address');
+			//}
+		}
+
+		return $actions;
+	}
+
+	function process_bulk_action()
+	{
+		if(isset($_GET['_wpnonce']) && !empty($_GET['_wpnonce']))
+		{
+			switch($this->current_action())
+			{
+				case 'delete':
+					$this->bulk_delete();
+				break;
+
+				case 'merge':
+					$this->bulk_merge();
+				break;
+			}
+		}
+	}
+
+	function bulk_delete()
+	{
+		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+
+		if(count($arr_ids) > 0)
+		{
+			$obj_address = new mf_address();
+
+			foreach($arr_ids as $id)
+			{
+				$obj_address->trash($id);
+			}
+		}
+	}
+
+	function bulk_merge()
+	{
+		global $wpdb, $error_text, $done_text;
+
+		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+
+		if(count($arr_ids) > 1)
+		{
+			$obj_address = new mf_address();
+
+			$id_prev = 0;
+
+			foreach($arr_ids as $id)
+			{
+				if($id_prev > 0)
+				{
+					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
+					$arr_columns = array('addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
+
+					$base_query = "SELECT * FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
+
+					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
+					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
+
+					if($result[0]['addressPublic'] == 1) // && $result_prev[0]['addressPublic'] == 1
+					{
+						$unique_column = '';
+
+						foreach($arr_unique_columns as $str_unique_column)
+						{
+							if(($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0') && $result_prev[0][$str_unique_column] == $result[0][$str_unique_column])
+							{
+								$unique_column = $str_unique_column;
+
+								break;
+							}
+						}
+
+						if($unique_column != '')
+						{
+							$query_set = '';
+
+							foreach($arr_columns as $str_column)
+							{
+								if($result_prev[0][$str_column] != '' && $result_prev[0][$str_column] != $result[0][$str_column])
+								{
+									$query_set .= ($query_set != '' ? ", " : "").$str_column." = '".esc_sql($result_prev[0][$str_column])."'";
+								}
+							}
+
+							if($query_set != '')
+							{
+								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET ".$query_set." WHERE addressID = '%d'", $id));
+							}
+
+							do_action('merge_address', $id_prev, $id);
+
+							$obj_address->trash($id_prev);
+						}
+
+						else
+						{
+							$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
+
+							break;
+						}
+					}
+
+					else
+					{
+						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", 'lang_address');
+
+						break;
+					}
+				}
+
+				$id_prev = $id;
+			}
+
+			$done_text = __("The addresses have been merged succesfully", 'lang_address');
+		}
+
+		else
+		{
+			$error_text = __("You have to choose at least two addresses to merge", 'lang_address');
+		}
+
+		echo get_notification();
 	}
 
 	function column_default($item, $column_name)
@@ -1158,6 +1323,10 @@ class mf_address_table extends mf_list_table
 
 		switch($column_name)
 		{
+			case 'addressPublic':
+				$out .= "<i class='".($item[$column_name] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg'></i>";
+			break;
+
 			case 'addressSurName':
 				$intAddressPublic = $item['addressPublic'];
 				$strAddressBirthDate = $item['addressBirthDate'];
