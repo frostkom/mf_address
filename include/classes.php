@@ -465,18 +465,16 @@ class mf_address
 
 						else
 						{
-							$query_set = "";
-
-							if(IS_ADMIN)
-							{
-								$query_set .= ", addressPublic = '".esc_sql($this->public)."'";
-							}
-
 							if($this->id > 0)
 							{
-								$query_where = "";
+								$query_set = $query_where = "";
 								
-								if(!IS_SUPER_ADMIN)
+								if(IS_ADMIN)
+								{
+									$query_set .= ", addressPublic = '".esc_sql($this->public)."'";
+								}
+								
+								else
 								{
 									$query_where .= " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
 								}
@@ -496,7 +494,7 @@ class mf_address
 
 							else
 							{
-								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '0', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'".$query_set, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
+								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '%d', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $this->public, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
 
 								$this->id = $wpdb->insert_id;
 
@@ -511,6 +509,8 @@ class mf_address
 							else
 							{
 								$error_text = __("The information was not submitted, contact an admin if this persists", 'lang_address');
+
+								do_log("Address Error: ".$wpdb->last_query);
 							}
 						}
 					}
@@ -1134,12 +1134,13 @@ class mf_address_table extends mf_list_table
 			'cb' => '<input type="checkbox">',
 		);
 
+		$arr_columns['addressSurName'] = __("Name", 'lang_address');
+
 		if(IS_ADMIN)
 		{
 			$arr_columns['addressPublic'] = __("Public", 'lang_address');
 		}
 
-		$arr_columns['addressSurName'] = __("Name", 'lang_address');
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
 
 		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
@@ -1253,9 +1254,12 @@ class mf_address_table extends mf_list_table
 
 						foreach($arr_unique_columns as $str_unique_column)
 						{
-							if(($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0') && $result_prev[0][$str_unique_column] == $result[0][$str_unique_column])
+							if($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0' && $result_prev[0][$str_unique_column] != '' && $result_prev[0][$str_unique_column] != '0')
 							{
-								$unique_column = $str_unique_column;
+								if($result_prev[0][$str_unique_column] == $result[0][$str_unique_column])
+								{
+									$unique_column = $str_unique_column;
+								}
 
 								break;
 							}
@@ -1285,7 +1289,7 @@ class mf_address_table extends mf_list_table
 
 						else
 						{
-							$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
+							$error_text = __("I could not merge the addresses for you because no unique column or more than one unique column matched", 'lang_address');
 
 							break;
 						}
@@ -1359,6 +1363,11 @@ class mf_address_table extends mf_list_table
 
 						$actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", 'lang_address')."</a>";
 					}
+
+					/*if()
+					{
+						$actions['merge'] = "<a href='".wp_nonce_url($list_url."&action=merge&paged=".check_var('paged', 'int')."&wp_address[]=".$intAddressID, 'bulk-' . $this->_args['plural'], '_wpnonce')."'>".__("Merge", 'lang_address')."</a>"; //_wpnonce=87b64780e2
+					}*/
 				}
 
 				else
@@ -1413,7 +1422,7 @@ class mf_address_table extends mf_list_table
 				{
 					$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id);
 
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
+					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id)); // GROUP BY groupID
 
 					$intGroupID_check = $intGroupAccepted = $intGroupUnsubscribed = 0;
 
@@ -1479,7 +1488,7 @@ class mf_address_table extends mf_list_table
 
 				$str_groups = "";
 
-				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = 'mf_group' AND post_status NOT IN ('trash', 'ignore')", $intAddressID));
+				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = 'mf_group' AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID));
 
 				foreach($resultGroups as $r)
 				{
