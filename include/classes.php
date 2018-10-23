@@ -412,6 +412,119 @@ class mf_address
 		@session_destroy();
 	}
 
+	function has_duplicate($data)
+	{
+		global $wpdb;
+
+		$intAddressID = $data['item']['addressID'];
+		$intAddressMemberID = $data['item']['addressMemberID'];
+		$strAddressBirthDate = $data['item']['addressBirthDate'];
+		$strAddressEmail = $data['item']['addressEmail'];
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE ((addressMemberID > '0' AND addressMemberID = '%d') OR (addressBirthDate != '' AND addressBirthDate = %s) OR (addressEmail != '' AND addressEmail = %s)) AND addressDeleted = '0' AND addressID != '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressEmail, $intAddressID));
+
+		if($wpdb->num_rows > 0)
+		{
+			$this->result_duplicate = $result;
+
+			return true;
+		}
+
+		else
+		{
+			$this->result_duplicate = array();
+
+			return false;
+		}
+	}
+
+	function do_merge($data)
+	{
+		global $wpdb, $error_text, $done_text;
+
+		if(count($data['ids']) > 1)
+		{
+			$id_prev = 0;
+
+			foreach($data['ids'] as $id)
+			{
+				if($id_prev > 0)
+				{
+					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
+					$arr_columns = array('addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
+
+					$base_query = "SELECT * FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
+
+					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
+					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
+
+					if($result[0]['addressPublic'] == 1) // && $result_prev[0]['addressPublic'] == 1
+					{
+						$unique_column = '';
+
+						foreach($arr_unique_columns as $str_unique_column)
+						{
+							if($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0' && $result_prev[0][$str_unique_column] != '' && $result_prev[0][$str_unique_column] != '0')
+							{
+								if(strtolower($result_prev[0][$str_unique_column]) == strtolower($result[0][$str_unique_column]))
+								{
+									$unique_column = $str_unique_column;
+								}
+
+								break;
+							}
+						}
+
+						if($unique_column != '')
+						{
+							$query_set = '';
+
+							foreach($arr_columns as $str_column)
+							{
+								if($result_prev[0][$str_column] != '' && strtolower($result_prev[0][$str_column]) != strtolower($result[0][$str_column]))
+								{
+									$query_set .= ($query_set != '' ? ", " : "").$str_column." = '".esc_sql($result_prev[0][$str_column])."'";
+								}
+							}
+
+							if($query_set != '')
+							{
+								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET ".$query_set." WHERE addressID = '%d'", $id));
+							}
+
+							do_action('merge_address', $id_prev, $id);
+
+							$this->trash($id_prev);
+						}
+
+						else
+						{
+							$error_text = __("I could not merge the addresses for you because no unique column or more than one unique column matched", 'lang_address');
+
+							break;
+						}
+					}
+
+					else
+					{
+						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", 'lang_address');
+
+						break;
+					}
+				}
+
+				$id_prev = $id;
+			}
+
+			$done_text = __("The addresses have been merged succesfully", 'lang_address');
+		}
+
+		else
+		{
+			$error_text = __("You have to choose at least two addresses to merge", 'lang_address');
+		}
+	}
+
 	function fetch_request()
 	{
 		switch($this->type)
@@ -436,6 +549,9 @@ class mf_address
 
 			case 'list':
 				$this->group_id = check_var('intGroupID');
+
+				$this->ids = check_var('ids', 'char');
+				$this->is_public = check_var('is_public', 'int');
 			break;
 		}
 	}
@@ -523,6 +639,21 @@ class mf_address
 					$this->trash();
 
 					$done_text = __("The address was deleted", 'lang_address');
+				}
+
+				else if(isset($_REQUEST['btnAddressMerge']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_merge'], 'address_merge_'.$this->id))
+				{
+					if($this->is_public)
+					{
+						$arr_ids = array_merge(explode(",", $this->ids), array($this->id));
+					}
+
+					else
+					{
+						$arr_ids = array_merge(array($this->id), explode(",", $this->ids));
+					}
+
+					$this->do_merge(array('ids' => $arr_ids));
 				}
 
 				else if(isset($_REQUEST['btnAddressRecover']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_recover'], 'address_recover_'.$this->id))
@@ -1135,13 +1266,8 @@ class mf_address_table extends mf_list_table
 		);
 
 		$arr_columns['addressSurName'] = __("Name", 'lang_address');
-
-		if(IS_ADMIN)
-		{
-			$arr_columns['addressPublic'] = __("Public", 'lang_address');
-		}
-
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
+		$arr_columns['addressIcons'] = "";
 
 		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
 		{
@@ -1151,8 +1277,6 @@ class mf_address_table extends mf_list_table
 
 				$arr_columns['is_part_of_group'] = "<span class='nowrap'><a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a></span>";
 			}
-
-			$arr_columns['groups'] = "";
 		}
 
 		$arr_columns['addressError'] = "";
@@ -1230,89 +1354,9 @@ class mf_address_table extends mf_list_table
 
 		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
 
-		if(count($arr_ids) > 1)
-		{
-			$obj_address = new mf_address();
+		$obj_address = new mf_address();
 
-			$id_prev = 0;
-
-			foreach($arr_ids as $id)
-			{
-				if($id_prev > 0)
-				{
-					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
-					$arr_columns = array('addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
-
-					$base_query = "SELECT * FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
-
-					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
-					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
-
-					if($result[0]['addressPublic'] == 1) // && $result_prev[0]['addressPublic'] == 1
-					{
-						$unique_column = '';
-
-						foreach($arr_unique_columns as $str_unique_column)
-						{
-							if($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0' && $result_prev[0][$str_unique_column] != '' && $result_prev[0][$str_unique_column] != '0')
-							{
-								if($result_prev[0][$str_unique_column] == $result[0][$str_unique_column])
-								{
-									$unique_column = $str_unique_column;
-								}
-
-								break;
-							}
-						}
-
-						if($unique_column != '')
-						{
-							$query_set = '';
-
-							foreach($arr_columns as $str_column)
-							{
-								if($result_prev[0][$str_column] != '' && $result_prev[0][$str_column] != $result[0][$str_column])
-								{
-									$query_set .= ($query_set != '' ? ", " : "").$str_column." = '".esc_sql($result_prev[0][$str_column])."'";
-								}
-							}
-
-							if($query_set != '')
-							{
-								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET ".$query_set." WHERE addressID = '%d'", $id));
-							}
-
-							do_action('merge_address', $id_prev, $id);
-
-							$obj_address->trash($id_prev);
-						}
-
-						else
-						{
-							$error_text = __("I could not merge the addresses for you because no unique column or more than one unique column matched", 'lang_address');
-
-							break;
-						}
-					}
-
-					else
-					{
-						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", 'lang_address');
-
-						break;
-					}
-				}
-
-				$id_prev = $id;
-			}
-
-			$done_text = __("The addresses have been merged succesfully", 'lang_address');
-		}
-
-		else
-		{
-			$error_text = __("You have to choose at least two addresses to merge", 'lang_address');
-		}
+		$obj_address->do_merge(array('ids' => $arr_ids));
 
 		echo get_notification();
 	}
@@ -1323,14 +1367,12 @@ class mf_address_table extends mf_list_table
 
 		$out = "";
 
+		$obj_address = new mf_address();
+
 		$intAddressID = $item['addressID'];
 
 		switch($column_name)
 		{
-			case 'addressPublic':
-				$out .= "<i class='".($item[$column_name] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg'></i>";
-			break;
-
 			case 'addressSurName':
 				$intAddressPublic = $item['addressPublic'];
 				$strAddressBirthDate = $item['addressBirthDate'];
@@ -1363,11 +1405,6 @@ class mf_address_table extends mf_list_table
 
 						$actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", 'lang_address')."</a>";
 					}
-
-					/*if(IS_ADMIN && $this->is_able_to_merge())
-					{
-						$actions['merge'] = "<a href='".wp_nonce_url($list_url."&action=merge&paged=".check_var('paged', 'int')."&wp_address[]=".$intAddressID, 'bulk-' . $this->_args['plural'], '_wpnonce')."'>".__("Merge", 'lang_address')."</a>"; //_wpnonce=87b64780e2
-					}*/
 				}
 
 				else
@@ -1413,6 +1450,48 @@ class mf_address_table extends mf_list_table
 					if(isset($arr_countries[$intAddressCountry]))
 					{
 						$out .= " (".$arr_countries[$intAddressCountry].")";
+					}
+				}
+			break;
+
+			case 'addressIcons':
+				if(IS_ADMIN)
+				{
+					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times grey")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", 'lang_address') : __("Not Public", 'lang_address'))."'></i>";
+
+					if($obj_address->has_duplicate(array('item' => $item)))
+					{
+						$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID);
+
+						$str_ids = "";
+
+						foreach($obj_address->result_duplicate as $r)
+						{
+							$str_ids .= ($str_ids != '' ? "," : "").$r->addressID;
+						}
+
+						//$actions['merge'] = "<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($intAddressPublic == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."</a>"; //&paged=".check_var('paged', 'int')."
+
+						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($intAddressPublic == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>
+							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."'></i>
+						</a>";
+					}
+				}
+
+				if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
+				{
+					$str_groups = "";
+
+					$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = 'mf_group' AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID));
+
+					foreach($resultGroups as $r)
+					{
+						$str_groups .= ($str_groups != '' ? ", " : "").$obj_group->get_name($r->groupID);
+					}
+
+					if($str_groups != '')
+					{
+						$out .= ($out != '' ? "&nbsp;" : "")."<i class='fa fa-users' title='".$str_groups."'></i>";
 					}
 				}
 			break;
@@ -1480,24 +1559,6 @@ class mf_address_table extends mf_list_table
 							<i class='fa fa-plus-square fa-lg green'></i>
 						</a>";
 					}
-				}
-			break;
-
-			case 'groups':
-				$obj_group_temp = new mf_group();
-
-				$str_groups = "";
-
-				$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = 'mf_group' AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID));
-
-				foreach($resultGroups as $r)
-				{
-					$str_groups .= ($str_groups != '' ? ", " : "").$obj_group_temp->get_name($r->groupID);
-				}
-
-				if($str_groups != '')
-				{
-					$out .= "<i class='fa fa-users' title='".$str_groups."'></i>";
 				}
 			break;
 
