@@ -468,12 +468,12 @@ class mf_address
 							if($this->id > 0)
 							{
 								$query_set = $query_where = "";
-								
+
 								if(IS_ADMIN)
 								{
 									$query_set .= ", addressPublic = '".esc_sql($this->public)."'";
 								}
-								
+
 								else
 								{
 									$query_where .= " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
@@ -1178,15 +1178,15 @@ class mf_address_table extends mf_list_table
 
 		if(isset($this->columns['cb']))
 		{
-			/*if(!isset($_GET['post_status']) || $_GET['post_status'] != 'trash')
-			{*/
+			if(!isset($_GET['addressDeleted']) || $_GET['addressDeleted'] != 1)
+			{
 				$actions['delete'] = __("Delete", 'lang_address');
-			/*}
+			}
 
-			if(!isset($_GET['post_status']) || $_GET['post_status'] != 'ignore')
-			{*/
+			if(IS_ADMIN)
+			{
 				$actions['merge'] = __("Merge", 'lang_address');
-			//}
+			}
 		}
 
 		return $actions;
@@ -1364,7 +1364,7 @@ class mf_address_table extends mf_list_table
 						$actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", 'lang_address')."</a>";
 					}
 
-					/*if()
+					/*if(IS_ADMIN && $this->is_able_to_merge())
 					{
 						$actions['merge'] = "<a href='".wp_nonce_url($list_url."&action=merge&paged=".check_var('paged', 'int')."&wp_address[]=".$intAddressID, 'bulk-' . $this->_args['plural'], '_wpnonce')."'>".__("Merge", 'lang_address')."</a>"; //_wpnonce=87b64780e2
 					}*/
