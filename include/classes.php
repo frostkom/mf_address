@@ -1648,9 +1648,7 @@ class mf_address_import extends mf_import
 			'addressEmail' => 'email',
 		);
 
-		$option = get_option('setting_address_display_member_id');
-
-		if($option != 'no')
+		if(get_option('setting_address_display_member_id', 'yes') == 'yes')
 		{
 			$this->columns['addressMemberID'] = __("Member ID", 'lang_address');
 
@@ -1675,11 +1673,7 @@ class mf_address_import extends mf_import
 
 	function inserted_new($id)
 	{
-		global $wpdb;
-
-		$option = get_option('setting_group_import');
-
 		$obj_group = new mf_group();
-		$obj_group->add_address(array('address_id' => $id, 'group_id' => $option));
+		$obj_group->add_address(array('address_id' => $id, 'group_id' => get_option('setting_group_import')));
 	}
 }
