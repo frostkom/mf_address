@@ -6,7 +6,7 @@ class mf_address
 	{
 		if(isset($data['id']) && $data['id'] > 0)
 		{
-			$this->id = $id;
+			$this->id = $data['id'];
 		}
 
 		else
@@ -1472,7 +1472,7 @@ class mf_address_table extends mf_list_table
 
 						//$actions['merge'] = "<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($intAddressPublic == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."</a>"; //&paged=".check_var('paged', 'int')."
 
-						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($intAddressPublic == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>
+						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>
 							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."'></i>
 						</a>";
 					}
