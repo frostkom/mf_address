@@ -1618,10 +1618,12 @@ class mf_address_import extends mf_import
 	{
 		$this->prefix = get_address_table_prefix();
 		$this->table = "address";
+
 		$this->actions = array(
 			'delete',
 			'import',
 		);
+
 		$this->columns = array(
 			'addressBirthDate' => __("Social Security Number", 'lang_address'),
 			'addressFirstName' => __("First Name", 'lang_address'),
@@ -1637,10 +1639,12 @@ class mf_address_import extends mf_import
 			'addressEmail' => __("E-mail", 'lang_address'),
 			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')),
 		);
+
 		$this->unique_columns = array(
 			'addressBirthDate',
 			'addressEmail',
 		);
+
 		$this->validate_columns = array(
 			'addressTelNo' => 'telno',
 			'addressWorkNo' => 'telno',

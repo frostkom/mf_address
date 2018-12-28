@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-23 17:15+0100\n"
+"POT-Creation-Date: 2018-12-25 19:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -17,7 +17,6 @@ msgstr ""
 "X-Poedit-SearchPath-1: ..\n"
 
 #: ../create/index.php:9
-#: ../import/index.php:6
 #: ../include/classes.php:156
 #: ../include/classes.php:157
 #: ../include/classes.php:158
@@ -35,44 +34,44 @@ msgid "Information"
 msgstr "Information"
 
 #: ../create/index.php:22
-#: ../include/classes.php:1651
+#: ../include/classes.php:1653
 msgid "Member ID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:25
-#: ../include/classes.php:1622
+#: ../include/classes.php:1626
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:28
 #: ../include/classes.php:340
-#: ../include/classes.php:1623
+#: ../include/classes.php:1627
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:29
 #: ../include/classes.php:344
-#: ../include/classes.php:1624
+#: ../include/classes.php:1628
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:32
-#: ../include/classes.php:1630
+#: ../include/classes.php:1634
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:33
-#: ../include/classes.php:1632
+#: ../include/classes.php:1636
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:34
-#: ../include/classes.php:1631
+#: ../include/classes.php:1635
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:36
-#: ../include/classes.php:1633
+#: ../include/classes.php:1637
 msgid "E-mail"
 msgstr "E-post"
 
@@ -94,36 +93,41 @@ msgid "Settings"
 msgstr "Inställningar"
 
 #: ../create/index.php:65
-#: ../include/classes.php:1472
+#: ../include/classes.php:1460
 msgid "Public"
 msgstr "Publik"
 
 #: ../create/index.php:71
 #: ../create/index.php:73
 #: ../include/classes.php:1269
-#: ../include/classes.php:1626
+#: ../include/classes.php:1630
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:74
-#: ../include/classes.php:1625
+#: ../include/classes.php:1629
 msgid "C/O"
 msgstr "C/O"
 
 #: ../create/index.php:76
-#: ../include/classes.php:1627
+#: ../include/classes.php:1631
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:77
-#: ../include/classes.php:1628
+#: ../include/classes.php:1632
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:79
-#: ../include/classes.php:1629
+#: ../include/classes.php:1633
 msgid "Country"
 msgstr "Land"
+
+#: ../import/index.php:6
+#: ../include/classes.php:256
+msgid "Import"
+msgstr "Importera"
 
 #: ../include/classes.php:119
 #, php-format
@@ -162,10 +166,6 @@ msgstr "Lista"
 #: ../list/index.php:32
 msgid "Add New"
 msgstr "Skapa ny"
-
-#: ../include/classes.php:256
-msgid "Import"
-msgstr "Importera"
 
 #: ../include/classes.php:287
 msgid "Address Permissions to Users"
@@ -1231,7 +1231,7 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #: ../include/classes.php:1284
-#: ../include/classes.php:1634
+#: ../include/classes.php:1638
 msgid "Extra"
 msgstr "Extra"
 
@@ -1253,34 +1253,34 @@ msgstr "Okänd"
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../include/classes.php:1418
+#: ../include/classes.php:1412
+msgid "Recover"
+msgstr "Återställ"
+
+#: ../include/classes.php:1460
+msgid "Not Public"
+msgstr "Inte publik"
+
+#: ../include/classes.php:1476
 #, php-format
 msgid "Merge with %d other"
 msgstr "Slå ihop med %d andra"
 
-#: ../include/classes.php:1424
-msgid "Recover"
-msgstr "Återställ"
-
-#: ../include/classes.php:1472
-msgid "Not Public"
-msgstr "Inte publik"
-
-#: ../include/classes.php:1526
 #: ../include/classes.php:1530
-#: ../include/classes.php:1536
+#: ../include/classes.php:1534
+#: ../include/classes.php:1540
 msgid "The address has not been accepted to this group yet."
 msgstr "Adressen har inte accepterats i gruppen ännu."
 
-#: ../include/classes.php:1526
+#: ../include/classes.php:1530
 msgid "Do you want to manually accept it?"
 msgstr "Vill du acceptera det manuellt?"
 
-#: ../include/classes.php:1530
+#: ../include/classes.php:1534
 msgid "Do you want to send it again?"
 msgstr "Vill du skicka det igen?"
 
-#: ../include/classes.php:1564
+#: ../include/classes.php:1568
 msgid "Errors"
 msgstr "Fel"
 
