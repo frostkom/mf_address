@@ -1457,7 +1457,7 @@ class mf_address_table extends mf_list_table
 			case 'addressIcons':
 				if(IS_ADMIN)
 				{
-					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times grey")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", 'lang_address') : __("Not Public", 'lang_address'))."'></i>";
+					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", 'lang_address') : __("Not Public", 'lang_address'))."'></i>";
 
 					if($obj_address->has_duplicate(array('item' => $item)))
 					{
