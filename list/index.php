@@ -24,7 +24,7 @@ echo "<div class='wrap'>
 
 		if($obj_address->has_group_plugin && $obj_group->id > 0)
 		{
-			echo " ".__("for", 'lang_address')." ".$obj_group->get_name()." <a href='?page=mf_group/list/index.php'><i class='fa fa-times fa-lg red'></i></a>";
+			echo " ".__("for", 'lang_address')." ".$obj_group->get_name($obj_group->id)." <a href='?page=mf_group/list/index.php'><i class='fa fa-times fa-lg red'></i></a>";
 		}
 
 		else

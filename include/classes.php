@@ -37,7 +37,7 @@ class mf_address
 
 			if($setting_address_api_url != '')
 			{
-				$option_address_api_used = get_option('option_address_api_used', date('Y-m-d H:i:s', strtotime("-1 year")));
+				$option_address_api_used = get_option('option_address_api_used', date("Y-m-d H:i:s", strtotime("-1 year")));
 
 				$url = str_replace("[datetime]", urlencode($option_address_api_used), $setting_address_api_url);
 
@@ -1501,9 +1501,9 @@ class mf_address_table extends mf_list_table
 				{
 					$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id);
 
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id)); // GROUP BY groupID
-
 					$intGroupID_check = $intGroupAccepted = $intGroupUnsubscribed = 0;
+
+					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
 
 					foreach($result_check as $r)
 					{
