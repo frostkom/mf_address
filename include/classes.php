@@ -1482,7 +1482,7 @@ class mf_address_table extends mf_list_table
 				{
 					$str_groups = "";
 
-					$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = 'mf_group' AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID));
+					$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = %s AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID, $obj_group->post_type));
 
 					foreach($resultGroups as $r)
 					{
