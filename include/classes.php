@@ -19,7 +19,7 @@ class mf_address
 
 		$this->type = isset($data['type']) ? $data['type'] : '';
 
-		$this->has_group_plugin = is_plugin_active("mf_group/index.php");
+		$this->has_group_plugin = function_exists('is_plugin_active') && is_plugin_active('mf_group/index.php');
 
 		$this->meta_prefix = 'mf_address_';
 	}
