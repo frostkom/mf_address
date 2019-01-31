@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-25 19:25+0100\n"
+"POT-Creation-Date: 2019-01-31 09:08+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -13,8 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-KeywordsList: esc_html__;esc_html_e;esc_attr__;esc_attr_e;__;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPath-0: ..\n"
 
 #: ../create/index.php:9
 #: ../include/classes.php:156
@@ -31,47 +30,47 @@ msgstr "Adressbok"
 
 #: ../create/index.php:16
 msgid "Information"
-msgstr "Information"
+msgstr ""
 
 #: ../create/index.php:22
-#: ../include/classes.php:1653
+#: ../include/classes.php:1657
 msgid "Member ID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:25
-#: ../include/classes.php:1626
+#: ../include/classes.php:1628
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:28
 #: ../include/classes.php:340
-#: ../include/classes.php:1627
+#: ../include/classes.php:1629
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:29
 #: ../include/classes.php:344
-#: ../include/classes.php:1628
+#: ../include/classes.php:1630
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:32
-#: ../include/classes.php:1634
+#: ../include/classes.php:1636
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:33
-#: ../include/classes.php:1636
+#: ../include/classes.php:1638
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:34
-#: ../include/classes.php:1635
+#: ../include/classes.php:1637
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:36
-#: ../include/classes.php:1637
+#: ../include/classes.php:1639
 msgid "E-mail"
 msgstr "E-post"
 
@@ -100,27 +99,27 @@ msgstr "Publik"
 #: ../create/index.php:71
 #: ../create/index.php:73
 #: ../include/classes.php:1269
-#: ../include/classes.php:1630
+#: ../include/classes.php:1632
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:74
-#: ../include/classes.php:1629
+#: ../include/classes.php:1631
 msgid "C/O"
-msgstr "C/O"
+msgstr ""
 
 #: ../create/index.php:76
-#: ../include/classes.php:1631
+#: ../include/classes.php:1633
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:77
-#: ../include/classes.php:1632
+#: ../include/classes.php:1634
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:79
-#: ../include/classes.php:1633
+#: ../include/classes.php:1635
 msgid "Country"
 msgstr "Land"
 
@@ -260,7 +259,7 @@ msgstr "Välj här"
 
 #: ../include/classes.php:825
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr ""
 
 #: ../include/classes.php:826
 msgid "Albania"
@@ -276,11 +275,12 @@ msgstr ""
 
 #: ../include/classes.php:829
 msgid "Andorra"
-msgstr "Andorra"
+msgstr ""
 
 #: ../include/classes.php:830
+#, fuzzy
 msgid "Angola"
-msgstr "Angola"
+msgstr "Mongoliet"
 
 #: ../include/classes.php:831
 msgid "Anguilla"
@@ -295,16 +295,18 @@ msgid "Antigua and Barbuda"
 msgstr ""
 
 #: ../include/classes.php:834
+#, fuzzy
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "Armenien"
 
 #: ../include/classes.php:835
 msgid "Armenia"
 msgstr "Armenien"
 
 #: ../include/classes.php:836
+#, fuzzy
 msgid "Aruba"
-msgstr "Aruba"
+msgstr "Kuba"
 
 #: ../include/classes.php:837
 msgid "Australia"
@@ -316,23 +318,24 @@ msgstr "Österrike"
 
 #: ../include/classes.php:839
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr ""
 
 #: ../include/classes.php:840
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr ""
 
 #: ../include/classes.php:841
+#, fuzzy
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr "Brasilien"
 
 #: ../include/classes.php:842
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr ""
 
 #: ../include/classes.php:843
 msgid "Barbados"
-msgstr "Barbados"
+msgstr ""
 
 #: ../include/classes.php:844
 msgid "Belarus"
@@ -343,8 +346,9 @@ msgid "Belgium"
 msgstr "Belgien"
 
 #: ../include/classes.php:846
+#, fuzzy
 msgid "Belize"
-msgstr "Belize"
+msgstr "Belgien"
 
 #: ../include/classes.php:847
 msgid "Benin"
@@ -352,15 +356,15 @@ msgstr ""
 
 #: ../include/classes.php:848
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr ""
 
 #: ../include/classes.php:849
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr ""
 
 #: ../include/classes.php:850
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr ""
 
 #: ../include/classes.php:851
 msgid "Bosnia and Herzegowina"
@@ -368,11 +372,12 @@ msgstr ""
 
 #: ../include/classes.php:852
 msgid "Botswana"
-msgstr "Botswana"
+msgstr ""
 
 #: ../include/classes.php:853
+#, fuzzy
 msgid "Bouvet Island"
-msgstr ""
+msgstr "Färöarna"
 
 #: ../include/classes.php:854
 msgid "Brazil"
@@ -396,7 +401,7 @@ msgstr ""
 
 #: ../include/classes.php:859
 msgid "Burundi"
-msgstr "Burundi"
+msgstr ""
 
 #: ../include/classes.php:860
 msgid "Cambodia"
@@ -415,20 +420,23 @@ msgid "Cape Verde"
 msgstr ""
 
 #: ../include/classes.php:864
+#, fuzzy
 msgid "Cayman Islands"
-msgstr ""
+msgstr "Färöarna"
 
 #: ../include/classes.php:865
 msgid "Central African Republic"
 msgstr "Centralafrikanska republiken"
 
 #: ../include/classes.php:866
+#, fuzzy
 msgid "Chad"
-msgstr ""
+msgstr "Kina"
 
 #: ../include/classes.php:867
+#, fuzzy
 msgid "Chile"
-msgstr "Chile"
+msgstr "Kina"
 
 #: ../include/classes.php:868
 msgid "China"
@@ -455,12 +463,13 @@ msgid "Congo"
 msgstr "Kongo"
 
 #: ../include/classes.php:874
+#, fuzzy
 msgid "Cook Islands"
-msgstr ""
+msgstr "Färöarna"
 
 #: ../include/classes.php:875
 msgid "Costa Rica"
-msgstr "Costa Rica"
+msgstr ""
 
 #: ../include/classes.php:876
 msgid "Cote D'Ivoire"
@@ -491,8 +500,9 @@ msgid "Djibouti"
 msgstr ""
 
 #: ../include/classes.php:883
+#, fuzzy
 msgid "Dominica"
-msgstr ""
+msgstr "Rumänien"
 
 #: ../include/classes.php:884
 msgid "Dominican Republic"
@@ -504,7 +514,7 @@ msgstr ""
 
 #: ../include/classes.php:886
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr ""
 
 #: ../include/classes.php:887
 msgid "Egypt"
@@ -512,7 +522,7 @@ msgstr "Egyptien"
 
 #: ../include/classes.php:888
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr ""
 
 #: ../include/classes.php:889
 msgid "Equatorial Guinea"
@@ -520,7 +530,7 @@ msgstr ""
 
 #: ../include/classes.php:890
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr ""
 
 #: ../include/classes.php:891
 msgid "Estonia"
@@ -540,11 +550,12 @@ msgstr "Färöarna"
 
 #: ../include/classes.php:895
 msgid "Fiji"
-msgstr "Fiji"
+msgstr ""
 
 #: ../include/classes.php:896
+#, fuzzy
 msgid "Finland"
-msgstr "Finland"
+msgstr "Grönland"
 
 #: ../include/classes.php:897
 msgid "France"
@@ -559,8 +570,9 @@ msgid "French Guiana"
 msgstr "Franska Guiana"
 
 #: ../include/classes.php:900
+#, fuzzy
 msgid "French Polynesia"
-msgstr ""
+msgstr "Franska Guiana"
 
 #: ../include/classes.php:901
 msgid "French Southern Territories"
@@ -572,7 +584,7 @@ msgstr ""
 
 #: ../include/classes.php:903
 msgid "Gambia"
-msgstr "Gambia"
+msgstr ""
 
 #: ../include/classes.php:904
 msgid "Georgia"
@@ -583,12 +595,13 @@ msgid "Germany"
 msgstr "Tyskland"
 
 #: ../include/classes.php:906
+#, fuzzy
 msgid "Ghana"
-msgstr "Ghana"
+msgstr "Kina"
 
 #: ../include/classes.php:907
 msgid "Gibraltar"
-msgstr "Gibraltar"
+msgstr ""
 
 #: ../include/classes.php:908
 msgid "Greece"
@@ -599,8 +612,9 @@ msgid "Greenland"
 msgstr "Grönland"
 
 #: ../include/classes.php:910
+#, fuzzy
 msgid "Grenada"
-msgstr "Grenada"
+msgstr "Grönland"
 
 #: ../include/classes.php:911
 msgid "Guadeloupe"
@@ -612,7 +626,7 @@ msgstr ""
 
 #: ../include/classes.php:913
 msgid "Guatemala"
-msgstr "Guatemala"
+msgstr ""
 
 #: ../include/classes.php:914
 msgid "Guinea"
@@ -628,7 +642,7 @@ msgstr ""
 
 #: ../include/classes.php:917
 msgid "Haiti"
-msgstr "Haiti"
+msgstr ""
 
 #: ../include/classes.php:918
 msgid "Heard and Mc Donald Islands"
@@ -640,7 +654,7 @@ msgstr ""
 
 #: ../include/classes.php:920
 msgid "Hong Kong"
-msgstr "Hong Kong"
+msgstr ""
 
 #: ../include/classes.php:921
 msgid "Hungary"
@@ -671,8 +685,9 @@ msgid "Ireland"
 msgstr "Irland"
 
 #: ../include/classes.php:928
+#, fuzzy
 msgid "Israel"
-msgstr "Israel"
+msgstr "Irland"
 
 #: ../include/classes.php:929
 msgid "Italy"
@@ -680,11 +695,12 @@ msgstr "Italien"
 
 #: ../include/classes.php:930
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr ""
 
 #: ../include/classes.php:931
+#, fuzzy
 msgid "Japan"
-msgstr "Japan"
+msgstr "Spanien"
 
 #: ../include/classes.php:932
 msgid "Jordan"
@@ -692,11 +708,11 @@ msgstr "Jordanien"
 
 #: ../include/classes.php:933
 msgid "Kazakhstan"
-msgstr "Kazakhstan"
+msgstr ""
 
 #: ../include/classes.php:934
 msgid "Kenya"
-msgstr "Kenya"
+msgstr ""
 
 #: ../include/classes.php:935
 msgid "Kiribati"
@@ -712,15 +728,16 @@ msgstr "Sydkorea"
 
 #: ../include/classes.php:938
 msgid "Kuwait"
-msgstr "Kuwait"
+msgstr ""
 
 #: ../include/classes.php:939
 msgid "Kyrgyzstan"
-msgstr "Kyrgyzstan"
+msgstr ""
 
 #: ../include/classes.php:940
+#, fuzzy
 msgid "Lao People's Democratic Republic"
-msgstr ""
+msgstr "Nordkorea"
 
 #: ../include/classes.php:941
 msgid "Latvia"
@@ -744,7 +761,7 @@ msgstr "Libyen"
 
 #: ../include/classes.php:946
 msgid "Liechtenstein"
-msgstr "Liechtenstein"
+msgstr ""
 
 #: ../include/classes.php:947
 msgid "Lithuania"
@@ -760,7 +777,7 @@ msgstr ""
 
 #: ../include/classes.php:950
 msgid "Macedonia, The Former Yugoslav Republic of"
-msgstr ""
+msgstr "Makedonien"
 
 #: ../include/classes.php:951
 msgid "Madagascar"
@@ -772,35 +789,38 @@ msgstr ""
 
 #: ../include/classes.php:953
 msgid "Malaysia"
-msgstr "Malaysia"
+msgstr ""
 
 #: ../include/classes.php:954
 msgid "Maldives"
 msgstr "Maldiverna"
 
 #: ../include/classes.php:955
+#, fuzzy
 msgid "Mali"
-msgstr "Mali"
+msgstr "Maldiverna"
 
 #: ../include/classes.php:956
 msgid "Malta"
-msgstr "Malta"
+msgstr ""
 
 #: ../include/classes.php:957
+#, fuzzy
 msgid "Marshall Islands"
-msgstr ""
+msgstr "Färöarna"
 
 #: ../include/classes.php:958
 msgid "Martinique"
 msgstr ""
 
 #: ../include/classes.php:959
+#, fuzzy
 msgid "Mauritania"
-msgstr ""
+msgstr "Litauen"
 
 #: ../include/classes.php:960
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr ""
 
 #: ../include/classes.php:961
 msgid "Mayotte"
@@ -808,19 +828,20 @@ msgstr ""
 
 #: ../include/classes.php:962
 msgid "Mexico"
-msgstr "Mexico"
+msgstr ""
 
 #: ../include/classes.php:963
 msgid "Micronesia, Federated States of"
-msgstr ""
+msgstr "Mikronesien"
 
 #: ../include/classes.php:964
 msgid "Moldova, Republic of"
 msgstr "Moldavien"
 
 #: ../include/classes.php:965
+#, fuzzy
 msgid "Monaco"
-msgstr "Monaco"
+msgstr "Kontakt"
 
 #: ../include/classes.php:966
 msgid "Mongolia"
@@ -844,7 +865,7 @@ msgstr ""
 
 #: ../include/classes.php:971
 msgid "Namibia"
-msgstr "Namibia"
+msgstr ""
 
 #: ../include/classes.php:972
 msgid "Nauru"
@@ -859,8 +880,9 @@ msgid "Netherlands"
 msgstr "Holland"
 
 #: ../include/classes.php:975
+#, fuzzy
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "Holland"
 
 #: ../include/classes.php:976
 msgid "New Caledonia"
@@ -879,16 +901,18 @@ msgid "Niger"
 msgstr ""
 
 #: ../include/classes.php:980
+#, fuzzy
 msgid "Nigeria"
-msgstr ""
+msgstr "Algeriet"
 
 #: ../include/classes.php:981
 msgid "Niue"
 msgstr ""
 
 #: ../include/classes.php:982
+#, fuzzy
 msgid "Norfolk Island"
-msgstr ""
+msgstr "Färöarna"
 
 #: ../include/classes.php:983
 msgid "Northern Mariana Islands"
@@ -911,8 +935,9 @@ msgid "Palau"
 msgstr ""
 
 #: ../include/classes.php:988
+#, fuzzy
 msgid "Panama"
-msgstr ""
+msgstr "Kanada"
 
 #: ../include/classes.php:989
 msgid "Papua New Guinea"
@@ -940,7 +965,7 @@ msgstr "Polen"
 
 #: ../include/classes.php:995
 msgid "Portugal"
-msgstr "Portugal"
+msgstr ""
 
 #: ../include/classes.php:996
 msgid "Puerto Rico"
@@ -963,8 +988,9 @@ msgid "Russian Federation"
 msgstr "Ryssland"
 
 #: ../include/classes.php:1001
+#, fuzzy
 msgid "Rwanda"
-msgstr ""
+msgstr "Kanada"
 
 #: ../include/classes.php:1002
 msgid "Saint Kitts and Nevis"
@@ -1019,12 +1045,14 @@ msgid "Slovenia"
 msgstr "Slovenien"
 
 #: ../include/classes.php:1015
+#, fuzzy
 msgid "Solomon Islands"
-msgstr ""
+msgstr "Färöarna"
 
 #: ../include/classes.php:1016
+#, fuzzy
 msgid "Somalia"
-msgstr ""
+msgstr "Rumänien"
 
 #: ../include/classes.php:1017
 msgid "South Africa"
@@ -1040,7 +1068,7 @@ msgstr "Spanien"
 
 #: ../include/classes.php:1020
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr ""
 
 #: ../include/classes.php:1021
 msgid "St. Helena"
@@ -1051,20 +1079,22 @@ msgid "St. Pierre and Miquelon"
 msgstr ""
 
 #: ../include/classes.php:1023
+#, fuzzy
 msgid "Sudan"
-msgstr "Sudan"
+msgstr "Spanien"
 
 #: ../include/classes.php:1024
 msgid "Suriname"
-msgstr "Suriname"
+msgstr ""
 
 #: ../include/classes.php:1025
 msgid "Svalbard"
-msgstr "Svalbard"
+msgstr ""
 
 #: ../include/classes.php:1026
+#, fuzzy
 msgid "Swaziland"
-msgstr "Swaziland"
+msgstr "Schweiz"
 
 #: ../include/classes.php:1027
 msgid "Sweden"
@@ -1080,11 +1110,11 @@ msgstr "Syrien"
 
 #: ../include/classes.php:1030
 msgid "Taiwan"
-msgstr "Taiwan"
+msgstr ""
 
 #: ../include/classes.php:1031
 msgid "Tajikistan"
-msgstr "Tajikistan"
+msgstr ""
 
 #: ../include/classes.php:1032
 msgid "Tanzania, United Republic of"
@@ -1092,19 +1122,21 @@ msgstr "Tanzania"
 
 #: ../include/classes.php:1033
 msgid "Thailand"
-msgstr "Thailand"
+msgstr ""
 
 #: ../include/classes.php:1034
+#, fuzzy
 msgid "Togo"
-msgstr "Togo"
+msgstr "Kongo"
 
 #: ../include/classes.php:1035
 msgid "Tokelau"
 msgstr ""
 
 #: ../include/classes.php:1036
+#, fuzzy
 msgid "Tonga"
-msgstr "Tonga"
+msgstr "Mongoliet"
 
 #: ../include/classes.php:1037
 msgid "Trinidad and Tobago"
@@ -1119,8 +1151,9 @@ msgid "Turkey"
 msgstr "Turkiet"
 
 #: ../include/classes.php:1040
+#, fuzzy
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr "Armenien"
 
 #: ../include/classes.php:1041
 msgid "Turks and Caicos Islands"
@@ -1131,8 +1164,9 @@ msgid "Tuvalu"
 msgstr ""
 
 #: ../include/classes.php:1043
+#, fuzzy
 msgid "Uganda"
-msgstr "Uganda"
+msgstr "Kanada"
 
 #: ../include/classes.php:1044
 msgid "Ukraine"
@@ -1156,11 +1190,11 @@ msgstr ""
 
 #: ../include/classes.php:1049
 msgid "Uruguay"
-msgstr "Uruguay"
+msgstr ""
 
 #: ../include/classes.php:1050
 msgid "Uzbekistan"
-msgstr "Uzbekistan"
+msgstr ""
 
 #: ../include/classes.php:1051
 msgid "Vanuatu"
@@ -1172,11 +1206,11 @@ msgstr ""
 
 #: ../include/classes.php:1053
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr ""
 
 #: ../include/classes.php:1054
 msgid "Vietnam"
-msgstr "Vietnam"
+msgstr ""
 
 #: ../include/classes.php:1055
 msgid "Virgin Islands (British)"
@@ -1192,11 +1226,11 @@ msgstr ""
 
 #: ../include/classes.php:1058
 msgid "Western Sahara"
-msgstr ""
+msgstr "Västra Sahara"
 
 #: ../include/classes.php:1059
 msgid "Yemen"
-msgstr "Yemen"
+msgstr ""
 
 #: ../include/classes.php:1060
 msgid "Yugoslavia"
@@ -1204,15 +1238,15 @@ msgstr "Jugoslavien"
 
 #: ../include/classes.php:1061
 msgid "Zaire"
-msgstr "Zaire"
+msgstr ""
 
 #: ../include/classes.php:1062
 msgid "Zambia"
-msgstr "Zambia"
+msgstr ""
 
 #: ../include/classes.php:1063
 msgid "Zimbabwe"
-msgstr "Zimbabwe"
+msgstr ""
 
 #: ../include/classes.php:1259
 msgid "All"
@@ -1231,9 +1265,9 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #: ../include/classes.php:1284
-#: ../include/classes.php:1638
+#: ../include/classes.php:1640
 msgid "Extra"
-msgstr "Extra"
+msgstr ""
 
 #: ../include/classes.php:1307
 #: ../include/classes.php:1406

@@ -1350,7 +1350,7 @@ class mf_address_table extends mf_list_table
 
 	function bulk_merge()
 	{
-		global $wpdb, $error_text, $done_text;
+		global $error_text, $done_text;
 
 		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
 
