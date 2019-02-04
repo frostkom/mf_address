@@ -19,8 +19,6 @@ class mf_address
 
 		$this->type = isset($data['type']) ? $data['type'] : '';
 
-		$this->has_group_plugin = function_exists('is_plugin_active') && is_plugin_active('mf_group/index.php');
-
 		$this->meta_prefix = 'mf_address_';
 	}
 
@@ -317,6 +315,65 @@ class mf_address
 		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
 	}
 
+	function restrict_manage_posts($post_type)
+	{
+		if($post_type == "wp_address" && is_plugin_active('mf_group/index.php'))
+		{
+			$obj_group = new mf_group();
+
+			$arr_data = $obj_group->get_for_select();
+
+			if(count($arr_data) > 0)
+			{
+				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID', 'save' => true));
+
+				echo show_select(array('data' => $arr_data, 'name' => 'intGroupID', 'value' => $intGroupID));
+
+				if($intGroupID > 0)
+				{
+					$strFilterIsMember = get_or_set_table_filter(array('key' => 'strFilterIsMember', 'save' => true));
+					$strFilterAccepted = get_or_set_table_filter(array('key' => 'strFilterAccepted', 'save' => true));
+					$strFilterUnsubscribed = get_or_set_table_filter(array('key' => 'strFilterUnsubscribed', 'save' => true));
+
+					if($obj_group->amount_in_group(array('id' => $intGroupID)) > 0) //$strFilterAccepted == '' && $strFilterUnsubscribed == '' && 
+					{
+						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Part of Group", 'lang_address'))), 'name' => 'strFilterIsMember', 'value' => $strFilterIsMember));
+					}
+
+					else
+					{
+						remove_table_filter(array('key' => 'strFilterIsMember'));
+					}
+
+					if($obj_group->amount_in_group(array('id' => $intGroupID, 'accepted' => 0)) > 0) //$strFilterIsMember != 'no' && 
+					{
+						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Accepted", 'lang_address'))), 'name' => 'strFilterAccepted', 'value' => $strFilterAccepted));
+					}
+
+					else
+					{
+						remove_table_filter(array('key' => 'strFilterAccepted'));
+					}
+
+					if($obj_group->amount_in_group(array('id' => $intGroupID, 'unsubscribed' => 1)) > 0) //$strFilterIsMember != 'no' && 
+					{
+						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Unsubscribed", 'lang_address'))), 'name' => 'strFilterUnsubscribed', 'value' => $strFilterUnsubscribed));
+					}
+
+					else
+					{
+						remove_table_filter(array('key' => 'strFilterUnsubscribed'));
+					}
+				}
+
+				else
+				{
+					remove_table_filter(array('key' => 'intGroupID'));
+				}
+			}
+		}
+	}
+
 	function export_personal_data($email_address, $page = 1)
 	{
 		global $wpdb;
@@ -560,7 +617,7 @@ class mf_address
 	{
 		global $wpdb, $error_text, $done_text;
 
-		if($this->has_group_plugin)
+		if(is_plugin_active('mf_group/index.php'))
 		{
 			$obj_group = new mf_group();
 		}
@@ -669,7 +726,7 @@ class mf_address
 
 					if($wpdb->num_rows == 0)
 					{
-						if($this->has_group_plugin)
+						if(is_plugin_active('mf_group/index.php'))
 						{
 							$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
@@ -694,7 +751,7 @@ class mf_address
 
 					if($wpdb->num_rows > 0)
 					{
-						if($this->has_group_plugin)
+						if(is_plugin_active('mf_group/index.php'))
 						{
 							$obj_group->remove_address($this->id, $this->group_id);
 
@@ -715,7 +772,7 @@ class mf_address
 
 				else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id))
 				{
-					if($this->has_group_plugin)
+					if(is_plugin_active('mf_group/index.php'))
 					{
 						if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
 						{
@@ -736,7 +793,7 @@ class mf_address
 
 				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id))
 				{
-					if($this->has_group_plugin)
+					if(is_plugin_active('mf_group/index.php'))
 					{
 						if($obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id)))
 						{
@@ -1208,7 +1265,7 @@ class mf_address_table extends mf_list_table
 
 	function init_fetch()
 	{
-		global $wpdb, $is_part_of_group, $obj_group;
+		global $wpdb, $obj_group;
 
 		if(!IS_ADMIN)
 		{
@@ -1240,10 +1297,51 @@ class mf_address_table extends mf_list_table
 			.")";*/
 		}
 
-		if($is_part_of_group)
+		$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+
+		if($intGroupID > 0)
 		{
-			$this->query_join .= " INNER JOIN ".$wpdb->prefix."address2group USING (addressID)";
-			$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID = '".$obj_group->id."'";
+			$strFilterIsMember = get_or_set_table_filter(array('key' => 'strFilterIsMember'));
+			$strFilterAccepted = get_or_set_table_filter(array('key' => 'strFilterAccepted'));
+			$strFilterUnsubscribed = get_or_set_table_filter(array('key' => 'strFilterUnsubscribed'));
+
+			if($strFilterIsMember != '' || $strFilterAccepted != '' || $strFilterUnsubscribed != '')
+			{
+				$this->query_join .= " LEFT JOIN ".$wpdb->prefix."address2group USING (addressID)";
+			}
+
+			switch($strFilterIsMember)
+			{
+				case 'yes':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID = '".$intGroupID."'";
+				break;
+
+				case 'no':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID != '".$intGroupID."'";
+				break;
+			}
+
+			switch($strFilterAccepted)
+			{
+				case 'yes':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupAccepted = '1'";
+				break;
+
+				case 'no':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupAccepted = '0'";
+				break;
+			}
+
+			switch($strFilterUnsubscribed)
+			{
+				case 'yes':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupUnsubscribed = '1'";
+				break;
+
+				case 'no':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupUnsubscribed = '0'";
+				break;
+			}
 		}
 
 		if(!IS_EDITOR)
@@ -1267,16 +1365,11 @@ class mf_address_table extends mf_list_table
 
 		$arr_columns['addressSurName'] = __("Name", 'lang_address');
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
-		$arr_columns['addressIcons'] = "";
+		$arr_columns['addressIcons'] = __("Info", 'lang_address');
 
-		if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
+		if($intGroupID > 0)
 		{
-			if(isset($obj_group->id) && $obj_group->id > 0)
-			{
-				$group_url = admin_url("admin.php?page=mf_address/list/index.php&no_ses&is_part_of_group=%d");
-
-				$arr_columns['is_part_of_group'] = "<span class='nowrap'><a href='".sprintf($group_url, '0')."'><i class='fa fa-plus-square'></i></a>&nbsp;/&nbsp;<a href='".sprintf($group_url, '1')."'><i class='fa fa-minus-square'></i></a></span>";
-			}
+			$arr_columns['is_part_of_group'] = "<span class='nowrap'><i class='fa fa-plus-square'></i> / <i class='fa fa-minus-square'></i></span>";
 		}
 
 		$arr_columns['addressError'] = "";
@@ -1497,13 +1590,15 @@ class mf_address_table extends mf_list_table
 			break;
 
 			case 'is_part_of_group':
-				if($obj_group->id > 0)
+				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+
+				if($intGroupID > 0)
 				{
-					$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID."&intGroupID=".$obj_group->id);
+					$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID."&intGroupID=".$intGroupID);
 
 					$intGroupID_check = $intGroupAccepted = $intGroupUnsubscribed = 0;
 
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $obj_group->id));
+					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $intGroupID));
 
 					foreach($result_check as $r)
 					{
@@ -1512,11 +1607,11 @@ class mf_address_table extends mf_list_table
 						$intGroupUnsubscribed = $r->groupUnsubscribed;
 					}
 
-					if($obj_group->id == $intGroupID_check)
+					if($intGroupID == $intGroupID_check)
 					{
 						if($intGroupUnsubscribed == 0)
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_remove')."' rel='confirm'>
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm'>
 								<i class='fa fa-minus-square fa-lg red'></i>
 							</a>";
 
@@ -1526,11 +1621,11 @@ class mf_address_table extends mf_list_table
 
 								if(IS_SUPER_ADMIN)
 								{
-									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_accept')."' rel='confirm'>
+									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."' rel='confirm'>
 										<i class='fa fa-check-square fa-lg green' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
 									</a>";
 
-									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_resend')."' rel='confirm'>
+									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
 										<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
 									</a>";
 								}
@@ -1544,7 +1639,7 @@ class mf_address_table extends mf_list_table
 
 						else
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_remove')."' rel='confirm'>
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("The address has been unsubscribed", 'lang_address')."'>
 								<span class='fa-stack fa-lg'>
 									<i class='fa fa-envelope fa-stack-1x'></i>
 									<i class='fa fa-ban fa-stack-2x red'></i>
@@ -1555,7 +1650,7 @@ class mf_address_table extends mf_list_table
 
 					else
 					{
-						$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$obj_group->id, '_wpnonce_address_add')."'>
+						$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."'>
 							<i class='fa fa-plus-square fa-lg green'></i>
 						</a>";
 					}
