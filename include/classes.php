@@ -1319,6 +1319,13 @@ class mf_address_table extends mf_list_table
 				case 'no':
 					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID != '".$intGroupID."'";
 				break;
+
+				default:
+					if($strFilterAccepted != '' || $strFilterUnsubscribed != '')
+					{
+						$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID = '".$intGroupID."'";
+					}
+				break;
 			}
 
 			switch($strFilterAccepted)
@@ -1622,7 +1629,7 @@ class mf_address_table extends mf_list_table
 								if(IS_SUPER_ADMIN)
 								{
 									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."' rel='confirm'>
-										<i class='fa fa-check-square fa-lg green' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
+										<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
 									</a>";
 
 									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>

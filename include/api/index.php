@@ -21,7 +21,7 @@ if(get_current_user_id() > 0)
 
 		$tbl_group->select_data(array(
 			'select' => "addressFirstName, addressSurName, addressEmail, addressCellNo",
-			'limit' => 0, 'amount' => 10
+			'limit' => 0, 'amount' => 10,
 		));
 
 		foreach($tbl_group->data as $r)
