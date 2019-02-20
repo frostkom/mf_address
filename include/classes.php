@@ -464,6 +464,35 @@ class mf_address
 		return $erasers;
 	}
 
+	function filter_profile_fields($arr_fields)
+	{
+		global $wpdb;
+
+		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		{
+			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
+
+			if($wpdb->num_rows > 0)
+			{
+				$arr_data = array();
+
+				foreach($result as $r)
+				{
+					$strTableValue = $r->addressExtra;
+
+					if($strTableValue != '')
+					{
+						$arr_data[$strTableValue] = $strTableValue;
+					}
+				}
+
+				$arr_fields[] = array('type' => 'select', 'options' => $arr_data, 'name' => 'meta_address_permission', 'multiple' => true, 'text' => __("Address Permissions to Users", 'lang_address'));
+			}
+		}
+
+		return $arr_fields;
+	}
+
 	function wp_login()
 	{
 		@session_destroy();
