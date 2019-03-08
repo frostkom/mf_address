@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 15:22+0100\n"
+"POT-Creation-Date: 2019-02-28 18:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -24,8 +24,14 @@ msgstr "Etternavn"
 msgid "E-mail"
 msgstr "E-post"
 
+msgid "Update"
+msgstr "Oppdatere"
+
 msgid "Add"
 msgstr "Legg til"
+
+msgid "Import"
+msgstr "Importere"
 
 msgid "Unknown"
 msgstr "Ukjent"
@@ -33,14 +39,14 @@ msgstr "Ukjent"
 msgid "Add New"
 msgstr "Legg Til Ny"
 
-msgid "Import"
-msgstr "Importere"
-
 msgid "Choose Here"
 msgstr "Velg Her"
 
 msgid "All"
 msgstr "Alle"
+
+msgid "Trash"
+msgstr "Papirkurv"
 
 msgid "Name"
 msgstr "Navn"
@@ -48,9 +54,9 @@ msgstr "Navn"
 msgid "Contact"
 msgstr "Kontakt"
 
-msgid "Edit"
-msgstr "Redigere"
-
 msgid "Delete"
 msgstr "Slett"
+
+msgid "Edit"
+msgstr "Redigere"
 

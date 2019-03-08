@@ -114,7 +114,7 @@ class mf_address
 
 										else
 										{
-											do_log(sprintf(__("There were %d addresses with the same Social Security Number", 'lang_address')." (".$wpdb->last_query.")", $rows));
+											do_log(sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query));
 										}
 									}
 
@@ -134,7 +134,7 @@ class mf_address
 					break;
 
 					default:
-						do_log(__("I could not get a successful result from the API", 'lang_address')." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
+						do_log("I could not get a successful result from the API (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
 					break;
 				}
 			}
