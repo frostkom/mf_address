@@ -1694,9 +1694,9 @@ class mf_address_table extends mf_list_table
 			break;
 
 			case 'addressError':
-				if($item[$column_name] > 0)
+				if($item['addressError'] > 0)
 				{
-					$out .= "<i class='fa fa-times red' title='".$item[$column_name]." ".__("Errors", 'lang_address')."'></i>";
+					$out .= "<i class='fa fa-times red' title='".$item['addressError']." ".__("Errors", 'lang_address')."'></i>";
 				}
 			break;
 

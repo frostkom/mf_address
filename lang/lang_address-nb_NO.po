@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-28 18:50+0100\n"
+"POT-Creation-Date: 2019-03-22 09:52+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,11 +15,23 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+msgid "Address Book"
+msgstr "Adressebok"
+
+msgid "Information"
+msgstr "Informasjon"
+
 msgid "First Name"
 msgstr "Fornavn"
 
 msgid "Last Name"
 msgstr "Etternavn"
+
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+msgid "Mobile Number"
+msgstr "Mobilnummer"
 
 msgid "E-mail"
 msgstr "E-post"
@@ -30,6 +42,21 @@ msgstr "Oppdatere"
 msgid "Add"
 msgstr "Legg til"
 
+msgid "Settings"
+msgstr "Innstillinger"
+
+msgid "Public"
+msgstr "Offentlig"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "Zip Code"
+msgstr "Postnummer"
+
+msgid "Country"
+msgstr "Land"
+
 msgid "Import"
 msgstr "Importere"
 
@@ -39,8 +66,113 @@ msgstr "Ukjent"
 msgid "Add New"
 msgstr "Legg Til Ny"
 
+msgid "Accepted"
+msgstr "Akseptert"
+
+msgid "The address was deleted"
+msgstr "Adressen ble slettet"
+
+msgid "The address was removed from the group"
+msgstr "Adressen ble fjernet fra gruppen"
+
 msgid "Choose Here"
 msgstr "Velg Her"
+
+msgid "Algeria"
+msgstr "Algerie"
+
+msgid "American Samoa"
+msgstr "Amerikansk Samoa"
+
+msgid "Antarctica"
+msgstr "Antarktis"
+
+msgid "Austria"
+msgstr "Østerrike"
+
+msgid "Cameroon"
+msgstr "Kamerun"
+
+msgid "China"
+msgstr "Kina"
+
+msgid "Congo"
+msgstr "Kongo"
+
+msgid "Croatia"
+msgstr "Kroatia"
+
+msgid "Denmark"
+msgstr "Danmark"
+
+msgid "Estonia"
+msgstr "Estland"
+
+msgid "Ethiopia"
+msgstr "Etiopia"
+
+msgid "France"
+msgstr "Frankrike"
+
+msgid "France, Metropolitan"
+msgstr "Frankrike, Metropolitan"
+
+msgid "French Guiana"
+msgstr "Fransk Guyana"
+
+msgid "French Polynesia"
+msgstr "Fransk Polynesia"
+
+msgid "Germany"
+msgstr "Tyskland"
+
+msgid "Greenland"
+msgstr "Grønland"
+
+msgid "Iceland"
+msgstr "Island"
+
+msgid "Iraq"
+msgstr "Irak"
+
+msgid "Ireland"
+msgstr "Irland"
+
+msgid "Italy"
+msgstr "Italia"
+
+msgid "Lebanon"
+msgstr "Libanon"
+
+msgid "Lithuania"
+msgstr "Litauen"
+
+msgid "Madagascar"
+msgstr "Madagaskar"
+
+msgid "Maldives"
+msgstr "Maldivene"
+
+msgid "Morocco"
+msgstr "Marokko"
+
+msgid "Netherlands"
+msgstr "Nederland"
+
+msgid "Norway"
+msgstr "Norge"
+
+msgid "Poland"
+msgstr "Polen"
+
+msgid "Ukraine"
+msgstr "Ukraina"
+
+msgid "United States"
+msgstr "USA"
+
+msgid "Yugoslavia"
+msgstr "Jugoslavia"
 
 msgid "All"
 msgstr "Alle"
@@ -54,9 +186,21 @@ msgstr "Navn"
 msgid "Contact"
 msgstr "Kontakt"
 
+msgid "Extra"
+msgstr "Ekstra"
+
 msgid "Delete"
 msgstr "Slett"
 
 msgid "Edit"
 msgstr "Redigere"
+
+msgid "Not Public"
+msgstr "Ikke Offentlig"
+
+msgid "Do you want to send it again?"
+msgstr "Ønsker du å sende den på nytt?"
+
+msgid "Errors"
+msgstr "Feil"
 
