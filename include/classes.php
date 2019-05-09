@@ -539,7 +539,7 @@ class mf_address
 					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
 					$arr_columns = array('addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
 
-					$base_query = "SELECT * FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
+					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
 
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
@@ -576,6 +576,8 @@ class mf_address
 							if($query_set != '')
 							{
 								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET ".$query_set." WHERE addressID = '%d'", $id));
+
+								do_log(get_user_info(array('id' => get_current_user_id()))." Merged/Updated ".$id_prev." -> ".$id." (".$wpdb->last_query.")", 'notification');
 							}
 
 							do_action('merge_address', $id_prev, $id);
@@ -585,7 +587,12 @@ class mf_address
 
 						else
 						{
-							$error_text = __("I could not merge the addresses for you because no unique column or more than one unique column matched", 'lang_address');
+							$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
+
+							if(IS_SUPER_ADMIN)
+							{
+								$error_text .= " (".var_export($result_prev[0], true)." -> ".var_export($result[0], true).")";
+							}
 
 							break;
 						}
@@ -1484,7 +1491,6 @@ class mf_address_table extends mf_list_table
 		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
 
 		$obj_address = new mf_address();
-
 		$obj_address->do_merge(array('ids' => $arr_ids));
 
 		echo get_notification();
@@ -1599,9 +1605,7 @@ class mf_address_table extends mf_list_table
 							$str_ids .= ($str_ids != '' ? "," : "").$r->addressID;
 						}
 
-						//$actions['merge'] = "<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($intAddressPublic == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."</a>"; //&paged=".check_var('paged', 'int')."
-
-						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids, 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>
+						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."' rel='confirm'>
 							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."'></i>
 						</a>";
 					}
