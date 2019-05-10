@@ -1754,11 +1754,6 @@ class mf_address_import extends mf_import
 		$this->prefix = get_address_table_prefix();
 		$this->table = "address";
 
-		$this->actions = array(
-			'delete',
-			'import',
-		);
-
 		$this->columns = array(
 			'addressBirthDate' => __("Social Security Number", 'lang_address'),
 			'addressFirstName' => __("First Name", 'lang_address'),
