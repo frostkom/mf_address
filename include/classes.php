@@ -756,23 +756,16 @@ class mf_address
 					$done_text = __("I recovered the address for you", 'lang_address');
 				}
 
-				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id))
+				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
 				{
-					$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
+					//$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
-					if($wpdb->num_rows == 0)
+					//if($wpdb->num_rows == 0)
+					if($obj_group->has_address(array('address_id' => $this->id, 'group_id' => $this->group_id)) == false)
 					{
-						if(is_plugin_active('mf_group/index.php'))
-						{
-							$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
+						$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
-							$done_text = __("The address was added to the group", 'lang_address');
-						}
-
-						else
-						{
-							$error_text = __("The group plugin does not seam to be in use", 'lang_address');
-						}
+						$done_text = __("The address was added to the group", 'lang_address');
 					}
 
 					else
@@ -781,23 +774,17 @@ class mf_address
 					}
 				}
 
-				else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_remove'], 'address_remove_'.$this->id.'_'.$this->group_id))
+				else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_remove'], 'address_remove_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
 				{
-					$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
+					//$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
-					if($wpdb->num_rows > 0)
+					//if($wpdb->num_rows > 0)
+					if($obj_group->has_address(array('address_id' => $this->id, 'group_id' => $this->group_id)) == true)
 					{
-						if(is_plugin_active('mf_group/index.php'))
-						{
-							$obj_group->remove_address($this->id, $this->group_id);
+					
+						$obj_group->remove_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
-							$done_text = __("The address was removed from the group", 'lang_address');
-						}
-
-						else
-						{
-							$error_text = __("The group plugin does not seam to be in use", 'lang_address');
-						}
+						$done_text = __("The address was removed from the group", 'lang_address');
 					}
 
 					else
@@ -806,45 +793,29 @@ class mf_address
 					}
 				}
 
-				else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id))
+				else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
 				{
-					if(is_plugin_active('mf_group/index.php'))
+					if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
 					{
-						if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
-						{
-							$done_text = __("The address has been manually accepted", 'lang_address');
-						}
-
-						else
-						{
-							$error_text = __("I could not manually accept the address for you", 'lang_address');
-						}
+						$done_text = __("The address has been manually accepted", 'lang_address');
 					}
 
 					else
 					{
-						$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+						$error_text = __("I could not manually accept the address for you", 'lang_address');
 					}
 				}
 
-				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id))
+				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
 				{
-					if(is_plugin_active('mf_group/index.php'))
+					if($obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id)))
 					{
-						if($obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id)))
-						{
-							$done_text = __("The message was sent", 'lang_address');
-						}
-
-						else
-						{
-							$error_text = __("I could not send the message for you", 'lang_address');
-						}
+						$done_text = __("The message was sent", 'lang_address');
 					}
 
 					else
 					{
-						$error_text = __("The group plugin does not seam to be in use", 'lang_address');
+						$error_text = __("I could not send the message for you", 'lang_address');
 					}
 				}
 
@@ -1619,7 +1590,7 @@ class mf_address_table extends mf_list_table
 
 					foreach($resultGroups as $r)
 					{
-						$str_groups .= ($str_groups != '' ? ", " : "").$obj_group->get_name($r->groupID);
+						$str_groups .= ($str_groups != '' ? ", " : "").$obj_group->get_name(array('id' => $r->groupID));
 					}
 
 					if($str_groups != '')
