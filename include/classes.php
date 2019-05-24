@@ -781,7 +781,6 @@ class mf_address
 					//if($wpdb->num_rows > 0)
 					if($obj_group->has_address(array('address_id' => $this->id, 'group_id' => $this->group_id)) == true)
 					{
-					
 						$obj_group->remove_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
 						$done_text = __("The address was removed from the group", 'lang_address');
@@ -808,7 +807,7 @@ class mf_address
 
 				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
 				{
-					if($obj_group->send_acceptance_message(array('address_id' => $this->id, 'group_id' => $this->group_id)))
+					if($obj_group->send_acceptance_message(array('type' => 'reminder', 'address_id' => $this->id, 'group_id' => $this->group_id)))
 					{
 						$done_text = __("The message was sent", 'lang_address');
 					}
@@ -1636,9 +1635,12 @@ class mf_address_table extends mf_list_table
 										<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
 									</a>";
 
-									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
-										<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
-									</a>";
+									if(get_post_meta($intGroupID, 'group_reminder_subject') != '' && get_post_meta($intGroupID, 'group_reminder_text') != '')
+									{
+										$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
+											<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
+										</a>";
+									}
 								}
 
 								else
