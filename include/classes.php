@@ -54,8 +54,6 @@ class mf_address
 							case 'true':
 								if(isset($json['data']) && count($json['data']) > 0)
 								{
-									//do_log("Address API: ".$url." -> ".htmlspecialchars(var_export($json['data'], true)));
-
 									foreach($json['data'] as $item)
 									{
 										$strAddressBirthDate = $item['memberSSN'];
@@ -106,9 +104,7 @@ class mf_address
 											{
 												$intAddressID = $r->addressID;
 
-												$query = $wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID);
-
-												$wpdb->query($query);
+												$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
 											}
 										}
 
@@ -120,21 +116,18 @@ class mf_address
 
 									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
 								}
-
-								else
-								{
-									// Do nothing since there's nothing new
-								}
 							break;
 
 							default:
 								do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json, true)));
 							break;
 						}
+
+						do_log("I could not get a successful result from the Address API", 'trash');
 					break;
 
 					default:
-						do_log("I could not get a successful result from the API (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
+						do_log("I could not get a successful result from the Address API (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
 					break;
 				}
 			}
