@@ -44,6 +44,8 @@ class mf_address
 					'catch_head' => true,
 				));
 
+				$log_message = "I could not get a successful result from the Address API";
+
 				switch($headers['http_code'])
 				{
 					case 200:
@@ -123,11 +125,11 @@ class mf_address
 							break;
 						}
 
-						do_log("I could not get a successful result from the Address API", 'trash');
+						do_log($log_message, 'trash');
 					break;
 
 					default:
-						do_log("I could not get a successful result from the Address API (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
+						do_log($log_message." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
 					break;
 				}
 			}
