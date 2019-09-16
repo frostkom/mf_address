@@ -1373,7 +1373,7 @@ class mf_address_table extends mf_list_table
 
 		$arr_columns['addressSurName'] = __("Name", 'lang_address');
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
-		$arr_columns['addressIcons'] = __("Info", 'lang_address');
+		$arr_columns['addressIcons'] = __("Information", 'lang_address');
 
 		if($intGroupID > 0)
 		{
