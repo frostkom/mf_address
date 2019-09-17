@@ -664,7 +664,7 @@ class mf_address
 					{
 						if($this->email != '' && !is_domain_valid($this->email))
 						{
-							$error_text = __("The e-mail address doesn't seam to be valid because the response is that the domain doesn't have e-mails connected to it", 'lang_address');
+							$error_text = __("The e-mail address does not seam to be valid because the response is that the domain does not have e-mails connected to it", 'lang_address');
 						}
 
 						else
@@ -692,7 +692,7 @@ class mf_address
 
 								else
 								{
-									$error_text = __("I could not update the address for you. Either you don't have the permission to update this address or you didn't change any of the fields before saving", 'lang_address');
+									$error_text = __("I could not update the address for you. Either you do not have the permission to update this address or you did not change any of the fields before saving", 'lang_address');
 								}
 							}
 
@@ -783,7 +783,7 @@ class mf_address
 
 					else
 					{
-						$error_text = __("The address could not be removed since it didn't exist in the group", 'lang_address');
+						$error_text = __("The address could not be removed since it did not exist in the group", 'lang_address');
 					}
 				}
 
@@ -991,11 +991,11 @@ class mf_address
 			109	=> __("Kazakhstan", 'lang_address'),
 			110	=> __("Kenya", 'lang_address'),
 			111	=> __("Kiribati", 'lang_address'),
-			112	=> __("Korea, Democratic People's Republic of", 'lang_address'),
+			112	=> __("Korea, Democratic Peoples Republic of", 'lang_address'),
 			113	=> __("Korea, Republic of", 'lang_address'),
 			114	=> __("Kuwait", 'lang_address'),
 			115	=> __("Kyrgyzstan", 'lang_address'),
-			116	=> __("Lao People's Democratic Republic", 'lang_address'),
+			116	=> __("Lao Peoples Democratic Republic", 'lang_address'),
 			117	=> __("Latvia", 'lang_address'),
 			118	=> __("Lebanon", 'lang_address'),
 			119	=> __("Lesotho", 'lang_address'),
