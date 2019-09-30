@@ -285,7 +285,7 @@ class mf_address
 		}
 	}
 
-	function edit_user_profile_update($user_id)
+	function profile_update($user_id)
 	{
 		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
