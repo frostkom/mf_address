@@ -1279,8 +1279,8 @@ class mf_address_table extends mf_list_table
 
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."("
 				."addressBirthDate LIKE '%".$this->search."%'"
-				." OR addressFirstName LIKE '%".$this->search."%'"
-				." OR addressSurName LIKE '%".$this->search."%'"
+				//." OR addressFirstName LIKE '%".$this->search."%'"
+				//." OR addressSurName LIKE '%".$this->search."%'"
 				." OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$this->search."%'"
 				." OR addressFirstName LIKE '%".$first_name."%' AND addressSurName LIKE '%".$sur_name."%'"
 				." OR addressAddress LIKE '%".$this->search."%'"
@@ -1290,6 +1290,10 @@ class mf_address_table extends mf_list_table
 				." OR addressWorkNo LIKE '%".$this->search."%'"
 				." OR addressCellNo LIKE '%".$this->search."%'"
 				." OR addressEmail LIKE '%".$this->search."%'"
+				." OR SOUNDEX(CONCAT(addressFirstName, ' ', addressSurName)) = SOUNDEX('".$this->search."')"
+				." OR SOUNDEX(addressFirstName) = SOUNDEX('".$first_name."') AND SOUNDEX(addressSurName) = SOUNDEX('".$sur_name."')"
+				." OR SOUNDEX(addressAddress) = SOUNDEX('".$this->search."')"
+				." OR SOUNDEX(addressCity) = SOUNDEX('".$this->search."')"
 			.")";
 
 			/*$this->query_where .= ($this->query_where != '' ? " AND " : "")."("
