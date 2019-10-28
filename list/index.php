@@ -10,12 +10,12 @@ echo "<div class='wrap'>
 
 		/*if(is_plugin_active('mf_group/index.php') && $obj_group->id > 0)
 		{
-			echo "<span class='grey'>".$obj_group->get_name()."<a href='?page=mf_group/list/index.php'><i class='fa fa-times fa-lg red'></i></a></span>";
+			echo "<span class='grey'>".$obj_group->get_name()."<a href='".admin_url("admin.php?page=mf_group/list/index.php")."'><i class='fa fa-times fa-lg red'></i></a></span>";
 		}
 
 		else
 		{*/
-			echo "<a href='?page=mf_address/create/index.php' class='add-new-h2'>".__("Add New", 'lang_address')."</a>";
+			echo "<a href='".admin_url("admin.php?page=mf_address/create/index.php")."' class='add-new-h2'>".__("Add New", 'lang_address')."</a>";
 		//}
 
 	echo "</h2>"

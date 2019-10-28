@@ -584,10 +584,10 @@ class mf_address
 						{
 							$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
 
-							if(IS_SUPER_ADMIN)
+							/*if(IS_SUPER_ADMIN)
 							{
 								$error_text .= " (".var_export($result_prev[0], true)." -> ".var_export($result[0], true).")";
-							}
+							}*/
 
 							break;
 						}
