@@ -241,7 +241,7 @@ class mf_address
 		$menu_title = __("List", 'lang_address');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_start);
 
-		$menu_title = __("Add New", 'lang_address');
+		$menu_title = " - ".__("Add New", 'lang_address');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."create/index.php");
 
 		$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));

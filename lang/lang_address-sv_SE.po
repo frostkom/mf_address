@@ -70,7 +70,7 @@ msgid "Country"
 msgstr "Land"
 
 msgid "Add New"
-msgstr "Skapa ny"
+msgstr "Lägg till ny"
 
 msgid "Use Master Table on All Sites"
 msgstr "Använd huvudtabell för alla webbplatser"
