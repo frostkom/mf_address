@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-20 10:40+0100\n"
+"POT-Creation-Date: 2020-06-01 07:45+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -18,59 +18,11 @@ msgstr ""
 msgid "Address Book"
 msgstr "Adressbok"
 
-msgid "Member ID"
-msgstr "Medlemsnummer"
-
-msgid "Social Security Number"
-msgstr "Personnummer"
-
-msgid "First Name"
-msgstr "Förnamn"
-
-msgid "Last Name"
-msgstr "Efternamn"
-
-msgid "Phone Number"
-msgstr "Telefonnummer"
-
-msgid "Mobile Number"
-msgstr "Mobilnummer"
-
-msgid "Work Number"
-msgstr "Jobbnummer"
-
-msgid "E-mail"
-msgstr "E-post"
-
-msgid "Update"
-msgstr "Uppdatera"
-
-msgid "Add"
-msgstr "Lägg till"
-
-msgid "Created %s"
-msgstr "Skapad %s"
-
-msgid "Settings"
-msgstr "Inställningar"
-
-msgid "Public"
-msgstr "Publik"
-
-msgid "Address"
-msgstr "Adress"
-
-msgid "Zip Code"
-msgstr "Postnummer"
-
-msgid "City"
-msgstr "Ort"
-
-msgid "Country"
-msgstr "Land"
-
 msgid "Add New"
 msgstr "Lägg till ny"
+
+msgid "Import"
+msgstr "Importera"
 
 msgid "Use Master Table on All Sites"
 msgstr "Använd huvudtabell för alla webbplatser"
@@ -90,8 +42,8 @@ msgstr "API-länk"
 msgid "List"
 msgstr "Lista"
 
-msgid "Import"
-msgstr "Importera"
+msgid "Export"
+msgstr "Exportera"
 
 msgid "Address Permissions to Users"
 msgstr "Behörighet för användare till adressbok"
@@ -171,8 +123,14 @@ msgstr "Albanien"
 msgid "Algeria"
 msgstr "Algeriet"
 
+msgid "American Samoa"
+msgstr "Samoa"
+
 msgid "Antarctica"
 msgstr "Antarktis"
+
+msgid "Antigua and Barbuda"
+msgstr "Antigua och Barbuda"
 
 msgid "Armenia"
 msgstr "Armenien"
@@ -189,17 +147,29 @@ msgstr "Vitryssland"
 msgid "Belgium"
 msgstr "Belgien"
 
+msgid "Bosnia and Herzegowina"
+msgstr "Bosnien och Hercegovina"
+
 msgid "Brazil"
 msgstr "Brasilien"
 
+msgid "Brunei Darussalam"
+msgstr "Brunei"
+
 msgid "Bulgaria"
 msgstr "Bulgarien"
+
+msgid "Cambodia"
+msgstr "Kambodja"
 
 msgid "Cameroon"
 msgstr "Kamerun"
 
 msgid "Canada"
 msgstr "Kanada"
+
+msgid "Cape Verde"
+msgstr "Kap Verde"
 
 msgid "Cayman Islands"
 msgstr "Caymanöarna"
@@ -209,6 +179,9 @@ msgstr "Centralafrikanska republiken"
 
 msgid "China"
 msgstr "Kina"
+
+msgid "Christmas Island"
+msgstr "Julön"
 
 msgid "Congo"
 msgstr "Kongo"
@@ -315,6 +288,9 @@ msgstr "Litauen"
 msgid "Macedonia, The Former Yugoslav Republic of"
 msgstr "Makedonien"
 
+msgid "Madagascar"
+msgstr "Madagaskar"
+
 msgid "Maldives"
 msgstr "Maldiverna"
 
@@ -339,6 +315,9 @@ msgstr "Holland"
 msgid "Netherlands Antilles"
 msgstr "Holländska antillerna"
 
+msgid "New Caledonia"
+msgstr "Nya Kaledonien"
+
 msgid "New Zealand"
 msgstr "Nya Zeeland"
 
@@ -350,6 +329,9 @@ msgstr "Norfolköarna"
 
 msgid "Norway"
 msgstr "Norge"
+
+msgid "Papua New Guinea"
+msgstr "Papua Nya Guinea"
 
 msgid "Philippines"
 msgstr "Filippinerna"
@@ -363,8 +345,20 @@ msgstr "Rumänien"
 msgid "Russian Federation"
 msgstr "Ryssland"
 
+msgid "Saint Kitts and Nevis"
+msgstr "Saint Kitts och Nevis"
+
+msgid "Saint Vincent and the Grenadines"
+msgstr "Saint Vincent och Grenadinerna"
+
+msgid "Sao Tome and Principe"
+msgstr "São Tomé och Príncipe"
+
 msgid "Saudi Arabia"
 msgstr "Saudiarabien"
+
+msgid "Seychelles"
+msgstr "Seychellerna"
 
 msgid "Slovakia (Slovak Republic)"
 msgstr "Slovakien"
@@ -383,6 +377,9 @@ msgstr "Sydafrika"
 
 msgid "Spain"
 msgstr "Spanien"
+
+msgid "St. Pierre and Miquelon"
+msgstr "Saint-Pierre och Miquelon"
 
 msgid "Sweden"
 msgstr "Sverige"
@@ -405,6 +402,9 @@ msgstr "Tunisien"
 msgid "Turkey"
 msgstr "Turkiet"
 
+msgid "Turks and Caicos Islands"
+msgstr "Turks- och Caicosöarna"
+
 msgid "Ukraine"
 msgstr "Ukraina"
 
@@ -416,6 +416,12 @@ msgstr "Storbritannien"
 
 msgid "United States"
 msgstr "USA"
+
+msgid "Vatican City State (Holy See)"
+msgstr "Vatikanstaten"
+
+msgid "Wallis and Futuna Islands"
+msgstr "Wallis- och Futunaöarna"
 
 msgid "Western Sahara"
 msgstr "Västra Sahara"
@@ -431,6 +437,9 @@ msgstr "Papperskorg"
 
 msgid "Name"
 msgstr "Namn"
+
+msgid "Address"
+msgstr "Adress"
 
 msgid "Contact"
 msgstr "Kontakt"
@@ -449,6 +458,9 @@ msgstr "Redigera"
 
 msgid "Recover"
 msgstr "Återställ"
+
+msgid "Public"
+msgstr "Publik"
 
 msgid "Not Public"
 msgstr "Inte publik"
@@ -470,4 +482,52 @@ msgstr "Adressen har avregistrerats"
 
 msgid "Errors"
 msgstr "Fel"
+
+msgid "Social Security Number"
+msgstr "Personnummer"
+
+msgid "First Name"
+msgstr "Förnamn"
+
+msgid "Last Name"
+msgstr "Efternamn"
+
+msgid "Zip Code"
+msgstr "Postnummer"
+
+msgid "City"
+msgstr "Ort"
+
+msgid "Country"
+msgstr "Land"
+
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+msgid "Work Number"
+msgstr "Jobbnummer"
+
+msgid "Mobile Number"
+msgstr "Mobilnummer"
+
+msgid "E-mail"
+msgstr "E-post"
+
+msgid "Member ID"
+msgstr "Medlemsnummer"
+
+msgid "Columns"
+msgstr "Kolumner"
+
+msgid "Update"
+msgstr "Uppdatera"
+
+msgid "Add"
+msgstr "Lägg till"
+
+msgid "Created %s"
+msgstr "Skapad %s"
+
+msgid "Settings"
+msgstr "Inställningar"
 

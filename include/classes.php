@@ -248,6 +248,12 @@ class mf_address
 
 		$menu_title = __("Import", 'lang_address');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
+
+		if(IS_SUPER_ADMIN)
+		{
+			$menu_title = __("Export", 'lang_address');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."export/index.php");
+		}
 	}
 
 	function edit_user_profile($user)
@@ -1784,5 +1790,137 @@ class mf_address_import extends mf_import
 	{
 		$obj_group = new mf_group();
 		$obj_group->add_address(array('address_id' => $id, 'group_id' => get_option('setting_group_import')));
+	}
+}
+
+class mf_address_export extends mf_export
+{
+	function get_defaults()
+	{
+		$this->plugin = "mf_address";
+		$this->name = "address";
+	}
+
+	function get_columns_for_select()
+	{
+		$arr_data = array(
+			'addressMemberID' => __("Member ID", 'lang_address'),
+			'addressBirthDate' => __("Social Security Number", 'lang_address'),
+			'addressFirstName' => __("First Name", 'lang_address'),
+			'addressSurName' => __("Last Name", 'lang_address'),
+			'addressCo' => __("C/O", 'lang_address'),
+			'addressAddress' => __("Address", 'lang_address'),
+			'addressZipCode' => __("Zip Code", 'lang_address'),
+			'addressCity' => __("City", 'lang_address'),
+			'addressCountry' => __("Country", 'lang_address'),
+			'addressTelNo' => __("Phone Number", 'lang_address'),
+			'addressWorkNo' => __("Work Number", 'lang_address'),
+			'addressCellNo' => __("Mobile Number", 'lang_address'),
+			'addressEmail' => __("E-mail", 'lang_address'),
+			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')),
+		);
+
+		return $arr_data;
+	}
+
+	function fetch_request_xtra()
+	{
+		$this->arr_columns = check_var('arrColumns');
+	}
+
+	function get_export_data()
+	{
+		global $wpdb;
+
+		if(!is_array($this->arr_columns) || count($this->arr_columns) == 0 || in_array('addressCountry', $this->arr_columns))
+		{
+			$obj_address = new mf_address();
+			$arr_countries = $obj_address->get_countries_for_select();
+		}
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT ".(count($this->arr_columns) > 0 ? implode(", ", $this->arr_columns) : "*")." FROM ".get_address_table_prefix()."address WHERE addressDeleted = '%d' GROUP BY addressID ORDER BY addressPublic ASC, addressSurName ASC, addressFirstName ASC", 0), ARRAY_A);
+
+		if($wpdb->num_rows > 0)
+		{
+			$arr_columns = $this->get_columns_for_select();
+
+			$data_temp = array();
+
+			foreach($arr_columns as $key => $value)
+			{
+				if(!is_array($this->arr_columns) || count($this->arr_columns) == 0 || in_array($key, $this->arr_columns))
+				{
+					$data_temp[] = $arr_columns[$key];
+				}
+			}
+
+			$this->data[] = $data_temp;
+
+			foreach($result as $r)
+			{
+				$data_temp = array();
+
+				$has_data = false;
+
+				foreach($arr_columns as $key => $value)
+				{
+					if(!is_array($this->arr_columns) || count($this->arr_columns) == 0 || in_array($key, $this->arr_columns))
+					{
+						switch($key)
+						{
+							case 'addressMemberID':
+							case 'addressZipCode':
+								if($r[$key] > 0)
+								{
+									$data_temp[] = $r[$key];
+
+									$has_data = true;
+								}
+
+								else
+								{
+									$data_temp[] = "";
+								}
+							break;
+
+							case 'addressCountry':
+								if($r[$key] > 0 && isset($arr_countries[$r[$key]]))
+								{
+									$data_temp[] = $arr_countries[$r[$key]];
+
+									$has_data = true;
+								}
+
+								else
+								{
+									$data_temp[] = "";
+								}
+							break;
+
+							default:
+								if($r[$key] != '')
+								{
+									$has_data = true;
+								}
+
+								$data_temp[] = $r[$key];
+							break;
+						}
+					}
+				}
+
+				if($has_data == true)
+				{
+					$this->data[] = $data_temp;
+				}
+			}
+		}
+	}
+
+	function get_form_xtra()
+	{
+		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
+
+		return $out;
 	}
 }
