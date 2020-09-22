@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 3.1.1
+Version: 3.1.2
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -30,6 +30,7 @@ if(is_admin())
 	add_action('init', array($obj_address, 'init'));
 
 	add_action('admin_init', array($obj_address, 'settings_address'));
+	add_action('admin_init', array($obj_address, 'admin_init'), 0);
 	add_action('admin_menu', array($obj_address, 'admin_menu'));
 
 	add_action('show_user_profile', array($obj_address, 'edit_user_profile'));
@@ -52,7 +53,7 @@ else
 add_action('wp_login', array($obj_address, 'wp_login'));
 add_action('wp_logout', array($obj_address, 'wp_login'));
 
-load_plugin_textdomain('lang_address', false, dirname(plugin_basename(__FILE__)).'/lang/');
+load_plugin_textdomain('lang_address', false, dirname(plugin_basename(__FILE__))."/lang/");
 
 function activate_address()
 {
