@@ -15,47 +15,49 @@ $type = check_var('type', 'char');
 
 if(get_current_user_id() > 0)
 {
-	if($type == "table_search")
+	switch($type)
 	{
-		$tbl_group = new mf_address_table();
+		case 'table_search':
+			$tbl_group = new mf_address_table();
 
-		$tbl_group->select_data(array(
-			'select' => "addressFirstName, addressSurName, addressEmail, addressCellNo",
-			'limit' => 0, 'amount' => 10,
-		));
+			$tbl_group->select_data(array(
+				'select' => "addressFirstName, addressSurName, addressEmail, addressCellNo",
+				'limit' => 0, 'amount' => 10,
+			));
 
-		foreach($tbl_group->data as $r)
-		{
-			$strAddressFirstName = $r['addressFirstName'];
-			$strAddressSurName = $r['addressSurName'];
-			$strAddressEmail = $r['addressEmail'];
-			$strAddressCellNo = $r['addressCellNo'];
-
-			if($strAddressFirstName != '' && $strAddressSurName != '')
+			foreach($tbl_group->data as $r)
 			{
-				$strAddressName = $strAddressFirstName." ".$strAddressSurName;
-			}
+				$strAddressFirstName = $r['addressFirstName'];
+				$strAddressSurName = $r['addressSurName'];
+				$strAddressEmail = $r['addressEmail'];
+				$strAddressCellNo = $r['addressCellNo'];
 
-			else if($strAddressEmail != '')
-			{
-				$strAddressName = $strAddressEmail;
-			}
+				if($strAddressFirstName != '' && $strAddressSurName != '')
+				{
+					$strAddressName = $strAddressFirstName." ".$strAddressSurName;
+				}
 
-			else if($strAddressCellNo != '')
-			{
-				$strAddressName = $strAddressCellNo;
-			}
+				else if($strAddressEmail != '')
+				{
+					$strAddressName = $strAddressEmail;
+				}
 
-			else
-			{
-				$strAddressName = "(".__("Unknown", 'lang_address').")";
-			}
+				else if($strAddressCellNo != '')
+				{
+					$strAddressName = $strAddressCellNo;
+				}
 
-			if(!in_array($strAddressName, $json_output))
-			{
-				$json_output[] = $strAddressName;
+				else
+				{
+					$strAddressName = "(".__("Unknown", 'lang_address').")";
+				}
+
+				if(!in_array($strAddressName, $json_output))
+				{
+					$json_output[] = $strAddressName;
+				}
 			}
-		}
+		break;
 	}
 }
 
