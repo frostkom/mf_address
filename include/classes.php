@@ -719,7 +719,12 @@ class mf_address
 								$type = 'created';
 							}
 
-							if($this->id > 0)
+							if($error_text != '')
+							{
+								// Do nothing. Just let it pass and get_notification() after save_data() will display the message
+							}
+
+							else if($this->id > 0)
 							{
 								mf_redirect(admin_url("admin.php?page=mf_address/list/index.php&".$type));
 							}
