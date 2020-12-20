@@ -13,7 +13,7 @@ $json_output = array();
 
 $type = check_var('type', 'char');
 
-if(get_current_user_id() > 0)
+if(is_user_logged_in())
 {
 	switch($type)
 	{
