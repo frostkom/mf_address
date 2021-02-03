@@ -326,7 +326,7 @@ class mf_address
 
 	function restrict_manage_posts($post_type)
 	{
-		if($post_type == "wp_address" && is_plugin_active('mf_group/index.php'))
+		if($post_type == "wp_address" && is_plugin_active("mf_group/index.php"))
 		{
 			$obj_group = new mf_group();
 
@@ -662,7 +662,7 @@ class mf_address
 	{
 		global $wpdb, $error_text, $done_text;
 
-		if(is_plugin_active('mf_group/index.php'))
+		if(is_plugin_active("mf_group/index.php"))
 		{
 			$obj_group = new mf_group();
 		}
@@ -770,7 +770,7 @@ class mf_address
 					$done_text = __("I recovered the address for you", 'lang_address');
 				}
 
-				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
+				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
 				{
 					//$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
@@ -788,7 +788,7 @@ class mf_address
 					}
 				}
 
-				else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_remove'], 'address_remove_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
+				else if(isset($_GET['btnAddressRemove']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_remove'], 'address_remove_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
 				{
 					//$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $this->id, $this->group_id));
 
@@ -806,7 +806,7 @@ class mf_address
 					}
 				}
 
-				else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
+				else if(isset($_GET['btnAddressAccept']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_accept'], 'address_accept_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
 				{
 					if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
 					{
@@ -819,7 +819,7 @@ class mf_address
 					}
 				}
 
-				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id) && is_plugin_active('mf_group/index.php'))
+				else if(isset($_GET['btnAddressResend']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_resend'], 'address_resend_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
 				{
 					if($obj_group->send_acceptance_message(array('type' => 'reminder', 'address_id' => $this->id, 'group_id' => $this->group_id)))
 					{

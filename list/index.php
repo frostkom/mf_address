@@ -8,7 +8,7 @@ echo "<div class='wrap'>
 	<h2>"
 		.__("Address Book", 'lang_address');
 
-		/*if(is_plugin_active('mf_group/index.php') && $obj_group->id > 0)
+		/*if(is_plugin_active("mf_group/index.php") && $obj_group->id > 0)
 		{
 			echo "<span class='grey'>".$obj_group->get_name()."<a href='".admin_url("admin.php?page=mf_group/list/index.php")."'><i class='fa fa-times fa-lg red'></i></a></span>";
 		}
