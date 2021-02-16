@@ -6,7 +6,7 @@ echo $obj_address->save_data();
 
 echo "<div class='wrap'>
 	<h2>"
-		.__("Address Book", 'lang_address');
+		.__("Address Book", $obj_address->lang_key);
 
 		/*if(is_plugin_active("mf_group/index.php") && $obj_group->id > 0)
 		{
@@ -15,7 +15,7 @@ echo "<div class='wrap'>
 
 		else
 		{*/
-			echo "<a href='".admin_url("admin.php?page=mf_address/create/index.php")."' class='add-new-h2'>".__("Add New", 'lang_address')."</a>";
+			echo "<a href='".admin_url("admin.php?page=mf_address/create/index.php")."' class='add-new-h2'>".__("Add New", $obj_address->lang_key)."</a>";
 		//}
 
 	echo "</h2>"

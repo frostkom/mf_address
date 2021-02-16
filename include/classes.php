@@ -20,6 +20,7 @@ class mf_address
 		$this->type = isset($data['type']) ? $data['type'] : '';
 
 		$this->meta_prefix = 'mf_address_';
+		$this->lang_key = 'lang_address';
 	}
 
 	function cron_base()
@@ -97,7 +98,6 @@ class mf_address
 										}
 
 										$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s", $strAddressBirthDate));
-
 										$rows = $wpdb->num_rows;
 
 										if($rows == 1)
@@ -146,9 +146,9 @@ class mf_address
 		}
 
 		$labels = array(
-			'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
-			'singular_name' => _x(__("Address Book", 'lang_address'), 'post type singular name'),
-			'menu_name' => __("Address Book", 'lang_address')
+			'name' => _x(__("Address Book", $this->lang_key), 'post type general name'),
+			'singular_name' => _x(__("Address Book", $this->lang_key), 'post type singular name'),
+			'menu_name' => __("Address Book", $this->lang_key)
 		);
 
 		$args = array(
@@ -170,13 +170,13 @@ class mf_address
 
 		if(IS_SUPER_ADMIN && is_multisite())
 		{
-			$arr_settings['setting_address_site_wide'] = __("Use Master Table on All Sites", 'lang_address');
+			$arr_settings['setting_address_site_wide'] = __("Use Master Table on All Sites", $this->lang_key);
 		}
 
-		$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", 'lang_address');
-		$arr_settings['setting_address_extra_profile'] = __("Display Settings for Extra in Profile", 'lang_address');
-		$arr_settings['setting_address_display_member_id'] = __("Display Member ID", 'lang_address');
-		$arr_settings['setting_address_api_url'] = __("API URL", 'lang_address');
+		$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", $this->lang_key);
+		$arr_settings['setting_address_extra_profile'] = __("Display Settings for Extra in Profile", $this->lang_key);
+		$arr_settings['setting_address_display_member_id'] = __("Display Member ID", $this->lang_key);
+		$arr_settings['setting_address_api_url'] = __("API URL", $this->lang_key);
 
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 	}
@@ -185,7 +185,7 @@ class mf_address
 	{
 		$setting_key = get_setting_key(__FUNCTION__);
 
-		echo settings_header($setting_key, __("Address Book", 'lang_address'));
+		echo settings_header($setting_key, __("Address Book", $this->lang_key));
 	}
 
 	function setting_address_site_wide_callback()
@@ -243,23 +243,23 @@ class mf_address
 		$menu_start = $menu_root."list/index.php";
 		$menu_capability = override_capability(array('page' => $menu_start, 'default' => 'edit_posts'));
 
-		$menu_title = __("Address Book", 'lang_address');
+		$menu_title = __("Address Book", $this->lang_key);
 		add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt', 99);
 
-		$menu_title = __("List", 'lang_address');
+		$menu_title = __("List", $this->lang_key);
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_start);
 
-		$menu_title = " - ".__("Add New", 'lang_address');
+		$menu_title = " - ".__("Add New", $this->lang_key);
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."create/index.php");
 
 		$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
 
-		$menu_title = __("Import", 'lang_address');
+		$menu_title = __("Import", $this->lang_key);
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
 
 		if(IS_SUPER_ADMIN)
 		{
-			$menu_title = __("Export", 'lang_address');
+			$menu_title = __("Export", $this->lang_key);
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."export/index.php");
 		}
 	}
@@ -291,7 +291,7 @@ class mf_address
 
 				echo "<table class='form-table'>
 					<tr class='user-address-permission-wrap'>
-						<th><label for='meta_address_permission'>".__("Address Permissions to Users", 'lang_address').":</label></th>
+						<th><label for='meta_address_permission'>".__("Address Permissions to Users", $this->lang_key).":</label></th>
 						<td>".show_select(array('data' => $arr_data, 'name' => 'meta_address_permission[]', 'value' => $meta_address_permission))."</td>
 					</tr>
 				</table>";
@@ -346,7 +346,7 @@ class mf_address
 
 					if($obj_group->amount_in_group(array('id' => $intGroupID)) > 0) //$strFilterAccepted == '' && $strFilterUnsubscribed == '' && 
 					{
-						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Part of Group", 'lang_address'))), 'name' => 'strFilterIsMember', 'value' => $strFilterIsMember));
+						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Part of Group", $this->lang_key))), 'name' => 'strFilterIsMember', 'value' => $strFilterIsMember));
 					}
 
 					else
@@ -356,7 +356,7 @@ class mf_address
 
 					if($obj_group->amount_in_group(array('id' => $intGroupID, 'accepted' => 0)) > 0) //$strFilterIsMember != 'no' && 
 					{
-						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Accepted", 'lang_address'))), 'name' => 'strFilterAccepted', 'value' => $strFilterAccepted));
+						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Accepted", $this->lang_key))), 'name' => 'strFilterAccepted', 'value' => $strFilterAccepted));
 					}
 
 					else
@@ -366,7 +366,7 @@ class mf_address
 
 					if($obj_group->amount_in_group(array('id' => $intGroupID, 'unsubscribed' => 1)) > 0) //$strFilterIsMember != 'no' && 
 					{
-						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Unsubscribed", 'lang_address'))), 'name' => 'strFilterUnsubscribed', 'value' => $strFilterUnsubscribed));
+						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Unsubscribed", $this->lang_key))), 'name' => 'strFilterUnsubscribed', 'value' => $strFilterUnsubscribed));
 					}
 
 					else
@@ -391,7 +391,7 @@ class mf_address
 		$page = (int)$page;
 
 		$group_id = $this->meta_prefix;
-		$group_label = __("Address Book", 'lang_address');
+		$group_label = __("Address Book", $this->lang_key);
 
 		$export_items = array();
 
@@ -429,7 +429,7 @@ class mf_address
 	function wp_privacy_personal_data_exporters($exporters)
 	{
 		$exporters[$this->meta_prefix] = array(
-			'exporter_friendly_name' => __("Address Book", 'lang_address'),
+			'exporter_friendly_name' => __("Address Book", $this->lang_key),
 			'callback' => array($this, 'export_personal_data'),
 		);
 
@@ -466,7 +466,7 @@ class mf_address
 	function wp_privacy_personal_data_erasers($erasers)
 	{
 		$erasers[$this->meta_prefix] = array(
-			'eraser_friendly_name' => __("Address Book", 'lang_address'),
+			'eraser_friendly_name' => __("Address Book", $this->lang_key),
 			'callback' => array($this, 'erase_personal_data'),
 		);
 
@@ -495,7 +495,7 @@ class mf_address
 					}
 				}
 
-				$arr_fields[] = array('type' => 'select', 'options' => $arr_data, 'name' => 'meta_address_permission', 'multiple' => true, 'text' => __("Address Permissions to Users", 'lang_address'));
+				$arr_fields[] = array('type' => 'select', 'options' => $arr_data, 'name' => 'meta_address_permission', 'multiple' => true, 'text' => __("Address Permissions to Users", $this->lang_key));
 			}
 		}
 
@@ -596,7 +596,7 @@ class mf_address
 
 						else
 						{
-							$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
+							$error_text = __("I could not merge the addresses for you because no unique column matched", $this->lang_key);
 
 							/*if(IS_SUPER_ADMIN)
 							{
@@ -609,7 +609,7 @@ class mf_address
 
 					else
 					{
-						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", 'lang_address');
+						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", $this->lang_key);
 
 						break;
 					}
@@ -618,12 +618,12 @@ class mf_address
 				$id_prev = $id;
 			}
 
-			$done_text = __("The addresses have been merged succesfully", 'lang_address');
+			$done_text = __("The addresses have been merged succesfully", $this->lang_key);
 		}
 
 		else
 		{
-			$error_text = __("You have to choose at least two addresses to merge", 'lang_address');
+			$error_text = __("You have to choose at least two addresses to merge", $this->lang_key);
 		}
 	}
 
@@ -678,7 +678,7 @@ class mf_address
 					{
 						if($this->email != '' && !is_domain_valid($this->email))
 						{
-							$error_text = __("The e-mail address does not seam to be valid because the response is that the domain does not have e-mails connected to it", 'lang_address');
+							$error_text = __("The e-mail address does not seam to be valid because the response is that the domain does not have e-mails connected to it", $this->lang_key);
 						}
 
 						else
@@ -706,7 +706,7 @@ class mf_address
 
 								else
 								{
-									$error_text = __("I could not update the address for you. Either you do not have the permission to update this address or you did not change any of the fields before saving", 'lang_address');
+									$error_text = __("I could not update the address for you. Either you do not have the permission to update this address or you did not change any of the fields before saving", $this->lang_key);
 								}
 							}
 
@@ -731,7 +731,7 @@ class mf_address
 
 							else
 							{
-								$error_text = __("The information was not submitted, contact an admin if this persists", 'lang_address');
+								$error_text = __("The information was not submitted, contact an admin if this persists", $this->lang_key);
 
 								do_log("Address Error: ".$wpdb->last_query);
 							}
@@ -745,7 +745,7 @@ class mf_address
 				{
 					$this->trash();
 
-					$done_text = __("The address was deleted", 'lang_address');
+					$done_text = __("The address was deleted", $this->lang_key);
 				}
 
 				else if(isset($_REQUEST['btnAddressMerge']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_merge'], 'address_merge_'.$this->id))
@@ -767,7 +767,7 @@ class mf_address
 				{
 					$this->recover();
 
-					$done_text = __("I recovered the address for you", 'lang_address');
+					$done_text = __("I recovered the address for you", $this->lang_key);
 				}
 
 				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
@@ -776,12 +776,12 @@ class mf_address
 					{
 						$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
-						$done_text = __("The address was added to the group", 'lang_address');
+						$done_text = __("The address was added to the group", $this->lang_key);
 					}
 
 					else
 					{
-						$error_text = __("The address already exists in the group", 'lang_address');
+						$error_text = __("The address already exists in the group", $this->lang_key);
 					}
 				}
 
@@ -791,12 +791,12 @@ class mf_address
 					{
 						$obj_group->remove_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
-						$done_text = __("The address was removed from the group", 'lang_address');
+						$done_text = __("The address was removed from the group", $this->lang_key);
 					}
 
 					else
 					{
-						$error_text = __("The address could not be removed since it did not exist in the group", 'lang_address');
+						$error_text = __("The address could not be removed since it did not exist in the group", $this->lang_key);
 					}
 				}
 
@@ -804,12 +804,12 @@ class mf_address
 				{
 					if($obj_group->accept_address(array('address_id' => $this->id, 'group_id' => $this->group_id)))
 					{
-						$done_text = __("The address has been manually accepted", 'lang_address');
+						$done_text = __("The address has been manually accepted", $this->lang_key);
 					}
 
 					else
 					{
-						$error_text = __("I could not manually accept the address for you", 'lang_address');
+						$error_text = __("I could not manually accept the address for you", $this->lang_key);
 					}
 				}
 
@@ -817,23 +817,23 @@ class mf_address
 				{
 					if($obj_group->send_acceptance_message(array('type' => 'reminder', 'address_id' => $this->id, 'group_id' => $this->group_id)))
 					{
-						$done_text = __("The message was sent", 'lang_address');
+						$done_text = __("The message was sent", $this->lang_key);
 					}
 
 					else
 					{
-						$error_text = __("I could not send the message for you", 'lang_address');
+						$error_text = __("I could not send the message for you", $this->lang_key);
 					}
 				}
 
 				else if(isset($_GET['created']))
 				{
-					$done_text = __("The address was created", 'lang_address');
+					$done_text = __("The address was created", $this->lang_key);
 				}
 
 				else if(isset($_GET['updated']))
 				{
-					$done_text = __("The address was updated", 'lang_address');
+					$done_text = __("The address was updated", $this->lang_key);
 				}
 			break;
 		}
@@ -889,249 +889,249 @@ class mf_address
 
 		if($data['add_choose_here'] == true)
 		{
-			$arr_data[''] = "-- ".__("Choose Here", 'lang_address')." --";
+			$arr_data[''] = "-- ".__("Choose Here", $this->lang_key)." --";
 		}
 
 		$arr_countries = array(
-			1 	=> __("Afghanistan", 'lang_address'),
-			2 	=> __("Albania", 'lang_address'),
-			3 	=> __("Algeria", 'lang_address'),
-			4	=> __("American Samoa", 'lang_address'),
-			5	=> __("Andorra", 'lang_address'),
-			6	=> __("Angola", 'lang_address'),
-			7	=> __("Anguilla", 'lang_address'),
-			8	=> __("Antarctica", 'lang_address'),
-			9	=> __("Antigua and Barbuda", 'lang_address'),
-			10	=> __("Argentina", 'lang_address'),
-			11	=> __("Armenia", 'lang_address'),
-			12	=> __("Aruba", 'lang_address'),
-			13	=> __("Australia", 'lang_address'),
-			14	=> __("Austria", 'lang_address'),
-			15	=> __("Azerbaijan", 'lang_address'),
-			16	=> __("Bahamas", 'lang_address'),
-			17	=> __("Bahrain", 'lang_address'),
-			18	=> __("Bangladesh", 'lang_address'),
-			19	=> __("Barbados", 'lang_address'),
-			20	=> __("Belarus", 'lang_address'),
-			21	=> __("Belgium", 'lang_address'),
-			22	=> __("Belize", 'lang_address'),
-			23	=> __("Benin", 'lang_address'),
-			24	=> __("Bermuda", 'lang_address'),
-			25	=> __("Bhutan", 'lang_address'),
-			26	=> __("Bolivia", 'lang_address'),
-			27	=> __("Bosnia and Herzegowina", 'lang_address'),
-			28	=> __("Botswana", 'lang_address'),
-			29	=> __("Bouvet Island", 'lang_address'),
-			30	=> __("Brazil", 'lang_address'),
-			31	=> __("British Indian Ocean Territory", 'lang_address'),
-			32	=> __("Brunei Darussalam", 'lang_address'),
-			33	=> __("Bulgaria", 'lang_address'),
-			34	=> __("Burkina Faso", 'lang_address'),
-			35	=> __("Burundi", 'lang_address'),
-			36	=> __("Cambodia", 'lang_address'),
-			37	=> __("Cameroon", 'lang_address'),
-			38	=> __("Canada", 'lang_address'),
-			39	=> __("Cape Verde", 'lang_address'),
-			40	=> __("Cayman Islands", 'lang_address'),
-			41	=> __("Central African Republic", 'lang_address'),
-			42	=> __("Chad", 'lang_address'),
-			43	=> __("Chile", 'lang_address'),
-			44	=> __("China", 'lang_address'),
-			45	=> __("Christmas Island", 'lang_address'),
-			46	=> __("Cocos (Keeling) Islands", 'lang_address'),
-			47	=> __("Colombia", 'lang_address'),
-			48	=> __("Comoros", 'lang_address'),
-			49	=> __("Congo", 'lang_address'),
-			50	=> __("Cook Islands", 'lang_address'),
-			51	=> __("Costa Rica", 'lang_address'),
-			52	=> __("Cote D'Ivoire", 'lang_address'),
-			53	=> __("Croatia", 'lang_address'),
-			54	=> __("Cuba", 'lang_address'),
-			55	=> __("Cyprus", 'lang_address'),
-			56	=> __("Czech Republic", 'lang_address'),
-			57	=> __("Denmark", 'lang_address'),
-			58	=> __("Djibouti", 'lang_address'),
-			59	=> __("Dominica", 'lang_address'),
-			60	=> __("Dominican Republic", 'lang_address'),
-			61	=> __("East Timor", 'lang_address'),
-			62	=> __("Ecuador", 'lang_address'),
-			63	=> __("Egypt", 'lang_address'),
-			64	=> __("El Salvador", 'lang_address'),
-			65	=> __("Equatorial Guinea", 'lang_address'),
-			66	=> __("Eritrea", 'lang_address'),
-			67	=> __("Estonia", 'lang_address'),
-			68	=> __("Ethiopia", 'lang_address'),
-			69	=> __("Falkland Islands (Malvinas)", 'lang_address'),
-			70	=> __("Faroe Islands", 'lang_address'),
-			71	=> __("Fiji", 'lang_address'),
-			72	=> __("Finland", 'lang_address'),
-			73	=> __("France", 'lang_address'),
-			74	=> __("France, Metropolitan", 'lang_address'),
-			75	=> __("French Guiana", 'lang_address'),
-			76	=> __("French Polynesia", 'lang_address'),
-			77	=> __("French Southern Territories", 'lang_address'),
-			78	=> __("Gabon", 'lang_address'),
-			79	=> __("Gambia", 'lang_address'),
-			80	=> __("Georgia", 'lang_address'),
-			81	=> __("Germany", 'lang_address'),
-			82	=> __("Ghana", 'lang_address'),
-			83	=> __("Gibraltar", 'lang_address'),
-			84	=> __("Greece", 'lang_address'),
-			85	=> __("Greenland", 'lang_address'),
-			86	=> __("Grenada", 'lang_address'),
-			87	=> __("Guadeloupe", 'lang_address'),
-			88	=> __("Guam", 'lang_address'),
-			89	=> __("Guatemala", 'lang_address'),
-			90	=> __("Guinea", 'lang_address'),
-			91	=> __("Guinea-bissau", 'lang_address'),
-			92	=> __("Guyana", 'lang_address'),
-			93	=> __("Haiti", 'lang_address'),
-			94	=> __("Heard and Mc Donald Islands", 'lang_address'),
-			95	=> __("Honduras", 'lang_address'),
-			96	=> __("Hong Kong", 'lang_address'),
-			97	=> __("Hungary", 'lang_address'),
-			98	=> __("Iceland", 'lang_address'),
-			99	=> __("India", 'lang_address'),
-			100	=> __("Indonesia", 'lang_address'),
-			101	=> __("Iran (Islamic Republic of)", 'lang_address'),
-			102	=> __("Iraq", 'lang_address'),
-			103	=> __("Ireland", 'lang_address'),
-			104	=> __("Israel", 'lang_address'),
-			105	=> __("Italy", 'lang_address'),
-			106	=> __("Jamaica", 'lang_address'),
-			107	=> __("Japan", 'lang_address'),
-			108	=> __("Jordan", 'lang_address'),
-			109	=> __("Kazakhstan", 'lang_address'),
-			110	=> __("Kenya", 'lang_address'),
-			111	=> __("Kiribati", 'lang_address'),
-			112	=> __("Korea, Democratic Peoples Republic of", 'lang_address'),
-			113	=> __("Korea, Republic of", 'lang_address'),
-			114	=> __("Kuwait", 'lang_address'),
-			115	=> __("Kyrgyzstan", 'lang_address'),
-			116	=> __("Lao Peoples Democratic Republic", 'lang_address'),
-			117	=> __("Latvia", 'lang_address'),
-			118	=> __("Lebanon", 'lang_address'),
-			119	=> __("Lesotho", 'lang_address'),
-			120	=> __("Liberia", 'lang_address'),
-			121	=> __("Libyan Arab Jamahiriya", 'lang_address'),
-			122	=> __("Liechtenstein", 'lang_address'),
-			123	=> __("Lithuania", 'lang_address'),
-			124	=> __("Luxembourg", 'lang_address'),
-			125	=> __("Macau", 'lang_address'),
-			126	=> __("Macedonia, The Former Yugoslav Republic of", 'lang_address'),
-			127	=> __("Madagascar", 'lang_address'),
-			128	=> __("Malawi", 'lang_address'),
-			129	=> __("Malaysia", 'lang_address'),
-			130	=> __("Maldives", 'lang_address'),
-			131	=> __("Mali", 'lang_address'),
-			132	=> __("Malta", 'lang_address'),
-			133	=> __("Marshall Islands", 'lang_address'),
-			134	=> __("Martinique", 'lang_address'),
-			135	=> __("Mauritania", 'lang_address'),
-			136	=> __("Mauritius", 'lang_address'),
-			137	=> __("Mayotte", 'lang_address'),
-			138	=> __("Mexico", 'lang_address'),
-			139	=> __("Micronesia, Federated States of", 'lang_address'),
-			140	=> __("Moldova, Republic of", 'lang_address'),
-			141	=> __("Monaco", 'lang_address'),
-			142	=> __("Mongolia", 'lang_address'),
-			143	=> __("Montserrat", 'lang_address'),
-			144	=> __("Morocco", 'lang_address'),
-			145	=> __("Mozambique", 'lang_address'),
-			146	=> __("Myanmar", 'lang_address'),
-			147	=> __("Namibia", 'lang_address'),
-			148	=> __("Nauru", 'lang_address'),
-			149	=> __("Nepal", 'lang_address'),
-			150	=> __("Netherlands", 'lang_address'),
-			151	=> __("Netherlands Antilles", 'lang_address'),
-			152	=> __("New Caledonia", 'lang_address'),
-			153	=> __("New Zealand", 'lang_address'),
-			154	=> __("Nicaragua", 'lang_address'),
-			155	=> __("Niger", 'lang_address'),
-			156	=> __("Nigeria", 'lang_address'),
-			157	=> __("Niue", 'lang_address'),
-			158	=> __("Norfolk Island", 'lang_address'),
-			159	=> __("Northern Mariana Islands", 'lang_address'),
-			160	=> __("Norway", 'lang_address'),
-			161	=> __("Oman", 'lang_address'),
-			162	=> __("Pakistan", 'lang_address'),
-			163	=> __("Palau", 'lang_address'),
-			164	=> __("Panama", 'lang_address'),
-			165	=> __("Papua New Guinea", 'lang_address'),
-			166	=> __("Paraguay", 'lang_address'),
-			167	=> __("Peru", 'lang_address'),
-			168	=> __("Philippines", 'lang_address'),
-			169	=> __("Pitcairn", 'lang_address'),
-			170	=> __("Poland", 'lang_address'),
-			171	=> __("Portugal", 'lang_address'),
-			172	=> __("Puerto Rico", 'lang_address'),
-			173	=> __("Qatar", 'lang_address'),
-			174	=> __("Reunion", 'lang_address'),
-			175	=> __("Romania", 'lang_address'),
-			176	=> __("Russian Federation", 'lang_address'),
-			177	=> __("Rwanda", 'lang_address'),
-			178	=> __("Saint Kitts and Nevis", 'lang_address'),
-			179	=> __("Saint Lucia", 'lang_address'),
-			180	=> __("Saint Vincent and the Grenadines", 'lang_address'),
-			181	=> __("Samoa", 'lang_address'),
-			182	=> __("San Marino", 'lang_address'),
-			183	=> __("Sao Tome and Principe", 'lang_address'),
-			184	=> __("Saudi Arabia", 'lang_address'),
-			185	=> __("Senegal", 'lang_address'),
-			186	=> __("Seychelles", 'lang_address'),
-			187	=> __("Sierra Leone", 'lang_address'),
-			188	=> __("Singapore", 'lang_address'),
-			189	=> __("Slovakia (Slovak Republic)", 'lang_address'),
-			190	=> __("Slovenia", 'lang_address'),
-			191	=> __("Solomon Islands", 'lang_address'),
-			192	=> __("Somalia", 'lang_address'),
-			193	=> __("South Africa", 'lang_address'),
-			194	=> __("South Georgia and the South Sandwich Islands", 'lang_address'),
-			195	=> __("Spain", 'lang_address'),
-			196	=> __("Sri Lanka", 'lang_address'),
-			197	=> __("St. Helena", 'lang_address'),
-			198	=> __("St. Pierre and Miquelon", 'lang_address'),
-			199	=> __("Sudan", 'lang_address'),
-			200	=> __("Suriname", 'lang_address'),
-			201	=> __("Svalbard", 'lang_address'),
-			202	=> __("Swaziland", 'lang_address'),
-			203	=> __("Sweden", 'lang_address'),
-			204	=> __("Switzerland", 'lang_address'),
-			205	=> __("Syrian Arab Republic", 'lang_address'),
-			206	=> __("Taiwan", 'lang_address'),
-			207	=> __("Tajikistan", 'lang_address'),
-			208	=> __("Tanzania, United Republic of", 'lang_address'),
-			209	=> __("Thailand", 'lang_address'),
-			210	=> __("Togo", 'lang_address'),
-			211	=> __("Tokelau", 'lang_address'),
-			212	=> __("Tonga", 'lang_address'),
-			213	=> __("Trinidad and Tobago", 'lang_address'),
-			214	=> __("Tunisia", 'lang_address'),
-			215	=> __("Turkey", 'lang_address'),
-			216	=> __("Turkmenistan", 'lang_address'),
-			217	=> __("Turks and Caicos Islands", 'lang_address'),
-			218	=> __("Tuvalu", 'lang_address'),
-			219	=> __("Uganda", 'lang_address'),
-			220	=> __("Ukraine", 'lang_address'),
-			221	=> __("United Arab Emirates", 'lang_address'),
-			222	=> __("United Kingdom", 'lang_address'),
-			223	=> __("United States", 'lang_address'),
-			224	=> __("United States Minor Outlying Islands", 'lang_address'),
-			225	=> __("Uruguay", 'lang_address'),
-			226	=> __("Uzbekistan", 'lang_address'),
-			227	=> __("Vanuatu", 'lang_address'),
-			228	=> __("Vatican City State (Holy See)", 'lang_address'),
-			229	=> __("Venezuela", 'lang_address'),
-			230	=> __("Vietnam", 'lang_address'),
-			231	=> __("Virgin Islands (British)", 'lang_address'),
-			232	=> __("Virgin Islands (U.S.)", 'lang_address'),
-			233	=> __("Wallis and Futuna Islands", 'lang_address'),
-			234	=> __("Western Sahara", 'lang_address'),
-			235	=> __("Yemen", 'lang_address'),
-			236	=> __("Yugoslavia", 'lang_address'),
-			237	=> __("Zaire", 'lang_address'),
-			238	=> __("Zambia", 'lang_address'),
-			239	=> __("Zimbabwe", 'lang_address'),
+			1 	=> __("Afghanistan", $this->lang_key),
+			2 	=> __("Albania", $this->lang_key),
+			3 	=> __("Algeria", $this->lang_key),
+			4	=> __("American Samoa", $this->lang_key),
+			5	=> __("Andorra", $this->lang_key),
+			6	=> __("Angola", $this->lang_key),
+			7	=> __("Anguilla", $this->lang_key),
+			8	=> __("Antarctica", $this->lang_key),
+			9	=> __("Antigua and Barbuda", $this->lang_key),
+			10	=> __("Argentina", $this->lang_key),
+			11	=> __("Armenia", $this->lang_key),
+			12	=> __("Aruba", $this->lang_key),
+			13	=> __("Australia", $this->lang_key),
+			14	=> __("Austria", $this->lang_key),
+			15	=> __("Azerbaijan", $this->lang_key),
+			16	=> __("Bahamas", $this->lang_key),
+			17	=> __("Bahrain", $this->lang_key),
+			18	=> __("Bangladesh", $this->lang_key),
+			19	=> __("Barbados", $this->lang_key),
+			20	=> __("Belarus", $this->lang_key),
+			21	=> __("Belgium", $this->lang_key),
+			22	=> __("Belize", $this->lang_key),
+			23	=> __("Benin", $this->lang_key),
+			24	=> __("Bermuda", $this->lang_key),
+			25	=> __("Bhutan", $this->lang_key),
+			26	=> __("Bolivia", $this->lang_key),
+			27	=> __("Bosnia and Herzegowina", $this->lang_key),
+			28	=> __("Botswana", $this->lang_key),
+			29	=> __("Bouvet Island", $this->lang_key),
+			30	=> __("Brazil", $this->lang_key),
+			31	=> __("British Indian Ocean Territory", $this->lang_key),
+			32	=> __("Brunei Darussalam", $this->lang_key),
+			33	=> __("Bulgaria", $this->lang_key),
+			34	=> __("Burkina Faso", $this->lang_key),
+			35	=> __("Burundi", $this->lang_key),
+			36	=> __("Cambodia", $this->lang_key),
+			37	=> __("Cameroon", $this->lang_key),
+			38	=> __("Canada", $this->lang_key),
+			39	=> __("Cape Verde", $this->lang_key),
+			40	=> __("Cayman Islands", $this->lang_key),
+			41	=> __("Central African Republic", $this->lang_key),
+			42	=> __("Chad", $this->lang_key),
+			43	=> __("Chile", $this->lang_key),
+			44	=> __("China", $this->lang_key),
+			45	=> __("Christmas Island", $this->lang_key),
+			46	=> __("Cocos (Keeling) Islands", $this->lang_key),
+			47	=> __("Colombia", $this->lang_key),
+			48	=> __("Comoros", $this->lang_key),
+			49	=> __("Congo", $this->lang_key),
+			50	=> __("Cook Islands", $this->lang_key),
+			51	=> __("Costa Rica", $this->lang_key),
+			52	=> __("Cote D'Ivoire", $this->lang_key),
+			53	=> __("Croatia", $this->lang_key),
+			54	=> __("Cuba", $this->lang_key),
+			55	=> __("Cyprus", $this->lang_key),
+			56	=> __("Czech Republic", $this->lang_key),
+			57	=> __("Denmark", $this->lang_key),
+			58	=> __("Djibouti", $this->lang_key),
+			59	=> __("Dominica", $this->lang_key),
+			60	=> __("Dominican Republic", $this->lang_key),
+			61	=> __("East Timor", $this->lang_key),
+			62	=> __("Ecuador", $this->lang_key),
+			63	=> __("Egypt", $this->lang_key),
+			64	=> __("El Salvador", $this->lang_key),
+			65	=> __("Equatorial Guinea", $this->lang_key),
+			66	=> __("Eritrea", $this->lang_key),
+			67	=> __("Estonia", $this->lang_key),
+			68	=> __("Ethiopia", $this->lang_key),
+			69	=> __("Falkland Islands (Malvinas)", $this->lang_key),
+			70	=> __("Faroe Islands", $this->lang_key),
+			71	=> __("Fiji", $this->lang_key),
+			72	=> __("Finland", $this->lang_key),
+			73	=> __("France", $this->lang_key),
+			74	=> __("France, Metropolitan", $this->lang_key),
+			75	=> __("French Guiana", $this->lang_key),
+			76	=> __("French Polynesia", $this->lang_key),
+			77	=> __("French Southern Territories", $this->lang_key),
+			78	=> __("Gabon", $this->lang_key),
+			79	=> __("Gambia", $this->lang_key),
+			80	=> __("Georgia", $this->lang_key),
+			81	=> __("Germany", $this->lang_key),
+			82	=> __("Ghana", $this->lang_key),
+			83	=> __("Gibraltar", $this->lang_key),
+			84	=> __("Greece", $this->lang_key),
+			85	=> __("Greenland", $this->lang_key),
+			86	=> __("Grenada", $this->lang_key),
+			87	=> __("Guadeloupe", $this->lang_key),
+			88	=> __("Guam", $this->lang_key),
+			89	=> __("Guatemala", $this->lang_key),
+			90	=> __("Guinea", $this->lang_key),
+			91	=> __("Guinea-bissau", $this->lang_key),
+			92	=> __("Guyana", $this->lang_key),
+			93	=> __("Haiti", $this->lang_key),
+			94	=> __("Heard and Mc Donald Islands", $this->lang_key),
+			95	=> __("Honduras", $this->lang_key),
+			96	=> __("Hong Kong", $this->lang_key),
+			97	=> __("Hungary", $this->lang_key),
+			98	=> __("Iceland", $this->lang_key),
+			99	=> __("India", $this->lang_key),
+			100	=> __("Indonesia", $this->lang_key),
+			101	=> __("Iran (Islamic Republic of)", $this->lang_key),
+			102	=> __("Iraq", $this->lang_key),
+			103	=> __("Ireland", $this->lang_key),
+			104	=> __("Israel", $this->lang_key),
+			105	=> __("Italy", $this->lang_key),
+			106	=> __("Jamaica", $this->lang_key),
+			107	=> __("Japan", $this->lang_key),
+			108	=> __("Jordan", $this->lang_key),
+			109	=> __("Kazakhstan", $this->lang_key),
+			110	=> __("Kenya", $this->lang_key),
+			111	=> __("Kiribati", $this->lang_key),
+			112	=> __("Korea, Democratic Peoples Republic of", $this->lang_key),
+			113	=> __("Korea, Republic of", $this->lang_key),
+			114	=> __("Kuwait", $this->lang_key),
+			115	=> __("Kyrgyzstan", $this->lang_key),
+			116	=> __("Lao Peoples Democratic Republic", $this->lang_key),
+			117	=> __("Latvia", $this->lang_key),
+			118	=> __("Lebanon", $this->lang_key),
+			119	=> __("Lesotho", $this->lang_key),
+			120	=> __("Liberia", $this->lang_key),
+			121	=> __("Libyan Arab Jamahiriya", $this->lang_key),
+			122	=> __("Liechtenstein", $this->lang_key),
+			123	=> __("Lithuania", $this->lang_key),
+			124	=> __("Luxembourg", $this->lang_key),
+			125	=> __("Macau", $this->lang_key),
+			126	=> __("Macedonia, The Former Yugoslav Republic of", $this->lang_key),
+			127	=> __("Madagascar", $this->lang_key),
+			128	=> __("Malawi", $this->lang_key),
+			129	=> __("Malaysia", $this->lang_key),
+			130	=> __("Maldives", $this->lang_key),
+			131	=> __("Mali", $this->lang_key),
+			132	=> __("Malta", $this->lang_key),
+			133	=> __("Marshall Islands", $this->lang_key),
+			134	=> __("Martinique", $this->lang_key),
+			135	=> __("Mauritania", $this->lang_key),
+			136	=> __("Mauritius", $this->lang_key),
+			137	=> __("Mayotte", $this->lang_key),
+			138	=> __("Mexico", $this->lang_key),
+			139	=> __("Micronesia, Federated States of", $this->lang_key),
+			140	=> __("Moldova, Republic of", $this->lang_key),
+			141	=> __("Monaco", $this->lang_key),
+			142	=> __("Mongolia", $this->lang_key),
+			143	=> __("Montserrat", $this->lang_key),
+			144	=> __("Morocco", $this->lang_key),
+			145	=> __("Mozambique", $this->lang_key),
+			146	=> __("Myanmar", $this->lang_key),
+			147	=> __("Namibia", $this->lang_key),
+			148	=> __("Nauru", $this->lang_key),
+			149	=> __("Nepal", $this->lang_key),
+			150	=> __("Netherlands", $this->lang_key),
+			151	=> __("Netherlands Antilles", $this->lang_key),
+			152	=> __("New Caledonia", $this->lang_key),
+			153	=> __("New Zealand", $this->lang_key),
+			154	=> __("Nicaragua", $this->lang_key),
+			155	=> __("Niger", $this->lang_key),
+			156	=> __("Nigeria", $this->lang_key),
+			157	=> __("Niue", $this->lang_key),
+			158	=> __("Norfolk Island", $this->lang_key),
+			159	=> __("Northern Mariana Islands", $this->lang_key),
+			160	=> __("Norway", $this->lang_key),
+			161	=> __("Oman", $this->lang_key),
+			162	=> __("Pakistan", $this->lang_key),
+			163	=> __("Palau", $this->lang_key),
+			164	=> __("Panama", $this->lang_key),
+			165	=> __("Papua New Guinea", $this->lang_key),
+			166	=> __("Paraguay", $this->lang_key),
+			167	=> __("Peru", $this->lang_key),
+			168	=> __("Philippines", $this->lang_key),
+			169	=> __("Pitcairn", $this->lang_key),
+			170	=> __("Poland", $this->lang_key),
+			171	=> __("Portugal", $this->lang_key),
+			172	=> __("Puerto Rico", $this->lang_key),
+			173	=> __("Qatar", $this->lang_key),
+			174	=> __("Reunion", $this->lang_key),
+			175	=> __("Romania", $this->lang_key),
+			176	=> __("Russian Federation", $this->lang_key),
+			177	=> __("Rwanda", $this->lang_key),
+			178	=> __("Saint Kitts and Nevis", $this->lang_key),
+			179	=> __("Saint Lucia", $this->lang_key),
+			180	=> __("Saint Vincent and the Grenadines", $this->lang_key),
+			181	=> __("Samoa", $this->lang_key),
+			182	=> __("San Marino", $this->lang_key),
+			183	=> __("Sao Tome and Principe", $this->lang_key),
+			184	=> __("Saudi Arabia", $this->lang_key),
+			185	=> __("Senegal", $this->lang_key),
+			186	=> __("Seychelles", $this->lang_key),
+			187	=> __("Sierra Leone", $this->lang_key),
+			188	=> __("Singapore", $this->lang_key),
+			189	=> __("Slovakia (Slovak Republic)", $this->lang_key),
+			190	=> __("Slovenia", $this->lang_key),
+			191	=> __("Solomon Islands", $this->lang_key),
+			192	=> __("Somalia", $this->lang_key),
+			193	=> __("South Africa", $this->lang_key),
+			194	=> __("South Georgia and the South Sandwich Islands", $this->lang_key),
+			195	=> __("Spain", $this->lang_key),
+			196	=> __("Sri Lanka", $this->lang_key),
+			197	=> __("St. Helena", $this->lang_key),
+			198	=> __("St. Pierre and Miquelon", $this->lang_key),
+			199	=> __("Sudan", $this->lang_key),
+			200	=> __("Suriname", $this->lang_key),
+			201	=> __("Svalbard", $this->lang_key),
+			202	=> __("Swaziland", $this->lang_key),
+			203	=> __("Sweden", $this->lang_key),
+			204	=> __("Switzerland", $this->lang_key),
+			205	=> __("Syrian Arab Republic", $this->lang_key),
+			206	=> __("Taiwan", $this->lang_key),
+			207	=> __("Tajikistan", $this->lang_key),
+			208	=> __("Tanzania, United Republic of", $this->lang_key),
+			209	=> __("Thailand", $this->lang_key),
+			210	=> __("Togo", $this->lang_key),
+			211	=> __("Tokelau", $this->lang_key),
+			212	=> __("Tonga", $this->lang_key),
+			213	=> __("Trinidad and Tobago", $this->lang_key),
+			214	=> __("Tunisia", $this->lang_key),
+			215	=> __("Turkey", $this->lang_key),
+			216	=> __("Turkmenistan", $this->lang_key),
+			217	=> __("Turks and Caicos Islands", $this->lang_key),
+			218	=> __("Tuvalu", $this->lang_key),
+			219	=> __("Uganda", $this->lang_key),
+			220	=> __("Ukraine", $this->lang_key),
+			221	=> __("United Arab Emirates", $this->lang_key),
+			222	=> __("United Kingdom", $this->lang_key),
+			223	=> __("United States", $this->lang_key),
+			224	=> __("United States Minor Outlying Islands", $this->lang_key),
+			225	=> __("Uruguay", $this->lang_key),
+			226	=> __("Uzbekistan", $this->lang_key),
+			227	=> __("Vanuatu", $this->lang_key),
+			228	=> __("Vatican City State (Holy See)", $this->lang_key),
+			229	=> __("Venezuela", $this->lang_key),
+			230	=> __("Vietnam", $this->lang_key),
+			231	=> __("Virgin Islands (British)", $this->lang_key),
+			232	=> __("Virgin Islands (U.S.)", $this->lang_key),
+			233	=> __("Wallis and Futuna Islands", $this->lang_key),
+			234	=> __("Western Sahara", $this->lang_key),
+			235	=> __("Yemen", $this->lang_key),
+			236	=> __("Yugoslavia", $this->lang_key),
+			237	=> __("Zaire", $this->lang_key),
+			238	=> __("Zambia", $this->lang_key),
+			239	=> __("Zimbabwe", $this->lang_key),
 		);
 
 		foreach($arr_countries as $key => $value)
@@ -1279,7 +1279,7 @@ class mf_address_table extends mf_list_table
 
 	function init_fetch()
 	{
-		global $wpdb, $obj_group;
+		global $wpdb, $obj_address, $obj_group;
 
 		if(!IS_ADMIN)
 		{
@@ -1379,8 +1379,8 @@ class mf_address_table extends mf_list_table
 		$this->set_views(array(
 			'db_field' => 'addressDeleted',
 			'types' => array(
-				'0' => __("All", 'lang_address'),
-				'1' => __("Trash", 'lang_address'),
+				'0' => __("All", $obj_address->lang_key),
+				'1' => __("Trash", $obj_address->lang_key),
 			),
 		));
 
@@ -1388,9 +1388,9 @@ class mf_address_table extends mf_list_table
 			'cb' => '<input type="checkbox">',
 		);
 
-		$arr_columns['addressSurName'] = __("Name", 'lang_address');
-		$arr_columns['addressAddress'] = __("Address", 'lang_address');
-		$arr_columns['addressIcons'] = __("Information", 'lang_address');
+		$arr_columns['addressSurName'] = __("Name", $obj_address->lang_key);
+		$arr_columns['addressAddress'] = __("Address", $obj_address->lang_key);
+		$arr_columns['addressIcons'] = __("Information", $obj_address->lang_key);
 
 		if($intGroupID > 0)
 		{
@@ -1398,8 +1398,8 @@ class mf_address_table extends mf_list_table
 		}
 
 		$arr_columns['addressError'] = "";
-		$arr_columns['addressContact'] = __("Contact", 'lang_address');
-		$arr_columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
+		$arr_columns['addressContact'] = __("Contact", $obj_address->lang_key);
+		$arr_columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", $obj_address->lang_key));
 
 		$this->set_columns($arr_columns);
 
@@ -1416,18 +1416,20 @@ class mf_address_table extends mf_list_table
 
 	function get_bulk_actions()
 	{
+		global $obj_address;
+
 		$actions = array();
 
 		if(isset($this->columns['cb']))
 		{
 			if(!isset($_GET['addressDeleted']) || $_GET['addressDeleted'] != 1)
 			{
-				$actions['delete'] = __("Delete", 'lang_address');
+				$actions['delete'] = __("Delete", $obj_address->lang_key);
 			}
 
 			if(IS_ADMIN)
 			{
-				$actions['merge'] = __("Merge", 'lang_address');
+				$actions['merge'] = __("Merge", $obj_address->lang_key);
 			}
 		}
 
@@ -1453,11 +1455,16 @@ class mf_address_table extends mf_list_table
 
 	function bulk_delete()
 	{
+		global $obj_address;
+
 		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
 
 		if(count($arr_ids) > 0)
 		{
-			$obj_address = new mf_address();
+			if(!isset($obj_address))
+			{
+				$obj_address = new mf_address();
+			}
 
 			foreach($arr_ids as $id)
 			{
@@ -1468,11 +1475,15 @@ class mf_address_table extends mf_list_table
 
 	function bulk_merge()
 	{
-		global $error_text, $done_text;
+		global $obj_address, $error_text, $done_text;
 
 		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
 
-		$obj_address = new mf_address();
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
+
 		$obj_address->do_merge(array('ids' => $arr_ids));
 
 		echo get_notification();
@@ -1480,11 +1491,14 @@ class mf_address_table extends mf_list_table
 
 	function column_default($item, $column_name)
 	{
-		global $wpdb, $obj_group;
+		global $wpdb, $obj_address, $obj_group;
 
 		$out = "";
 
-		$obj_address = new mf_address();
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
 
 		$intAddressID = $item['addressID'];
 
@@ -1498,6 +1512,7 @@ class mf_address_table extends mf_list_table
 				$intAddressMemberID = $item['addressMemberID'];
 				$intAddressDeleted = $item['addressDeleted'];
 				$dteAddressDeletedDate = $item['addressDeletedDate'];
+				$intAddressDeletedID = $item['addressDeletedID'];
 
 				if($strAddressFirstName != '' || $strAddressSurName != '')
 				{
@@ -1506,7 +1521,7 @@ class mf_address_table extends mf_list_table
 
 				else
 				{
-					$strAddressName = "(".__("Unknown", 'lang_address').")";
+					$strAddressName = "(".__("Unknown", $obj_address->lang_key).")";
 				}
 
 				$post_edit_url = admin_url("admin.php?page=mf_address/create/index.php&intAddressID=".$intAddressID);
@@ -1518,15 +1533,15 @@ class mf_address_table extends mf_list_table
 				{
 					if($intAddressPublic == 0 || IS_ADMIN)
 					{
-						$actions['edit'] = "<a href='".$post_edit_url."'>".__("Edit", 'lang_address')."</a>";
+						$actions['edit'] = "<a href='".$post_edit_url."'>".__("Edit", $obj_address->lang_key)."</a>";
 
-						$actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", 'lang_address')."</a>";
+						$actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", $obj_address->lang_key)."</a>";
 					}
 				}
 
 				else
 				{
-					$actions['recover'] = "<a href='".wp_nonce_url($list_url."&btnAddressRecover", 'address_recover_'.$intAddressID, '_wpnonce_address_recover')."'>".__("Recover", 'lang_address')."</a>";
+					$actions['recover'] = "<a href='".wp_nonce_url($list_url."&btnAddressRecover", 'address_recover_'.$intAddressID, '_wpnonce_address_recover')."' title='".sprintf(__("Removed %s by %s", $obj_address->lang_key), format_date($dteAddressDeletedDate), get_user_info(array('id' => $intAddressDeletedID)))."'>".__("Recover", $obj_address->lang_key)."</a>";
 				}
 
 				if($intAddressMemberID > 0)
@@ -1561,7 +1576,6 @@ class mf_address_table extends mf_list_table
 
 				if($intAddressCountry > 0)
 				{
-					//$obj_address = new mf_address();
 					$arr_countries = $obj_address->get_countries_for_select();
 
 					if(isset($arr_countries[$intAddressCountry]))
@@ -1574,7 +1588,7 @@ class mf_address_table extends mf_list_table
 			case 'addressIcons':
 				if(IS_ADMIN)
 				{
-					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", 'lang_address') : __("Not Public", 'lang_address'))."'></i>";
+					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", $obj_address->lang_key) : __("Not Public", $obj_address->lang_key))."'></i>";
 
 					if($obj_address->has_duplicate(array('item' => $item)))
 					{
@@ -1588,7 +1602,7 @@ class mf_address_table extends mf_list_table
 						}
 
 						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."' rel='confirm'>
-							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."'></i>
+							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", $obj_address->lang_key), count($obj_address->result_duplicate))."'></i>
 						</a>";
 					}
 				}
@@ -1644,7 +1658,7 @@ class mf_address_table extends mf_list_table
 								if(IS_SUPER_ADMIN)
 								{
 									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."' rel='confirm'>
-										<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
+										<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", $obj_address->lang_key)." ".__("Do you want to manually accept it?", $obj_address->lang_key)."'></i>
 									</a>";
 
 									if(get_post_meta($intGroupID, 'group_reminder_subject') != '' && get_post_meta($intGroupID, 'group_reminder_text') != '')
@@ -1652,7 +1666,7 @@ class mf_address_table extends mf_list_table
 										if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group) && $obj_group->is_allowed2send_reminder(array('address_id' => $intAddressID, 'group_id' => $intGroupID)))
 										{
 											$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
-												<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
+												<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", $obj_address->lang_key)." ".__("Do you want to send it again?", $obj_address->lang_key)."'></i>
 											</a>";
 										}
 									}
@@ -1660,14 +1674,14 @@ class mf_address_table extends mf_list_table
 
 								else
 								{
-									$out .= "<i class='fa fa-info-circle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')."'></i>";
+									$out .= "<i class='fa fa-info-circle fa-lg' title='".__("The address has not been accepted to this group yet.", $obj_address->lang_key)."'></i>";
 								}
 							}
 						}
 
 						else
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("The address has been unsubscribed", 'lang_address')."'>
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("The address has been unsubscribed", $obj_address->lang_key)."'>
 								<span class='fa-stack fa-lg'>
 									<i class='fa fa-envelope fa-stack-1x'></i>
 									<i class='fa fa-ban fa-stack-2x red'></i>
@@ -1688,7 +1702,7 @@ class mf_address_table extends mf_list_table
 			case 'addressError':
 				if($item['addressError'] > 0)
 				{
-					$out .= "<i class='fa fa-times red' title='".$item['addressError']." ".__("Errors", 'lang_address')."'></i>";
+					$out .= "<i class='fa fa-times red' title='".$item['addressError']." ".__("Errors", $obj_address->lang_key)."'></i>";
 				}
 			break;
 
@@ -1739,23 +1753,25 @@ class mf_address_import extends mf_import
 {
 	function get_defaults()
 	{
+		global $obj_address;
+
 		$this->prefix = get_address_table_prefix();
 		$this->table = "address";
 
 		$this->columns = array(
-			'addressBirthDate' => __("Social Security Number", 'lang_address'),
-			'addressFirstName' => __("First Name", 'lang_address'),
-			'addressSurName' => __("Last Name", 'lang_address'),
-			'addressCo' => __("C/O", 'lang_address'),
-			'addressAddress' => __("Address", 'lang_address'),
-			'addressZipCode' => __("Zip Code", 'lang_address'),
-			'addressCity' => __("City", 'lang_address'),
-			'addressCountry' => __("Country", 'lang_address'),
-			'addressTelNo' => __("Phone Number", 'lang_address'),
-			'addressWorkNo' => __("Work Number", 'lang_address'),
-			'addressCellNo' => __("Mobile Number", 'lang_address'),
-			'addressEmail' => __("E-mail", 'lang_address'),
-			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')),
+			'addressBirthDate' => __("Social Security Number", $obj_address->lang_key),
+			'addressFirstName' => __("First Name", $obj_address->lang_key),
+			'addressSurName' => __("Last Name", $obj_address->lang_key),
+			'addressCo' => __("C/O", $obj_address->lang_key),
+			'addressAddress' => __("Address", $obj_address->lang_key),
+			'addressZipCode' => __("Zip Code", $obj_address->lang_key),
+			'addressCity' => __("City", $obj_address->lang_key),
+			'addressCountry' => __("Country", $obj_address->lang_key),
+			'addressTelNo' => __("Phone Number", $obj_address->lang_key),
+			'addressWorkNo' => __("Work Number", $obj_address->lang_key),
+			'addressCellNo' => __("Mobile Number", $obj_address->lang_key),
+			'addressEmail' => __("E-mail", $obj_address->lang_key),
+			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", $obj_address->lang_key)),
 		);
 
 		$this->unique_columns = array(
@@ -1772,7 +1788,7 @@ class mf_address_import extends mf_import
 
 		if(get_option('setting_address_display_member_id', 'yes') == 'yes')
 		{
-			$this->columns['addressMemberID'] = __("Member ID", 'lang_address');
+			$this->columns['addressMemberID'] = __("Member ID", $obj_address->lang_key);
 
 			$this->unique_columns[] = 'addressMemberID';
 		}
@@ -1780,13 +1796,17 @@ class mf_address_import extends mf_import
 
 	function if_more_than_one($id)
 	{
-		global $wpdb;
+		global $wpdb, $obj_address;
 
 		$wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' LIMIT 0, 1", $id));
 
 		if($wpdb->num_rows == 0)
 		{
-			$obj_address = new mf_address();
+			if(!isset($obj_address))
+			{
+				$obj_address = new mf_address();
+			}
+
 			$obj_address->trash($id);
 
 			$this->rows_deleted++;
@@ -1810,21 +1830,23 @@ class mf_address_export extends mf_export
 
 	function get_columns_for_select()
 	{
+		global $obj_address;
+
 		$arr_data = array(
-			'addressMemberID' => __("Member ID", 'lang_address'),
-			'addressBirthDate' => __("Social Security Number", 'lang_address'),
-			'addressFirstName' => __("First Name", 'lang_address'),
-			'addressSurName' => __("Last Name", 'lang_address'),
-			'addressCo' => __("C/O", 'lang_address'),
-			'addressAddress' => __("Address", 'lang_address'),
-			'addressZipCode' => __("Zip Code", 'lang_address'),
-			'addressCity' => __("City", 'lang_address'),
-			'addressCountry' => __("Country", 'lang_address'),
-			'addressTelNo' => __("Phone Number", 'lang_address'),
-			'addressWorkNo' => __("Work Number", 'lang_address'),
-			'addressCellNo' => __("Mobile Number", 'lang_address'),
-			'addressEmail' => __("E-mail", 'lang_address'),
-			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')),
+			'addressMemberID' => __("Member ID", $obj_address->lang_key),
+			'addressBirthDate' => __("Social Security Number", $obj_address->lang_key),
+			'addressFirstName' => __("First Name", $obj_address->lang_key),
+			'addressSurName' => __("Last Name", $obj_address->lang_key),
+			'addressCo' => __("C/O", $obj_address->lang_key),
+			'addressAddress' => __("Address", $obj_address->lang_key),
+			'addressZipCode' => __("Zip Code", $obj_address->lang_key),
+			'addressCity' => __("City", $obj_address->lang_key),
+			'addressCountry' => __("Country", $obj_address->lang_key),
+			'addressTelNo' => __("Phone Number", $obj_address->lang_key),
+			'addressWorkNo' => __("Work Number", $obj_address->lang_key),
+			'addressCellNo' => __("Mobile Number", $obj_address->lang_key),
+			'addressEmail' => __("E-mail", $obj_address->lang_key),
+			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", $obj_address->lang_key)),
 		);
 
 		return $arr_data;
@@ -1837,11 +1859,15 @@ class mf_address_export extends mf_export
 
 	function get_export_data()
 	{
-		global $wpdb;
+		global $wpdb, $obj_address;
 
 		if(!is_array($this->arr_columns) || count($this->arr_columns) == 0 || in_array('addressCountry', $this->arr_columns))
 		{
-			$obj_address = new mf_address();
+			if(!isset($obj_address))
+			{
+				$obj_address = new mf_address();
+			}
+
 			$arr_countries = $obj_address->get_countries_for_select();
 		}
 
@@ -1926,7 +1952,9 @@ class mf_address_export extends mf_export
 
 	function get_form_xtra()
 	{
-		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
+		global $obj_address;
+
+		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", $obj_address->lang_key), 'value' => $this->arr_columns));
 
 		return $out;
 	}

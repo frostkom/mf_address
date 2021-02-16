@@ -18,6 +18,7 @@ if(is_user_logged_in())
 	switch($type)
 	{
 		case 'table_search':
+			$obj_address = new mf_address();
 			$tbl_group = new mf_address_table();
 
 			$tbl_group->select_data(array(
@@ -49,7 +50,7 @@ if(is_user_logged_in())
 
 				else
 				{
-					$strAddressName = "(".__("Unknown", 'lang_address').")";
+					$strAddressName = "(".__("Unknown", $obj_address->lang_key).")";
 				}
 
 				if(!in_array($strAddressName, $json_output))
