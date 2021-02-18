@@ -57,6 +57,11 @@ class mf_address
 							case 'true':
 								if(isset($json['data']) && count($json['data']) > 0)
 								{
+									if(get_option('setting_address_debug') == 'yes')
+									{
+										do_log("Address API: ".$url." -> ".count($json['data']));
+									}
+
 									foreach($json['data'] as $item)
 									{
 										$strAddressBirthDate = $item['memberSSN'];
@@ -112,7 +117,9 @@ class mf_address
 
 										else
 										{
-											do_log(sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query));
+											// Insert here...
+
+											//do_log(sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query));
 										}
 									}
 
@@ -178,6 +185,11 @@ class mf_address
 		$arr_settings['setting_address_display_member_id'] = __("Display Member ID", $this->lang_key);
 		$arr_settings['setting_address_api_url'] = __("API URL", $this->lang_key);
 
+		if(get_option('setting_address_api_url') != '')
+		{
+			$arr_settings['setting_address_debug'] = __("Debug", $this->lang_key);
+		}
+
 		show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 	}
 
@@ -227,6 +239,16 @@ class mf_address
 		$option = get_option($setting_key);
 
 		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+	}
+
+	function setting_address_debug_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option_or_default($setting_key, 'no');
+
+		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
+
+		setting_time_limit(array('key' => $setting_key, 'value' => $option));
 	}
 
 	function admin_init()
