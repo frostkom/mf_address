@@ -55,11 +55,15 @@ class mf_address
 						switch($json['status'])
 						{
 							case 'true':
-								if(isset($json['data']) && count($json['data']) > 0)
+								$count_incoming = count($json['data']);
+
+								if(isset($json['data']) && $count_incoming > 0)
 								{
+									$count_updated = $count_updated_error = $count_inserted = $count_inserted_error = $count_error = 0;
+
 									if(get_option('setting_address_debug') == 'yes')
 									{
-										do_log("Address API: ".$url." -> ".count($json['data']));
+										do_log("Address API: ".$url." -> ".$count_incoming);
 									}
 
 									foreach($json['data'] as $item)
@@ -102,25 +106,63 @@ class mf_address
 											}
 										}
 
-										$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s", $strAddressBirthDate));
+										$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
 										$rows = $wpdb->num_rows;
 
-										if($rows == 1)
+										if($rows > 0)
 										{
-											foreach($result as $r)
+											if($rows == 1)
 											{
-												$intAddressID = $r->addressID;
+												foreach($result as $r)
+												{
+													$intAddressID = $r->addressID;
 
-												$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
+													$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
+
+													if($wpdb->rows_affected > 0)
+													{
+														$count_updated++;
+													}
+
+													else
+													{
+														$count_updated_error++;
+													}
+												}
+											}
+
+											else
+											{
+												do_log(sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query));
+
+												$count_error++;
 											}
 										}
 
 										else
 										{
-											// Insert here...
+											$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail));
 
-											//do_log(sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query));
+											if($wpdb->insert_id > 0)
+											{
+												$count_inserted++;
+											}
+
+											else
+											{
+												$count_inserted_error++;
+											}
+
+											/*if($count_inserted < 10 && get_option('setting_address_debug') == 'yes')
+											{
+												do_log("Address API: Insert ".$strAddressFirstName." ".$strAddressSurName." into ".get_address_table_prefix()."address because it does not exist");
+											}*/
 										}
+									}
+
+									if(get_option('setting_address_debug') == 'yes')
+									{
+										do_log("Address API - Report: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted, ".$count_error." errors");
 									}
 
 									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
