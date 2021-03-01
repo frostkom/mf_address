@@ -827,9 +827,9 @@ class mf_address
 					$this->do_merge(array('ids' => $arr_ids));
 				}
 
-				else if(isset($_REQUEST['btnAddressRecover']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_recover'], 'address_recover_'.$this->id))
+				else if(isset($_REQUEST['btnAddressRestore']) && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_restore'], 'address_restore_'.$this->id))
 				{
-					$this->recover();
+					$this->restore();
 
 					$done_text = __("I recovered the address for you", $this->lang_key);
 				}
@@ -1258,7 +1258,7 @@ class mf_address
 		}
 	}
 
-	function recover($id = 0)
+	function restore($id = 0)
 	{
 		global $wpdb;
 
@@ -1488,7 +1488,13 @@ class mf_address_table extends mf_list_table
 		{
 			if(!isset($_GET['addressDeleted']) || $_GET['addressDeleted'] != 1)
 			{
-				$actions['delete'] = __("Delete", $obj_address->lang_key);
+				$actions['trash'] = __("Trash", $obj_address->lang_key);
+			}
+
+			else
+			{
+				$actions['restore'] = __("Restore", $obj_address->lang_key);
+				$actions['delete'] = __("Permanently Delete", $obj_address->lang_key);
 			}
 
 			if(IS_ADMIN)
@@ -1506,6 +1512,14 @@ class mf_address_table extends mf_list_table
 		{
 			switch($this->current_action())
 			{
+				case 'trash':
+					$this->bulk_trash();
+				break;
+
+				case 'restore':
+					$this->bulk_restore();
+				break;
+
 				case 'delete':
 					$this->bulk_delete();
 				break;
@@ -1513,6 +1527,36 @@ class mf_address_table extends mf_list_table
 				case 'merge':
 					$this->bulk_merge();
 				break;
+			}
+		}
+	}
+
+	function bulk_trash()
+	{
+		global $obj_address;
+
+		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+
+		if(count($arr_ids) > 0)
+		{
+			foreach($arr_ids as $id)
+			{
+				$obj_address->trash($id);
+			}
+		}
+	}
+
+	function bulk_restore()
+	{
+		global $obj_address;
+
+		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+
+		if(count($arr_ids) > 0)
+		{
+			foreach($arr_ids as $id)
+			{
+				$obj_address->restore($id);
 			}
 		}
 	}
@@ -1525,14 +1569,9 @@ class mf_address_table extends mf_list_table
 
 		if(count($arr_ids) > 0)
 		{
-			if(!isset($obj_address))
-			{
-				$obj_address = new mf_address();
-			}
-
 			foreach($arr_ids as $id)
 			{
-				$obj_address->trash($id);
+				$obj_address->delete($id);
 			}
 		}
 	}
@@ -1605,7 +1644,7 @@ class mf_address_table extends mf_list_table
 
 				else
 				{
-					$actions['recover'] = "<a href='".wp_nonce_url($list_url."&btnAddressRecover", 'address_recover_'.$intAddressID, '_wpnonce_address_recover')."' title='".sprintf(__("Removed %s by %s", $obj_address->lang_key), format_date($dteAddressDeletedDate), get_user_info(array('id' => $intAddressDeletedID)))."'>".__("Recover", $obj_address->lang_key)."</a>";
+					$actions['recover'] = "<a href='".wp_nonce_url($list_url."&btnAddressRestore", 'address_restore_'.$intAddressID, '_wpnonce_address_restore')."' title='".sprintf(__("Removed %s by %s", $obj_address->lang_key), format_date($dteAddressDeletedDate), get_user_info(array('id' => $intAddressDeletedID)))."'>".__("Restore", $obj_address->lang_key)."</a>";
 				}
 
 				if($intAddressMemberID > 0)
