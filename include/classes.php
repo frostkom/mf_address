@@ -133,7 +133,7 @@ class mf_address
 
 											else
 											{
-												do_log(sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query));
+												do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query)."</a>");
 
 												$count_error++;
 											}
@@ -1488,7 +1488,7 @@ class mf_address_table extends mf_list_table
 		{
 			if(!isset($_GET['addressDeleted']) || $_GET['addressDeleted'] != 1)
 			{
-				$actions['trash'] = __("Trash", $obj_address->lang_key);
+				$actions['trash'] = __("Delete", $obj_address->lang_key);
 			}
 
 			else
@@ -1689,11 +1689,13 @@ class mf_address_table extends mf_list_table
 			break;
 
 			case 'addressIcons':
+				$intAddressDeleted = $item['addressDeleted'];
+
 				if(IS_ADMIN)
 				{
 					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", $obj_address->lang_key) : __("Not Public", $obj_address->lang_key))."'></i>";
 
-					if($obj_address->has_duplicate(array('item' => $item)))
+					if($intAddressDeleted == 0 && $obj_address->has_duplicate(array('item' => $item)))
 					{
 						$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID);
 
