@@ -177,11 +177,11 @@ class mf_address
 
 									if($count_ended > 0)
 									{
-										$count_removed = $count_removed_error = 0;
+										$count_not_exit = $count_removed = $count_removed_error = $count_not_found = 0;
 
 										if(get_option('setting_address_debug') == 'yes')
 										{
-											do_log("Address API - Ended: ".$url." -> ".$count_removed);
+											do_log("Address API - Ended: ".$url." -> ".$count_ended);
 										}
 
 										foreach($json['ended_data'] as $item)
@@ -194,40 +194,53 @@ class mf_address
 											{
 												$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
 
-												foreach($result as $r)
+												if($wpdb->num_rows > 0)
 												{
-													$intAddressID = $r->addressID;
-
-													//do_log("Remove ".$r->addressFirstName." ".$r->addressSurName." because exited as member");
-
-													if(is_plugin_active("mf_group/index.php"))
+													foreach($result as $r)
 													{
-														global $obj_group;
+														$intAddressID = $r->addressID;
 
-														if(!isset($obj_group))
+														//do_log("Remove ".$r->addressFirstName." ".$r->addressSurName." because exited as member");
+
+														if(is_plugin_active("mf_group/index.php"))
 														{
-															$obj_group = new mf_group();
+															global $obj_group;
+
+															if(!isset($obj_group))
+															{
+																$obj_group = new mf_group();
+															}
+
+															$obj_group->remove_address(array('address_id' => $intAddressID));
 														}
 
-														$obj_group->remove_address(array('address_id' => $intAddressID));
-													}
+														if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
+														{
+															$count_removed++;
+														}
 
-													if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
-													{
-														$count_removed++;
-													}
-
-													else
-													{
-														$count_removed_error++;
+														else
+														{
+															$count_removed_error++;
+														}
 													}
 												}
+
+												else
+												{
+													$count_not_found++;
+												}
+											}
+
+											else
+											{
+												$count_not_exit++;
 											}
 										}
 
 										if(get_option('setting_address_debug') == 'yes')
 										{
-											do_log("Address API - Report: ".$count_ended." incoming, ".$count_removed." removed, ".$count_removed_error." NOT removed");
+											do_log("Address API - Report: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
 										}
 
 										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
@@ -379,8 +392,8 @@ class mf_address
 		$menu_title = __("List", $this->lang_key);
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_start);
 
-		$menu_title = " - ".__("Add New", $this->lang_key);
-		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."create/index.php");
+		$menu_title = __("Add New", $this->lang_key);
+		add_submenu_page($menu_start, $menu_title, " - ".$menu_title, $menu_capability, $menu_root."create/index.php");
 
 		$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
 
