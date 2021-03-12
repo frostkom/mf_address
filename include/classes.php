@@ -1371,7 +1371,7 @@ class mf_address
 
 		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN || $data['force_admin'] ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
 
-		return ($rows_affected > 0);
+		return ($wpdb->rows_affected > 0);
 	}
 
 	function delete($id = 0)
