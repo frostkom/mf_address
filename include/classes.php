@@ -372,14 +372,6 @@ class mf_address
 		setting_time_limit(array('key' => $setting_key, 'value' => $option));
 	}
 
-	function admin_init()
-	{
-		if(!is_plugin_active("mf_base/index.php"))
-		{
-			deactivate_plugins(str_replace("include/classes.php", "index.php", plugin_basename(__FILE__)));
-		}
-	}
-
 	function admin_menu()
 	{
 		$menu_root = 'mf_address/';
@@ -1814,7 +1806,7 @@ class mf_address_table extends mf_list_table
 
 					foreach($resultGroups as $r)
 					{
-						$str_groups .= ($str_groups != '' ? ", " : "").$obj_group->get_name(array('id' => $r->groupID));
+						$str_groups .= ($str_groups != '' ? "\n" : "").$obj_group->get_name(array('id' => $r->groupID));
 					}
 
 					if($str_groups != '')
