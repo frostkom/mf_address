@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 3.2.4
+Version: 3.2.5
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -106,6 +106,16 @@ if(is_plugin_active("mf_base/index.php"))
 		$arr_add_index[get_address_table_prefix()."address"] = array(
 			'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
 		);
+
+		if(get_option('setting_address_api_url') != '')
+		{
+			$arr_add_column[get_address_table_prefix()."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
+		}
+
+		else
+		{
+			$arr_update_column[get_address_table_prefix()."address"]['addressSyncedDate'] = "ALTER TABLE [table] DROP COLUMN [column]";
+		}
 
 		update_columns($arr_update_column);
 		add_columns($arr_add_column);

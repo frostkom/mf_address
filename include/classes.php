@@ -79,6 +79,7 @@ class mf_address
 											$strAddressCity = $item['memberCity'];
 											$intAddressCountry = $item['memberCountry'];
 
+											$intAddressID = 0;
 											$strAddressTelNo = $strAddressCellNo = $strAddressWorkNo = $strAddressEmail = '';
 
 											foreach($item['contact'] as $contact)
@@ -145,7 +146,9 @@ class mf_address
 											{
 												$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail));
 
-												if($wpdb->insert_id > 0)
+												$intAddressID = $wpdb->insert_id;
+
+												if($intAddressID > 0)
 												{
 													$count_inserted++;
 												}
@@ -159,6 +162,11 @@ class mf_address
 												{
 													do_log("Address API: Insert ".$strAddressFirstName." ".$strAddressSurName." into ".get_address_table_prefix()."address because it does not exist");
 												}*/
+											}
+
+											if($intAddressID > 0)
+											{
+												$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressSyncedDate = NOW() WHERE addressID = '%d'", $intAddressID));
 											}
 										}
 
@@ -461,8 +469,32 @@ class mf_address
 
 	function restrict_manage_posts($post_type)
 	{
-		if($post_type == "wp_address" && is_plugin_active("mf_group/index.php"))
+		global $wpdb;
+
+		if($post_type == get_address_table_prefix()."address" && is_plugin_active("mf_group/index.php"))
 		{
+			if(get_option('setting_address_api_url') != '')
+			{
+				$strFilterIsSynced = get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
+
+				$arr_data = get_yes_no_for_select(array('choose_here_text' => __("Syncronized Through API", $this->lang_key)));
+
+				$rows_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".get_address_table_prefix()."address WHERE addressSyncedDate >= %s", DEFAULT_DATE));
+				$rows_not_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".get_address_table_prefix()."address WHERE addressSyncedDate < %s", DEFAULT_DATE));
+
+				if($rows_synced > 0)
+				{
+					$arr_data['yes'] .= " (".$rows_synced.")";
+				}
+
+				if($rows_not_synced > 0)
+				{
+					$arr_data['no'] .= " (".$rows_not_synced.")";
+				}
+
+				echo show_select(array('data' => $arr_data, 'name' => 'strFilterIsSynced', 'value' => $strFilterIsSynced));
+			}
+
 			$obj_group = new mf_group();
 
 			$arr_data = $obj_group->get_for_select();
@@ -1465,6 +1497,22 @@ class mf_address_table extends mf_list_table
 			.")";*/
 		}
 
+		if(get_option('setting_address_api_url') != '')
+		{
+			$strFilterIsSynced = get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
+
+			switch($strFilterIsSynced)
+			{
+				case 'yes':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."addressSyncedDate >= '".DEFAULT_DATE."'";
+				break;
+
+				case 'no':
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressSyncedDate IS null OR addressSyncedDate < '".DEFAULT_DATE."')";
+				break;
+			}
+		}
+
 		$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
 
 		if($intGroupID > 0)
@@ -1795,6 +1843,14 @@ class mf_address_table extends mf_list_table
 						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."' rel='confirm'>
 							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", $obj_address->lang_key), count($obj_address->result_duplicate))."'></i>
 						</a>";
+					}
+				}
+				
+				if(get_option('setting_address_api_url') != '')
+				{
+					if(isset($item['addressSyncedDate']) && $item['addressSyncedDate'] > DEFAULT_DATE)
+					{
+						$out .= ($out != '' ? "&nbsp;" : "")."<i class='fas fa-network-wired' title='".sprintf(__("Syncronized %s", $obj_address->lang_key), format_date($item['addressSyncedDate']))."'></i>";
 					}
 				}
 
