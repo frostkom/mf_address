@@ -78,6 +78,7 @@ class mf_address
 											$intAddressZipCode = $item['memberZipCode'];
 											$strAddressCity = $item['memberCity'];
 											$intAddressCountry = $item['memberCountry'];
+											$strAddressExtra = $item['associationName'];
 
 											$intAddressID = 0;
 											$strAddressTelNo = $strAddressCellNo = $strAddressWorkNo = $strAddressEmail = '';
@@ -120,7 +121,7 @@ class mf_address
 													{
 														$intAddressID = $r->addressID;
 
-														$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $intAddressID));
+														$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra, $intAddressID));
 
 														if($wpdb->rows_affected > 0)
 														{
@@ -144,7 +145,7 @@ class mf_address
 
 											else
 											{
-												$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail));
+												$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra));
 
 												$intAddressID = $wpdb->insert_id;
 
@@ -814,6 +815,11 @@ class mf_address
 				$this->cellno = check_var('strAddressCellNo');
 				$this->workno = check_var('strAddressWorkNo');
 				$this->email = check_var('strAddressEmail');
+
+				if(IS_ADMIN)
+				{
+					$this->extra = check_var('strAddressExtra');
+				}
 			break;
 
 			case 'list':
@@ -850,9 +856,16 @@ class mf_address
 
 						else
 						{
+							$query_set = "";
+
+							if(IS_ADMIN)
+							{
+								$query_set .= ", addressExtra = '".esc_sql($this->extra)."'";
+							}
+
 							if($this->id > 0)
 							{
-								$query_set = $query_where = "";
+								$query_where = "";
 
 								if(IS_ADMIN)
 								{
@@ -879,7 +892,7 @@ class mf_address
 
 							else
 							{
-								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '%d', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'", $this->public, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
+								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '%d', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'".$query_set, $this->public, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
 
 								$this->id = $wpdb->insert_id;
 
@@ -1023,7 +1036,7 @@ class mf_address
 			case 'create':
 				if($this->id > 0 && !isset($_POST['btnAddressUpdate']))
 				{
-					$result = $wpdb->get_results($wpdb->prepare("SELECT addressPublic, addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressPublic, addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressExtra, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
 
 					foreach($result as $r)
 					{
@@ -1041,6 +1054,12 @@ class mf_address
 						$this->cellno = $r->addressCellNo;
 						$this->workno = $r->addressWorkNo;
 						$this->email = $r->addressEmail;
+
+						if(IS_ADMIN)
+						{
+							$this->extra = $r->addressExtra;
+						}
+
 						$intAddressDeleted = $r->addressDeleted;
 
 						if($intAddressDeleted == 1)
@@ -1845,7 +1864,7 @@ class mf_address_table extends mf_list_table
 						</a>";
 					}
 				}
-				
+
 				if(get_option('setting_address_api_url') != '')
 				{
 					if(isset($item['addressSyncedDate']) && $item['addressSyncedDate'] > DEFAULT_DATE)

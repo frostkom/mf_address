@@ -33,7 +33,15 @@ echo "<div class='wrap'>
 								.show_textfield(array('name' => 'strAddressCellNo', 'text' => __("Mobile Number", $obj_address->lang_key), 'value' => $obj_address->cellno))
 								.show_textfield(array('name' => 'strAddressWorkNo', 'text' => __("Work Number", $obj_address->lang_key), 'value' => $obj_address->workno))
 							."</div>"
-							.show_textfield(array('name' => 'strAddressEmail', 'text' => __("E-mail", $obj_address->lang_key), 'value' => $obj_address->email))
+							."<div class='flex_flow'>"
+								.show_textfield(array('name' => 'strAddressEmail', 'text' => __("E-mail", $obj_address->lang_key), 'value' => $obj_address->email));
+
+								if(IS_ADMIN)
+								{
+									echo show_textfield(array('name' => 'strAddressExtra', 'text' => get_option_or_default('setting_address_extra', __("Extra", $obj_address->lang_key)), 'value' => $obj_address->extra));
+								}
+
+							echo "</div>"
 						."</div>
 					</div>
 				</div>
