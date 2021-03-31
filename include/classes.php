@@ -201,7 +201,7 @@ class mf_address
 
 											if($strMembershipEndedReason == 'exit')
 											{
-												$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+												$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate)); //, addressFirstName, addressSurName
 
 												if($wpdb->num_rows > 0)
 												{
