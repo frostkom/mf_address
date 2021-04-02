@@ -714,14 +714,14 @@ class mf_address
 				if($id_prev > 0)
 				{
 					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
-					$arr_columns = array('addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
+					$arr_columns = array('addressMemberID', 'addressBirthDate', 'addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
 
 					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
 
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
 
-					if($result[0]['addressPublic'] == 1) // && $result_prev[0]['addressPublic'] == 1
+					if($wpdb->num_rows > 0 && $result[0]['addressPublic'] == 1) // && $result_prev[0]['addressPublic'] == 1
 					{
 						$unique_column = '';
 
@@ -1397,7 +1397,7 @@ class mf_address
 
 		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
 
-		return ($rows_affected > 0);
+		return ($wpdb->rows_affected > 0);
 	}
 
 	function trash($data = array()) //$id = 0
