@@ -110,22 +110,27 @@ class mf_address
 												}
 											}
 
-											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s", $strAddressBirthDate)); // AND addressDeleted = '0'
 											$rows = $wpdb->num_rows;
 
 											if($rows > 0)
 											{
-												if($rows == 1)
-												{
-													foreach($result as $r)
-													{
-														$intAddressID = $r->addressID;
+												$i = 0;
 
+												foreach($result as $r)
+												{
+													$intAddressID = $r->addressID;
+													$intAddressDeleted = $r->addressDeleted;
+
+													if($intAddressDeleted == 0)
+													{
 														$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra, $intAddressID));
 
 														if($wpdb->rows_affected > 0)
 														{
 															$count_updated++;
+
+															$i++;
 														}
 
 														else
@@ -133,11 +138,16 @@ class mf_address
 															$count_updated_error++;
 														}
 													}
+
+													else
+													{
+														$count_updated_error++;
+													}
 												}
 
-												else
+												if($i > 1)
 												{
-													do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $rows, $wpdb->last_query)."</a>");
+													do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $i, $wpdb->last_query)."</a>");
 
 													$count_error++;
 												}
