@@ -1856,7 +1856,7 @@ class mf_address_table extends mf_list_table
 
 				if(IS_ADMIN)
 				{
-					$out .= ($out != '' ? "&nbsp;" : "")."<i class='".($item['addressPublic'] == 1 ? "fa fa-check green" : "fa fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", $obj_address->lang_key) : __("Not Public", $obj_address->lang_key))."'></i>";
+					$out .= ($out != '' ? "&nbsp;" : "")."<i class='fa ".($item['addressPublic'] == 1 ? "fa-check green" : "fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", $obj_address->lang_key) : __("Not Public", $obj_address->lang_key))."'></i>";
 
 					if($intAddressDeleted == 0 && $obj_address->has_duplicate(array('item' => $item)))
 					{
