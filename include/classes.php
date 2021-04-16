@@ -23,6 +23,51 @@ class mf_address
 		$this->lang_key = 'lang_address';
 	}
 
+	function get_name($data)
+	{
+		global $wpdb;
+
+		$out = __("Unknown", $this->lang_key);
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressFirstName, addressSurName, addressEmail FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $data['address_id']));
+
+		if($wpdb->num_rows > 0)
+		{
+			foreach($result as $r)
+			{
+				$strAddressFirstName = $r->addressFirstName;
+				$strAddressSurName = $r->addressSurName;
+				$emlAddressEmail = $r->addressEmail;
+
+				if($strAddressFirstName != '' || $strAddressSurName != '')
+				{
+					$out = $strAddressFirstName;
+
+					if($strAddressSurName != '')
+					{
+						$out .= " ".$strAddressSurName;
+					}
+				}
+
+				else
+				{
+					$out = $emlAddressEmail;
+				}
+			}
+		}
+
+		return $out;
+	}
+
+	function save_sync_date($data)
+	{
+		global $wpdb;
+
+		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressSyncedDate = NOW(), addressDeleted = '0', addressDeletedDate = NULL, addressDeletedID = NULL WHERE addressID = '%d'", $data['address_id']));
+
+		return ($wpdb->rows_affected > 0);
+	}
+
 	function cron_base()
 	{
 		global $wpdb;
@@ -177,7 +222,7 @@ class mf_address
 
 											if($intAddressID > 0)
 											{
-												$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressSyncedDate = NOW() WHERE addressID = '%d'", $intAddressID));
+												$this->save_sync_date(array('address_id' => $intAddressID));
 											}
 										}
 
@@ -190,7 +235,7 @@ class mf_address
 									}
 								}
 
-								if(isset($json['ended_data']))
+								/*if(isset($json['ended_data']))
 								{
 									$count_ended = count($json['ended_data']);
 
@@ -236,6 +281,8 @@ class mf_address
 														if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
 														{
 															$count_removed++;
+
+															do_log("Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
 														}
 
 														else
@@ -264,7 +311,7 @@ class mf_address
 
 										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
 									}
-								}
+								}*/
 							break;
 
 							default:
@@ -770,6 +817,8 @@ class mf_address
 							do_action('merge_address', $id_prev, $id);
 
 							$this->trash(array('address_id' => $id_prev));
+
+							//do_log("Trashed Address ".$id_prev." (".$this->get_name(array('address_id' => $id_prev)).") in do_merge()");
 						}
 
 						else
@@ -936,6 +985,8 @@ class mf_address
 					if($this->trash())
 					{
 						$done_text = __("The address was deleted", $this->lang_key);
+
+						//do_log("Trashed Address ".$this->id." (".$this->get_name(array('address_id' => $this->id)).") in btnAddressDelete");
 					}
 
 					else
@@ -1410,7 +1461,7 @@ class mf_address
 		return ($wpdb->rows_affected > 0);
 	}
 
-	function trash($data = array()) //$id = 0
+	function trash($data = array())
 	{
 		global $wpdb;
 
@@ -1705,6 +1756,8 @@ class mf_address_table extends mf_list_table
 			foreach($arr_ids as $id)
 			{
 				$obj_address->trash(array('address_id' => $id));
+
+				//do_log("Trashed Address ".$id." (".$obj_address->get_name(array('address_id' => $id)).") in bulk_trash()");
 			}
 		}
 	}
@@ -2070,6 +2123,18 @@ class mf_address_import extends mf_import
 		}
 	}
 
+	function filter_value($strRowField, $value)	
+	{
+		switch($strRowField)
+		{
+			case 'addressBirthDate':
+				$value = str_replace("-", "", $value);
+			break;
+		}
+
+		return $value;
+	}
+
 	function if_more_than_one($id)
 	{
 		global $wpdb, $obj_address;
@@ -2086,6 +2151,8 @@ class mf_address_import extends mf_import
 			if($obj_address->trash(array('address_id' => $id)))
 			{
 				$this->rows_deleted++;
+
+				//do_log("Trashed Address ".$id." (".$obj_address->get_name(array('address_id' => $id)).") in if_more_than_one()");
 			}
 		}
 	}
@@ -2148,7 +2215,7 @@ class mf_address_export extends mf_export
 			$arr_countries = $obj_address->get_countries_for_select();
 		}
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT ".(count($this->arr_columns) > 0 ? implode(", ", $this->arr_columns) : "*")." FROM ".get_address_table_prefix()."address WHERE addressDeleted = '%d' GROUP BY addressID ORDER BY addressPublic ASC, addressSurName ASC, addressFirstName ASC", 0), ARRAY_A);
+		$result = $wpdb->get_results("SELECT ".(count($this->arr_columns) > 0 ? implode(", ", $this->arr_columns) : "*")." FROM ".get_address_table_prefix()."address WHERE addressDeleted = '0' GROUP BY addressID ORDER BY addressPublic ASC, addressSurName ASC, addressFirstName ASC", ARRAY_A);
 
 		if($wpdb->num_rows > 0)
 		{
