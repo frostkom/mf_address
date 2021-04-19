@@ -27,7 +27,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		$out = __("Unknown", $this->lang_key);
+		$out = __("unknown", $this->lang_key);
 
 		$result = $wpdb->get_results($wpdb->prepare("SELECT addressFirstName, addressSurName, addressEmail FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $data['address_id']));
 
@@ -1840,7 +1840,7 @@ class mf_address_table extends mf_list_table
 
 				else
 				{
-					$strAddressName = "(".__("Unknown", $obj_address->lang_key).")";
+					$strAddressName = "(".__("unknown", $obj_address->lang_key).")";
 				}
 
 				$post_edit_url = admin_url("admin.php?page=mf_address/create/index.php&intAddressID=".$intAddressID);
@@ -1976,9 +1976,17 @@ class mf_address_table extends mf_list_table
 					{
 						if($intGroupUnsubscribed == 0)
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm'>
-								<i class='fa fa-minus-square fa-lg red'></i>
-							</a>";
+							if($obj_group->is_synced($intGroupID))
+							{
+								$out .= "<i class='fa fa-minus-square fa-lg grey' title='".__("The group is synced so you can not add or remove manually", $obj_address->lang_key)."'></i>";
+							}
+
+							else
+							{
+								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm'>
+									<i class='fa fa-minus-square fa-lg red'></i>
+								</a>";
+							}
 
 							if($intGroupAccepted == 0)
 							{
@@ -2021,9 +2029,17 @@ class mf_address_table extends mf_list_table
 
 					else
 					{
-						$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."'>
-							<i class='fa fa-plus-square fa-lg green'></i>
-						</a>";
+						if($obj_group->is_synced($intGroupID))
+						{
+							$out .= "<i class='fa fa-plus-square fa-lg grey' title='".__("The group is synced so you can not add or remove manually", $obj_address->lang_key)."'></i>";
+						}
+
+						else
+						{
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."'>
+								<i class='fa fa-plus-square fa-lg green'></i>
+							</a>";
+						}
 					}
 				}
 			break;
