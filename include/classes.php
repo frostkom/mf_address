@@ -2139,7 +2139,7 @@ class mf_address_import extends mf_import
 		}
 	}
 
-	function filter_value($strRowField, $value)	
+	function filter_value($strRowField, $value)
 	{
 		switch($strRowField)
 		{

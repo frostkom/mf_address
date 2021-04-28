@@ -19,7 +19,7 @@ echo "<div class='wrap'>
 
 								if(get_option('setting_address_display_member_id') != 'no')
 								{
-									echo show_textfield(array('name' => 'intAddressMemberID', 'text' => __("Member ID", $obj_address->lang_key), 'value' => $obj_address->member_id));
+									echo show_textfield(array('name' => 'intAddressMemberID', 'text' => __("Member ID", $obj_address->lang_key), 'value' => ($obj_address->member_id > 0 ? $obj_address->member_id : '')));
 								}
 
 								echo show_textfield(array('name' => 'strAddressBirthDate', 'text' => __("Social Security Number", $obj_address->lang_key), 'value' => $obj_address->birthdate))
@@ -36,7 +36,7 @@ echo "<div class='wrap'>
 							."<div class='flex_flow'>"
 								.show_textfield(array('name' => 'strAddressEmail', 'text' => __("E-mail", $obj_address->lang_key), 'value' => $obj_address->email));
 
-								if(IS_ADMIN)
+								if(IS_ADMIN && get_option('setting_address_extra_profile') == 'yes')
 								{
 									echo show_textfield(array('name' => 'strAddressExtra', 'text' => get_option_or_default('setting_address_extra', __("Extra", $obj_address->lang_key)), 'value' => $obj_address->extra));
 								}
@@ -81,7 +81,7 @@ echo "<div class='wrap'>
 							.show_textfield(array('name' => 'strAddressAddress', 'text' => __("Address", $obj_address->lang_key), 'value' => $obj_address->address))
 							.show_textfield(array('name' => 'strAddressCo', 'text' => __("C/O", $obj_address->lang_key), 'value' => $obj_address->co))
 							."<div class='flex_flow'>"
-								.show_textfield(array('name' => 'intAddressZipCode', 'text' => __("Zip Code", $obj_address->lang_key), 'value' => $obj_address->zipcode, 'type' => 'number'))
+								.show_textfield(array('name' => 'intAddressZipCode', 'text' => __("Zip Code", $obj_address->lang_key), 'value' => ($obj_address->zipcode > 0 ? $obj_address->zipcode : ''), 'type' => 'number'))
 								.show_textfield(array('name' => 'strAddressCity', 'text' => __("City", $obj_address->lang_key), 'value' => $obj_address->city))
 							."</div>"
 							.show_select(array('data' => $obj_address->get_countries_for_select(), 'name' => 'intAddressCountry', 'text' => __("Country", $obj_address->lang_key), 'value' => $obj_address->country))
