@@ -50,7 +50,7 @@ if(is_user_logged_in())
 
 				else
 				{
-					$strAddressName = "(".__("unknown", $obj_address->lang_key).")";
+					$strAddressName = "(".__("unknown", 'lang_address').")";
 				}
 
 				if(!in_array($strAddressName, $json_output))
