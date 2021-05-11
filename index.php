@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 3.3.4
+Version: 3.3.5
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -60,7 +60,7 @@ if(is_plugin_active("mf_base/index.php"))
 	{
 		global $wpdb;
 
-		$default_charset = DB_CHARSET != '' ? DB_CHARSET : "utf8";
+		$default_charset = (DB_CHARSET != '' ? DB_CHARSET : 'utf8');
 
 		$arr_add_column = $arr_update_column = $arr_add_index = array();
 

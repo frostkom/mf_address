@@ -235,7 +235,7 @@ class mf_address
 									}
 								}
 
-								/*if(isset($json['ended_data']))
+								if(isset($json['ended_data']))
 								{
 									$count_ended = count($json['ended_data']);
 
@@ -311,7 +311,7 @@ class mf_address
 
 										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
 									}
-								}*/
+								}
 							break;
 
 							default:
