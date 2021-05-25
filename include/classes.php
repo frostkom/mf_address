@@ -77,6 +77,8 @@ class mf_address
 
 		if($obj_cron->is_running == false)
 		{
+			// Sync API
+			#####################
 			$setting_address_api_url = get_option('setting_address_api_url');
 
 			if($setting_address_api_url != '')
@@ -192,7 +194,7 @@ class mf_address
 
 												if($i > 1)
 												{
-													do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $i, $wpdb->last_query)."</a>");
+													//do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $i, $wpdb->last_query)."</a>");
 
 													$count_error++;
 												}
@@ -327,6 +329,78 @@ class mf_address
 					break;
 				}
 			}
+			#####################
+
+			// Look for duplicates
+			#####################
+			$result = $wpdb->get_results("SELECT addressID, addressPublic, addressMemberID, addressBirthDate, COUNT(addressBirthDate) AS addressAmount FROM ".get_address_table_prefix()."address WHERE addressBirthDate != '' AND addressDeleted = '0' GROUP BY addressBirthDate ORDER BY addressAmount DESC LIMIT 0, 10");
+			$rows = $wpdb->num_rows;
+
+			if($rows > 0)
+			{
+				$merged_amount = $rows_amount = 0;
+
+				foreach($result as $r)
+				{
+					$intAddressID = $r->addressID;
+					$intAddressPublic = $r->addressPublic;
+					$strAddressBirthDate = $r->addressBirthDate;
+					$intAddressAmount = $r->addressAmount;
+
+					if($intAddressAmount > 1)
+					{
+						$arr_item = array(
+							'addressID' => $intAddressID,
+							'addressBirthDate' => $strAddressBirthDate,
+						);
+
+						if($this->has_duplicate(array('item' => $arr_item)))
+						{
+							$arr_address_ids = array();
+
+							foreach($this->result_duplicate as $r)
+							{
+								$arr_address_ids[] = $r->addressID;
+							}
+
+							if($intAddressPublic)
+							{
+								$arr_ids = array_merge($arr_address_ids, array($intAddressID));
+							}
+
+							else
+							{
+								$arr_ids = array_merge(array($intAddressID), $arr_address_ids);
+							}
+
+							if($this->do_merge(array('ids' => $arr_ids)))
+							{
+								//do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s) so I merged them for you (%s)", $intAddressAmount, shorten_text(array('string' => $strAddressBirthDate, 'limit' => 10)), var_export($arr_ids, true))."</a>");
+
+								$merged_amount++;
+							}
+
+							else
+							{
+								do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $intAddressAmount, shorten_text(array('string' => $strAddressBirthDate, 'limit' => 10)))."</a>");
+							}
+						}
+
+						$rows_amount++;
+					}
+
+					else
+					{
+						break;
+					}
+				}
+
+				if($rows_amount > 0)
+				{
+					do_log("Merged ".$merged_amount." / ".$rows_amount." (".date("Y-m-d H:i:s").")");
+				}
+			}
+			#####################
 		}
 
 		$obj_cron->end();
@@ -535,7 +609,7 @@ class mf_address
 			{
 				$strFilterIsSynced = get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
 
-				$arr_data = get_yes_no_for_select(array('choose_here_text' => __("Syncronized Through API", 'lang_address')));
+				$arr_data = get_yes_no_for_select(array('choose_here_text' => __("Synchronized Through API", 'lang_address')));
 
 				$rows_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".get_address_table_prefix()."address WHERE addressSyncedDate >= %s", DEFAULT_DATE));
 				$rows_not_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".get_address_table_prefix()."address WHERE addressSyncedDate < %s", DEFAULT_DATE));
@@ -737,9 +811,9 @@ class mf_address
 		global $wpdb;
 
 		$intAddressID = $data['item']['addressID'];
-		$intAddressMemberID = $data['item']['addressMemberID'];
-		$strAddressBirthDate = $data['item']['addressBirthDate'];
-		$strAddressEmail = $data['item']['addressEmail'];
+		$intAddressMemberID = (isset($data['item']['addressMemberID']) ? $data['item']['addressMemberID'] : 0);
+		$strAddressBirthDate = (isset($data['item']['addressBirthDate']) ? $data['item']['addressBirthDate'] : '');
+		$strAddressEmail = (isset($data['item']['addressEmail']) ? $data['item']['addressEmail'] : '');
 
 		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE ((addressMemberID > '0' AND addressMemberID = '%d') OR (addressBirthDate != '' AND addressBirthDate = %s) OR (addressEmail != '' AND addressEmail = %s)) AND addressDeleted = '0' AND addressID != '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressEmail, $intAddressID));
 
@@ -761,6 +835,9 @@ class mf_address
 	function do_merge($data)
 	{
 		global $wpdb, $error_text, $done_text;
+
+		$has_merged = false;
+		$merged_amount = 0;
 
 		if(count($data['ids']) > 1)
 		{
@@ -816,9 +893,12 @@ class mf_address
 
 							do_action('merge_address', $id_prev, $id);
 
-							$this->trash(array('address_id' => $id_prev));
+							if($this->trash(array('address_id' => $id_prev, 'force_admin' => true)))
+							{
+								//do_log("Trashed Address ".$id_prev." (".$this->get_name(array('address_id' => $id_prev)).") in do_merge()");
 
-							//do_log("Trashed Address ".$id_prev." (".$this->get_name(array('address_id' => $id_prev)).") in do_merge()");
+								$merged_amount++;
+							}
 						}
 
 						else
@@ -845,13 +925,25 @@ class mf_address
 				$id_prev = $id;
 			}
 
-			$done_text = __("The addresses have been merged succesfully", 'lang_address');
+			if($merged_amount > 0)
+			{
+				$done_text = __("The addresses have been merged successfully", 'lang_address');
+
+				$has_merged = true;
+			}
+
+			else if($error_text == '')
+			{
+				$error_text = __("I did not get any errors but not addresses were merged", 'lang_address');
+			}
 		}
 
 		else
 		{
 			$error_text = __("You have to choose at least two addresses to merge", 'lang_address');
 		}
+
+		return $has_merged;
 	}
 
 	function fetch_request()
@@ -1929,9 +2021,9 @@ class mf_address_table extends mf_list_table
 							$str_ids .= ($str_ids != '' ? "," : "").$r->addressID;
 						}
 
-						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."' rel='confirm'>
-							<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."'></i>
-						</a>";
+						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>" // rel='confirm'
+							."<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other", 'lang_address'), count($obj_address->result_duplicate))."'></i>"
+						."</a>";
 					}
 				}
 
@@ -1939,7 +2031,7 @@ class mf_address_table extends mf_list_table
 				{
 					if(isset($item['addressSyncedDate']) && $item['addressSyncedDate'] > DEFAULT_DATE)
 					{
-						$out .= ($out != '' ? "&nbsp;" : "")."<i class='fas fa-network-wired' title='".sprintf(__("Syncronized %s", 'lang_address'), format_date($item['addressSyncedDate']))."'></i>";
+						$out .= ($out != '' ? "&nbsp;" : "")."<i class='fas fa-network-wired' title='".sprintf(__("Synchronized %s", 'lang_address'), format_date($item['addressSyncedDate']))."'></i>";
 					}
 				}
 
