@@ -934,7 +934,7 @@ class mf_address
 
 			else if($error_text == '')
 			{
-				$error_text = __("I did not get any errors but not addresses were merged", 'lang_address');
+				$error_text = __("I did not get any errors but no addresses were merged", 'lang_address');
 			}
 		}
 
@@ -1228,13 +1228,14 @@ class mf_address
 	function get_countries_for_select($data = array())
 	{
 		if(!isset($data['add_choose_here'])){	$data['add_choose_here'] = true;}
+		if(!isset($data['choose_here_text'])){	$data['choose_here_text'] = __("Choose Here", 'lang_address');}
 		if(!isset($data['exclude'])){			$data['exclude'] = array();}
 
 		$arr_data = array();
 
 		if($data['add_choose_here'] == true)
 		{
-			$arr_data[''] = "-- ".__("Choose Here", 'lang_address')." --";
+			$arr_data[''] = "-- ".$data['choose_here_text']." --";
 		}
 
 		$arr_countries = array(
