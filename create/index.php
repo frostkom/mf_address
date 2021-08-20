@@ -81,7 +81,7 @@ echo "<div class='wrap'>
 							.show_textfield(array('name' => 'strAddressAddress', 'text' => __("Address", 'lang_address'), 'value' => $obj_address->address))
 							.show_textfield(array('name' => 'strAddressCo', 'text' => __("C/O", 'lang_address'), 'value' => $obj_address->co))
 							."<div class='flex_flow'>"
-								.show_textfield(array('name' => 'intAddressZipCode', 'text' => __("Zip Code", 'lang_address'), 'value' => ($obj_address->zipcode > 0 ? $obj_address->zipcode : ''), 'type' => 'number'))
+								.show_textfield(array('type' => 'number', 'name' => 'intAddressZipCode', 'text' => __("Zip Code", 'lang_address'), 'value' => ($obj_address->zipcode > 0 ? $obj_address->zipcode : '')))
 								.show_textfield(array('name' => 'strAddressCity', 'text' => __("City", 'lang_address'), 'value' => $obj_address->city))
 							."</div>"
 							.show_select(array('data' => $obj_address->get_countries_for_select(), 'name' => 'intAddressCountry', 'text' => __("Country", 'lang_address'), 'value' => $obj_address->country))
