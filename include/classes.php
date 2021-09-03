@@ -70,7 +70,7 @@ class mf_address
 
 	function cron_base()
 	{
-		global $wpdb;
+		global $wpdb, $obj_group;
 
 		$obj_cron = new mf_cron();
 		$obj_cron->start(__CLASS__);
@@ -194,7 +194,10 @@ class mf_address
 
 												if($i > 1)
 												{
-													//do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $i, $wpdb->last_query)."</a>");
+													if(get_option('setting_address_debug') == 'yes')
+													{
+														do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $i, $wpdb->last_query)."</a>");
+													}
 
 													$count_error++;
 												}
@@ -206,6 +209,13 @@ class mf_address
 
 												$intAddressID = $wpdb->insert_id;
 
+												if(!isset($obj_group))
+												{
+													$obj_group = new mf_group();
+												}
+
+												$obj_group->add_address(array('address_id' => $intAddressID, 'group_id' => get_option('setting_group_import')));
+
 												if($intAddressID > 0)
 												{
 													$count_inserted++;
@@ -215,11 +225,6 @@ class mf_address
 												{
 													$count_inserted_error++;
 												}
-
-												/*if($count_inserted < 10 && get_option('setting_address_debug') == 'yes')
-												{
-													do_log("Address API: Insert ".$strAddressFirstName." ".$strAddressSurName." into ".get_address_table_prefix()."address because it does not exist");
-												}*/
 											}
 
 											if($intAddressID > 0)
@@ -601,7 +606,7 @@ class mf_address
 
 	function restrict_manage_posts($post_type)
 	{
-		global $wpdb;
+		global $wpdb, $obj_group;
 
 		if($post_type == get_address_table_prefix()."address" && is_plugin_active("mf_group/index.php"))
 		{
@@ -627,7 +632,10 @@ class mf_address
 				echo show_select(array('data' => $arr_data, 'name' => 'strFilterIsSynced', 'value' => $strFilterIsSynced));
 			}
 
-			$obj_group = new mf_group();
+			if(!isset($obj_group))
+			{
+				$obj_group = new mf_group();
+			}
 
 			$arr_data = $obj_group->get_for_select();
 
@@ -643,7 +651,7 @@ class mf_address
 					$strFilterAccepted = get_or_set_table_filter(array('key' => 'strFilterAccepted', 'save' => true));
 					$strFilterUnsubscribed = get_or_set_table_filter(array('key' => 'strFilterUnsubscribed', 'save' => true));
 
-					if($obj_group->amount_in_group(array('id' => $intGroupID)) > 0) //$strFilterAccepted == '' && $strFilterUnsubscribed == '' && 
+					if($obj_group->amount_in_group(array('id' => $intGroupID)) > 0)
 					{
 						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Part of Group", 'lang_address'))), 'name' => 'strFilterIsMember', 'value' => $strFilterIsMember));
 					}
@@ -653,7 +661,7 @@ class mf_address
 						remove_table_filter(array('key' => 'strFilterIsMember'));
 					}
 
-					if($obj_group->amount_in_group(array('id' => $intGroupID, 'accepted' => 0)) > 0) //$strFilterIsMember != 'no' && 
+					if($strFilterIsMember != 'no' && $obj_group->amount_in_group(array('id' => $intGroupID, 'accepted' => 0)) > 0)
 					{
 						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Accepted", 'lang_address'))), 'name' => 'strFilterAccepted', 'value' => $strFilterAccepted));
 					}
@@ -663,7 +671,7 @@ class mf_address
 						remove_table_filter(array('key' => 'strFilterAccepted'));
 					}
 
-					if($obj_group->amount_in_group(array('id' => $intGroupID, 'unsubscribed' => 1)) > 0) //$strFilterIsMember != 'no' && 
+					if($strFilterIsMember != 'no' && $obj_group->amount_in_group(array('id' => $intGroupID, 'unsubscribed' => 1)) > 0)
 					{
 						echo show_select(array('data' => get_yes_no_for_select(array('choose_here_text' => __("Unsubscribed", 'lang_address'))), 'name' => 'strFilterUnsubscribed', 'value' => $strFilterUnsubscribed));
 					}
@@ -988,7 +996,12 @@ class mf_address
 
 		if(is_plugin_active("mf_group/index.php"))
 		{
-			$obj_group = new mf_group();
+			global $obj_group;
+
+			if(!isset($obj_group))
+			{
+				$obj_group = new mf_group();
+			}
 		}
 
 		$out = "";
@@ -1109,18 +1122,31 @@ class mf_address
 					$done_text = __("I recovered the address for you", 'lang_address');
 				}
 
-				else if(isset($_GET['btnAddressAdd']) && $this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
+				else if(isset($_GET['btnAddressAdd']))
 				{
-					if($obj_group->has_address(array('address_id' => $this->id, 'group_id' => $this->group_id)) == false)
+					if($this->group_id > 0 && $this->id > 0 && wp_verify_nonce($_REQUEST['_wpnonce_address_add'], 'address_add_'.$this->id.'_'.$this->group_id) && is_plugin_active("mf_group/index.php"))
 					{
-						$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
+						if($obj_group->has_address(array('address_id' => $this->id, 'group_id' => $this->group_id)) == false)
+						{
+							$obj_group->add_address(array('address_id' => $this->id, 'group_id' => $this->group_id));
 
-						$done_text = __("The address was added to the group", 'lang_address');
+							$done_text = __("The address was added to the group", 'lang_address');
+						}
+
+						else
+						{
+							$error_text = __("The address already exists in the group", 'lang_address');
+						}
 					}
 
 					else
 					{
-						$error_text = __("The address already exists in the group", 'lang_address');
+						$error_text = __("I could not verify that your action was allowed", 'lang_address');
+
+						if(IS_SUPER_ADMIN)
+						{
+							$error_text .= " (G: ".$this->group_id.", A: ".$this->id.")";
+						}
 					}
 				}
 
@@ -1630,7 +1656,7 @@ class mf_address_table extends mf_list_table
 		$this->arr_settings['query_from'] = get_address_table_prefix()."address";
 		$this->post_type = '';
 
-		$this->arr_settings['query_select_id'] = "addressID";
+		$this->arr_settings['query_select_id'] = get_address_table_prefix()."address.addressID";
 		$this->arr_settings['query_all_id'] = "0";
 		$this->arr_settings['query_trash_id'] = "1";
 		$this->orderby_default = "addressSurName";
@@ -1641,7 +1667,7 @@ class mf_address_table extends mf_list_table
 
 	function init_fetch()
 	{
-		global $wpdb, $obj_address, $obj_group;
+		global $wpdb; //, $obj_address, $obj_group
 
 		if(!IS_ADMIN)
 		{
@@ -1654,8 +1680,6 @@ class mf_address_table extends mf_list_table
 
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."("
 				."addressBirthDate LIKE '%".$this->search."%'"
-				//." OR addressFirstName LIKE '%".$this->search."%'"
-				//." OR addressSurName LIKE '%".$this->search."%'"
 				." OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$this->search."%'"
 				." OR addressFirstName LIKE '%".$first_name."%' AND addressSurName LIKE '%".$sur_name."%'"
 				." OR addressAddress LIKE '%".$this->search."%'"
@@ -1670,11 +1694,6 @@ class mf_address_table extends mf_list_table
 				." OR SOUNDEX(addressAddress) = SOUNDEX('".$this->search."')"
 				." OR SOUNDEX(addressCity) = SOUNDEX('".$this->search."')"
 			.")";
-
-			/*$this->query_where .= ($this->query_where != '' ? " AND " : "")."("
-				."MATCH (addressFirstName, addressSurName, addressAddress, addressZipCode, addressCity, addressTelNo, addressWorkNo, addressCellNo, addressEmail) AGAINST ('%".$this->search."%' IN BOOLEAN MODE)"
-				." OR addressFirstName LIKE '%".$first_name."%' AND addressSurName LIKE '%".$sur_name."%'"
-			.")";*/
 		}
 
 		if(get_option('setting_address_api_url') != '')
@@ -1703,7 +1722,7 @@ class mf_address_table extends mf_list_table
 
 			if($strFilterIsMember != '' || $strFilterAccepted != '' || $strFilterUnsubscribed != '')
 			{
-				$this->query_join .= " LEFT JOIN ".$wpdb->prefix."address2group USING (addressID)";
+				$this->query_join .= " LEFT JOIN ".$wpdb->prefix."address2group ON ".get_address_table_prefix()."address.addressID = ".$wpdb->prefix."address2group.addressID AND groupID = '".$intGroupID."'";
 			}
 
 			switch($strFilterIsMember)
@@ -1713,7 +1732,7 @@ class mf_address_table extends mf_list_table
 				break;
 
 				case 'no':
-					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID != '".$intGroupID."'";
+					$this->query_where .= ($this->query_where != '' ? " AND " : "")."groupID IS null";
 				break;
 
 				default:
@@ -1789,17 +1808,32 @@ class mf_address_table extends mf_list_table
 
 	function column_cb($item)
 	{
-		return "<input type='checkbox' name='".$this->arr_settings['query_from']."[]' value='".$item[$this->arr_settings['query_select_id']]."'>";
+		return "<input type='checkbox' name='".$this->arr_settings['query_from']."[]' value='".$item['addressID']."'>"; //$this->arr_settings['query_select_id']
 	}
 
 	function get_bulk_actions()
 	{
-		global $obj_address;
-
 		$actions = array();
 
 		if(isset($this->columns['cb']))
 		{
+			if(IS_ADMIN)
+			{
+				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+
+				if($intGroupID > 0)
+				{
+					$strFilterIsMember = get_or_set_table_filter(array('key' => 'strFilterIsMember'));
+
+					if($strFilterIsMember == 'no')
+					{
+						$actions['add2group'] = __("Add to Group", 'lang_address');
+					}
+				}
+
+				$actions['merge'] = __("Merge", 'lang_address');
+			}
+
 			if(!isset($_GET['addressDeleted']) || $_GET['addressDeleted'] != 1)
 			{
 				$actions['trash'] = __("Delete", 'lang_address');
@@ -1809,11 +1843,6 @@ class mf_address_table extends mf_list_table
 			{
 				$actions['restore'] = __("Restore", 'lang_address');
 				$actions['delete'] = __("Permanently Delete", 'lang_address');
-			}
-
-			if(IS_ADMIN)
-			{
-				$actions['merge'] = __("Merge", 'lang_address');
 			}
 		}
 
@@ -1840,6 +1869,10 @@ class mf_address_table extends mf_list_table
 
 				case 'merge':
 					$this->bulk_merge();
+				break;
+
+				case 'add2group':
+					$this->bulk_add2group();
 				break;
 			}
 		}
@@ -1904,6 +1937,27 @@ class mf_address_table extends mf_list_table
 		}
 
 		$obj_address->do_merge(array('ids' => $arr_ids));
+
+		echo get_notification();
+	}
+
+	function bulk_add2group()
+	{
+		global $obj_group, $error_text, $done_text;
+
+		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+
+		if(!isset($obj_group))
+		{
+			$obj_group = new mf_group();
+		}
+
+		$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+
+		foreach($arr_ids as $id)
+		{
+			$obj_group->add_address(array('address_id' => $id, 'group_id' => $intGroupID));
+		}
 
 		echo get_notification();
 	}
@@ -2139,6 +2193,11 @@ class mf_address_table extends mf_list_table
 							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."'>
 								<i class='fa fa-plus-square fa-lg green'></i>
 							</a>";
+
+							/*if(IS_SUPER_ADMIN)
+							{
+								$out .= " (".var_export($item, true).")";
+							}*/
 						}
 					}
 				}
@@ -2198,7 +2257,7 @@ class mf_address_import extends mf_import
 {
 	function get_defaults()
 	{
-		global $obj_address;
+		//global $obj_address;
 
 		$this->prefix = get_address_table_prefix();
 		$this->table = "address";
@@ -2275,7 +2334,13 @@ class mf_address_import extends mf_import
 
 	function inserted_new($id)
 	{
-		$obj_group = new mf_group();
+		global $obj_group;
+
+		if(!isset($obj_group))
+		{
+			$obj_group = new mf_group();
+		}
+
 		$obj_group->add_address(array('address_id' => $id, 'group_id' => get_option('setting_group_import')));
 	}
 }
@@ -2290,7 +2355,7 @@ class mf_address_export extends mf_export
 
 	function get_columns_for_select()
 	{
-		global $obj_address;
+		//global $obj_address;
 
 		$arr_data = array(
 			'addressMemberID' => __("Member ID", 'lang_address'),
@@ -2412,7 +2477,7 @@ class mf_address_export extends mf_export
 
 	function get_form_xtra()
 	{
-		global $obj_address;
+		//global $obj_address;
 
 		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
 

@@ -26,8 +26,8 @@ echo "<div class='wrap'>
 	));
 
 	$tbl_group->select_data(array(
-		//'select' => "*",
-		'debug' => ($_SERVER['REMOTE_ADDR'] == ""),
+		'select' => get_address_table_prefix()."address.addressID, addressPublic, addressBirthDate, addressFirstName, addressSurName, addressMemberID, addressDeleted, addressDeletedDate, addressDeletedID, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressEmail, addressTelNo, addressCellNo, addressWorkNo, addressSyncedDate, addressError",
+		//'debug' => true,
 	));
 
 	$tbl_group->do_display();
