@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: 
-Version: 3.3.12
+Version: 3.3.13
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -83,7 +83,6 @@ if(function_exists('is_plugin_active') && is_plugin_active("mf_base/index.php"))
 			addressEmail VARCHAR(60) DEFAULT NULL,
 			addressExtra VARCHAR(100),
 			addressCreated DATETIME DEFAULT NULL,
-			addressSyncedDate DATETIME DEFAULT NULL,
 			userID INT UNSIGNED DEFAULT NULL,
 			addressDeleted ENUM('0','1') NOT NULL DEFAULT '0',
 			addressDeletedDate DATETIME DEFAULT NULL,

@@ -25,8 +25,15 @@ echo "<div class='wrap'>
 		'remember_search' => true,
 	));
 
+	$query_select = "";
+
+	if(get_option('setting_address_api_url') != '')
+	{
+		$query_select .= ", addressSyncedDate";
+	}
+
 	$tbl_group->select_data(array(
-		'select' => get_address_table_prefix()."address.addressID, addressPublic, addressBirthDate, addressFirstName, addressSurName, addressMemberID, addressDeleted, addressDeletedDate, addressDeletedID, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressEmail, addressTelNo, addressCellNo, addressWorkNo, addressSyncedDate, addressError",
+		'select' => get_address_table_prefix()."address.addressID, addressPublic, addressBirthDate, addressFirstName, addressSurName, addressMemberID, addressDeleted, addressDeletedDate, addressDeletedID, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressEmail, addressTelNo, addressCellNo, addressWorkNo, addressError".$query_select,
 		//'debug' => true,
 	));
 

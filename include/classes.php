@@ -63,7 +63,14 @@ class mf_address
 	{
 		global $wpdb;
 
-		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressSyncedDate = NOW(), addressDeleted = '0', addressDeletedDate = NULL, addressDeletedID = NULL WHERE addressID = '%d'", $data['address_id']));
+		$query_set = "";
+
+		if(get_option('setting_address_api_url') != '')
+		{
+			$query_set .= ", addressSyncedDate = NOW()";
+		}
+
+		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedDate = NULL, addressDeletedID = NULL".$query_set." WHERE addressID = '%d'", $data['address_id']));
 
 		return ($wpdb->rows_affected > 0);
 	}
