@@ -420,10 +420,11 @@ class mf_address
 
 	function init()
 	{
-		if(!session_id())
+		// What was this used for?
+		/*if(!session_id())
 		{
 			@session_start();
-		}
+		}*/
 
 		$labels = array(
 			'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
@@ -816,10 +817,11 @@ class mf_address
 		return $arr_fields;
 	}
 
-	function wp_login()
+	/*function wp_login()
 	{
-		@session_destroy();
-	}
+		// What was this used for?
+		//@session_destroy();
+	}*/
 
 	function has_duplicate($data)
 	{
