@@ -296,7 +296,7 @@ class mf_address
 														{
 															$count_removed++;
 
-															do_log("Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
+															//do_log("Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
 														}
 
 														else
