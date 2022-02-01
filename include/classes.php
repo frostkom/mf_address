@@ -2099,7 +2099,7 @@ class mf_address_table extends mf_list_table
 					}
 				}
 
-				if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
+				if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
 				{
 					$str_groups = "";
 
@@ -2163,7 +2163,7 @@ class mf_address_table extends mf_list_table
 
 									if(get_post_meta($intGroupID, 'group_reminder_subject') != '' && get_post_meta($intGroupID, 'group_reminder_text') != '')
 									{
-										if(function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group) && $obj_group->is_allowed2send_reminder(array('address_id' => $intAddressID, 'group_id' => $intGroupID)))
+										if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group) && $obj_group->is_allowed2send_reminder(array('address_id' => $intAddressID, 'group_id' => $intGroupID)))
 										{
 											$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
 												<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
