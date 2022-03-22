@@ -2146,6 +2146,15 @@ class mf_address_table extends mf_list_table
 
 							else
 							{
+								$arr_stop_list_recipients = $obj_group->get_stop_list_recipients();
+
+								if(!in_array($intGroupID, $obj_group->arr_stop_list_groups) && in_array($intAddressID, $arr_stop_list_recipients))
+								{
+									$out .= "<i class='fa fa-exclamation-triangle yellow' title='".__("This address is part of a stop list and will not be sent to", 'lang_address')."'></i> ";
+
+									$out .= "<i class='set_tr_color' rel='red'></i>";
+								}
+
 								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm'>
 									<i class='fa fa-minus-square fa-lg red'></i>
 								</a>";
