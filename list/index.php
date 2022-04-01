@@ -33,7 +33,7 @@ echo "<div class='wrap'>
 	}
 
 	$tbl_group->select_data(array(
-		'select' => get_address_table_prefix()."address.addressID, addressPublic, addressBirthDate, addressFirstName, addressSurName, addressMemberID, addressDeleted, addressDeletedDate, addressDeletedID, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressEmail, addressTelNo, addressCellNo, addressWorkNo, addressError".$query_select,
+		'select' => get_address_table_prefix()."address.addressID, addressPublic, addressBirthDate, addressFirstName, addressSurName, addressMemberID, addressDeleted, addressDeletedDate, addressDeletedID, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressEmail, addressTelNo, addressCellNo, addressWorkNo, addressError, addressExtra".$query_select,
 		//'debug' => true,
 	));
 
