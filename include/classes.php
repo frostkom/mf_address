@@ -2376,8 +2376,6 @@ class mf_address_export extends mf_export
 
 	function get_columns_for_select()
 	{
-		//global $obj_address;
-
 		$arr_data = array(
 			'addressMemberID' => __("Member ID", 'lang_address'),
 			'addressBirthDate' => __("Social Security Number", 'lang_address'),
@@ -2401,6 +2399,13 @@ class mf_address_export extends mf_export
 	function fetch_request_xtra()
 	{
 		$this->arr_columns = check_var('arrColumns');
+	}
+
+	function get_form_xtra()
+	{
+		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
+
+		return $out;
 	}
 
 	function get_export_data()
@@ -2494,14 +2499,5 @@ class mf_address_export extends mf_export
 				}
 			}
 		}
-	}
-
-	function get_form_xtra()
-	{
-		//global $obj_address;
-
-		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
-
-		return $out;
 	}
 }
