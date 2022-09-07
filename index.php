@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description:
-Version: 3.3.20
+Version: 3.3.21
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -93,18 +93,18 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		) DEFAULT CHARSET=".$default_charset);
 
 		$arr_add_column[get_address_table_prefix()."address"] = array(
-			'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
-			'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
-			'addressError' => "ALTER TABLE [table] ADD [column] INT UNSIGNED NOT NULL DEFAULT '0' AFTER addressPublic",
-			'addressCountry' => "ALTER TABLE [table] ADD [column] TINYINT UNSIGNED DEFAULT NULL AFTER addressCity",
+			//'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
+			//'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
+			//'addressError' => "ALTER TABLE [table] ADD [column] INT UNSIGNED NOT NULL DEFAULT '0' AFTER addressPublic",
+			//'addressCountry' => "ALTER TABLE [table] ADD [column] TINYINT UNSIGNED DEFAULT NULL AFTER addressCity",
 		);
 
 		$arr_update_column[get_address_table_prefix()."address"] = array(
-			'addressZipCode' => "ALTER TABLE [table] CHANGE [column] [column] MEDIUMINT UNSIGNED DEFAULT NULL",
+			//'addressZipCode' => "ALTER TABLE [table] CHANGE [column] [column] MEDIUMINT UNSIGNED DEFAULT NULL",
 		);
 
 		$arr_add_index[get_address_table_prefix()."address"] = array(
-			'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
+			//'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
 		);
 
 		if(get_option('setting_address_api_url') != '')
