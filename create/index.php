@@ -48,17 +48,28 @@ echo "<div class='wrap'>
 				<div id='postbox-container-1'>
 					<div class='postbox'>
 						<div class='inside'>"
-							.show_button(array('name' => 'btnAddressUpdate', 'text' => $obj_address->id > 0 ? __("Update", 'lang_address') : __("Add", 'lang_address')))
+							.show_button(array('name' => 'btnAddressUpdate', 'text' => ($obj_address->id > 0 ? __("Update", 'lang_address') : __("Add", 'lang_address'))))
 							.input_hidden(array('name' => 'intAddressID', 'value' => $obj_address->id))
 							.wp_nonce_field('address_update_'.$obj_address->id, '_wpnonce_address_update', true, false);
 
 							if($obj_address->id > 0)
 							{
-								$dteAddressCreated = $wpdb->get_var($wpdb->prepare("SELECT addressCreated FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $obj_address->id));
+								$result = $wpdb->get_results($wpdb->prepare("SELECT addressCreated, userID FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $obj_address->id));
 
-								if($dteAddressCreated != '')
+								foreach($result as $r)
 								{
-									echo "<em>".sprintf(__("Created %s", 'lang_address'), format_date($dteAddressCreated))."</em>";
+									$dteAddressCreated = $r->addressCreated;
+									$intUserID = $r->userID;
+
+									if($intUserID > 0)
+									{
+										echo "<br><em>".sprintf(__("Created %s by %s", 'lang_address'), format_date($dteAddressCreated), get_user_info(array('id' => $intUserID)))."</em>";
+									}
+
+									else
+									{
+										echo "<br><em>".sprintf(__("Created %s", 'lang_address'), format_date($dteAddressCreated))."</em>";
+									}
 								}
 							}
 

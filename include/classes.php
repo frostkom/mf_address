@@ -594,7 +594,7 @@ class mf_address
 	{
 		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
-			$meta_address_permission = isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : "";
+			$meta_address_permission = (isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : '');
 
 			if(is_array($meta_address_permission))
 			{
