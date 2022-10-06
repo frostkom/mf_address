@@ -512,7 +512,16 @@ class mf_address
 		$setting_key = get_setting_key(__FUNCTION__);
 		$option = get_option($setting_key);
 
-		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option));
+		$description = "";
+
+		$option_address_api_used = get_option('option_address_api_used');
+
+		if($option_address_api_used > DEFAULT_DATE)
+		{
+			$description = sprintf(__("Last Used %s", 'lang_address'), format_date($option_address_api_used));
+		}
+
+		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option, 'description' => $description));
 	}
 
 	function setting_address_debug_callback()
