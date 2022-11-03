@@ -2167,7 +2167,7 @@ class mf_address_table extends mf_list_table
 									$out .= "<i class='set_tr_color' rel='red'></i>";
 								}
 
-								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm'>
+								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("Would you like to remove the address from the group?", 'lang_address')."'>
 									<i class='fa fa-minus-square fa-lg red'></i>
 								</a>";
 							}
@@ -2184,11 +2184,39 @@ class mf_address_table extends mf_list_table
 
 									if(get_post_meta($intGroupID, 'group_reminder_subject') != '' && get_post_meta($intGroupID, 'group_reminder_text') != '')
 									{
-										if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group) && $obj_group->is_allowed2send_reminder(array('address_id' => $intAddressID, 'group_id' => $intGroupID)))
+										if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
 										{
-											$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
-												<i class='fa fa-recycle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to send it again?", 'lang_address')."'></i>
-											</a>";
+											$dteGroupAcceptanceLimit = date("Y-m-d H:i:s", strtotime("-6 hour"));
+											$dteGroupAcceptanceSent = $obj_group->get_acceptance_sent(array('address_id' => $intAddressID, 'group_id' => $intGroupID));
+
+											if($dteGroupAcceptanceSent < $dteGroupAcceptanceLimit)
+											{
+												$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
+													<i class='fa fa-recycle fa-lg' title='".__("Do you want to send the message again?", 'lang_address')."'></i>
+												</a>";
+											}
+
+											else
+											{
+												$hours_left = time_between_dates(array('start' => $dteGroupAcceptanceLimit, 'end' => $dteGroupAcceptanceSent, 'type' => 'round', 'return' => 'hours'));
+
+												if($hours_left > 1)
+												{
+													$icon_title = sprintf(__("%d hours left until you can send the message again", 'lang_address'), $hours_left);
+												}
+
+												else if($hours_left == 1)
+												{
+													$icon_title = __("One hour left until you can send the message again", 'lang_address');
+												}
+
+												else
+												{
+													$icon_title = __("You can send the message again within the hour", 'lang_address');
+												}
+
+												$out .= "<i class='fa fa-recycle fa-lg grey' title='".$icon_title."'></i>";
+											}
 										}
 									}
 								}
@@ -2202,7 +2230,7 @@ class mf_address_table extends mf_list_table
 
 						else
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("The address has been unsubscribed", 'lang_address')."'>
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("The address has been unsubscribed. Would you like to remove the address from the group?", 'lang_address')."'>
 								<span class='fa-stack fa-lg'>
 									<i class='fa fa-envelope fa-stack-1x'></i>
 									<i class='fa fa-ban fa-stack-2x red'></i>
@@ -2220,7 +2248,7 @@ class mf_address_table extends mf_list_table
 
 						else
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."'>
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."' title='".__("Would you like to add the address to the group?", 'lang_address')."'>
 								<i class='fa fa-plus-square fa-lg green'></i>
 							</a>";
 

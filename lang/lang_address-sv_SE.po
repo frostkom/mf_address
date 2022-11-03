@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-06 10:34+0100\n"
+"POT-Creation-Date: 2022-11-03 08:29+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -34,59 +34,59 @@ msgid "Information"
 msgstr ""
 
 #: ../create/index.php:22
-#: ../include/classes.php:2325
-#: ../include/classes.php:2389
+#: ../include/classes.php:2353
+#: ../include/classes.php:2417
 msgid "Member ID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:25
-#: ../include/classes.php:2296
-#: ../include/classes.php:2390
+#: ../include/classes.php:2324
+#: ../include/classes.php:2418
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:28
 #: ../include/classes.php:733
-#: ../include/classes.php:2297
-#: ../include/classes.php:2391
+#: ../include/classes.php:2325
+#: ../include/classes.php:2419
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:29
 #: ../include/classes.php:737
-#: ../include/classes.php:2298
-#: ../include/classes.php:2392
+#: ../include/classes.php:2326
+#: ../include/classes.php:2420
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:32
-#: ../include/classes.php:2304
-#: ../include/classes.php:2398
+#: ../include/classes.php:2332
+#: ../include/classes.php:2426
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:33
-#: ../include/classes.php:2306
-#: ../include/classes.php:2400
+#: ../include/classes.php:2334
+#: ../include/classes.php:2428
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:34
-#: ../include/classes.php:2305
-#: ../include/classes.php:2399
+#: ../include/classes.php:2333
+#: ../include/classes.php:2427
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:37
-#: ../include/classes.php:2307
-#: ../include/classes.php:2401
+#: ../include/classes.php:2335
+#: ../include/classes.php:2429
 msgid "E-mail"
 msgstr "E-post"
 
 #: ../create/index.php:41
 #: ../include/classes.php:1820
-#: ../include/classes.php:2308
-#: ../include/classes.php:2402
+#: ../include/classes.php:2336
+#: ../include/classes.php:2430
 msgid "Extra"
 msgstr ""
 
@@ -121,32 +121,32 @@ msgstr "Publik"
 #: ../create/index.php:90
 #: ../create/index.php:92
 #: ../include/classes.php:1810
-#: ../include/classes.php:2300
-#: ../include/classes.php:2394
+#: ../include/classes.php:2328
+#: ../include/classes.php:2422
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:93
-#: ../include/classes.php:2299
-#: ../include/classes.php:2393
+#: ../include/classes.php:2327
+#: ../include/classes.php:2421
 msgid "C/O"
 msgstr ""
 
 #: ../create/index.php:95
-#: ../include/classes.php:2301
-#: ../include/classes.php:2395
+#: ../include/classes.php:2329
+#: ../include/classes.php:2423
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:96
-#: ../include/classes.php:2302
-#: ../include/classes.php:2396
+#: ../include/classes.php:2330
+#: ../include/classes.php:2424
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:98
-#: ../include/classes.php:2303
-#: ../include/classes.php:2397
+#: ../include/classes.php:2331
+#: ../include/classes.php:2425
 msgid "Country"
 msgstr "Land"
 
@@ -439,7 +439,7 @@ msgstr "Brasilien"
 
 #: ../include/classes.php:1319
 msgid "British Indian Ocean Territory"
-msgstr ""
+msgstr "Brittiska territoriet i Indiska oceanen"
 
 #: ../include/classes.php:1320
 msgid "Brunei Darussalam"
@@ -499,7 +499,7 @@ msgstr "Julön"
 
 #: ../include/classes.php:1334
 msgid "Cocos (Keeling) Islands"
-msgstr ""
+msgstr "\tKokosöarna"
 
 #: ../include/classes.php:1335
 msgid "Colombia"
@@ -523,7 +523,7 @@ msgstr ""
 
 #: ../include/classes.php:1340
 msgid "Cote D'Ivoire"
-msgstr ""
+msgstr "Elfenbenskusten"
 
 #: ../include/classes.php:1341
 msgid "Croatia"
@@ -559,7 +559,7 @@ msgstr "Dominikanska Republiken"
 
 #: ../include/classes.php:1349
 msgid "East Timor"
-msgstr ""
+msgstr "Östtimor"
 
 #: ../include/classes.php:1350
 msgid "Ecuador"
@@ -575,7 +575,7 @@ msgstr ""
 
 #: ../include/classes.php:1353
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "Ekvatorialguinea"
 
 #: ../include/classes.php:1354
 msgid "Eritrea"
@@ -691,7 +691,7 @@ msgstr ""
 
 #: ../include/classes.php:1382
 msgid "Heard and Mc Donald Islands"
-msgstr ""
+msgstr "Heard- och McDonaldöarna"
 
 #: ../include/classes.php:1383
 msgid "Honduras"
@@ -779,7 +779,7 @@ msgstr ""
 
 #: ../include/classes.php:1404
 msgid "Lao Peoples Democratic Republic"
-msgstr ""
+msgstr "Laos"
 
 #: ../include/classes.php:1405
 msgid "Latvia"
@@ -951,7 +951,7 @@ msgstr "Norfolköarna"
 
 #: ../include/classes.php:1447
 msgid "Northern Mariana Islands"
-msgstr ""
+msgstr "Nordmarianerna"
 
 #: ../include/classes.php:1448
 msgid "Norway"
@@ -1091,7 +1091,7 @@ msgstr "Sydafrika"
 
 #: ../include/classes.php:1482
 msgid "South Georgia and the South Sandwich Islands"
-msgstr ""
+msgstr "Sydgeorgien och Sydsandwichöarna"
 
 #: ../include/classes.php:1483
 msgid "Spain"
@@ -1211,7 +1211,7 @@ msgstr "USA"
 
 #: ../include/classes.php:1512
 msgid "United States Minor Outlying Islands"
-msgstr ""
+msgstr "Förenta staternas mindre öar i Oceanien och Västindien"
 
 #: ../include/classes.php:1513
 msgid "Uruguay"
@@ -1239,11 +1239,11 @@ msgstr ""
 
 #: ../include/classes.php:1519
 msgid "Virgin Islands (British)"
-msgstr ""
+msgstr "Brittiska Jungfruöarna"
 
 #: ../include/classes.php:1520
 msgid "Virgin Islands (U.S.)"
-msgstr ""
+msgstr "Amerikanska Jungfruöarna"
 
 #: ../include/classes.php:1521
 msgid "Wallis and Futuna Islands"
@@ -1335,7 +1335,7 @@ msgid "Synchronized %s"
 msgstr "Synkroniserad %s"
 
 #: ../include/classes.php:2156
-#: ../include/classes.php:2218
+#: ../include/classes.php:2246
 msgid "The group is synced so you can not add or remove manually"
 msgstr "Gryppen är synkroniserad så du kan inte lägga till eller ta bort manuellt"
 
@@ -1343,9 +1343,12 @@ msgstr "Gryppen är synkroniserad så du kan inte lägga till eller ta bort manu
 msgid "This address is part of a stop list and will not be sent to"
 msgstr "Denna adress är med i en stopplista och kommer inte att skickas till"
 
+#: ../include/classes.php:2170
+msgid "Would you like to remove the address from the group?"
+msgstr "Vill du ta bort adressen från gruppen?"
+
 #: ../include/classes.php:2182
-#: ../include/classes.php:2190
-#: ../include/classes.php:2198
+#: ../include/classes.php:2226
 msgid "The address has not been accepted to this group yet."
 msgstr "Adressen har inte accepterats i gruppen ännu."
 
@@ -1353,21 +1356,41 @@ msgstr "Adressen har inte accepterats i gruppen ännu."
 msgid "Do you want to manually accept it?"
 msgstr "Vill du acceptera det manuellt?"
 
-#: ../include/classes.php:2190
-msgid "Do you want to send it again?"
-msgstr "Vill du skicka det igen?"
+#: ../include/classes.php:2195
+msgid "Do you want to send the message again?"
+msgstr "Vill du skicka meddelandet igen?"
 
 #: ../include/classes.php:2205
-msgid "The address has been unsubscribed"
-msgstr "Adressen har avregistrerats"
+#, php-format
+msgid "%d hours left until you can send the message again"
+msgstr "%d timmar kvar tills du kan skicka meddelandet igen"
 
-#: ../include/classes.php:2239
+#: ../include/classes.php:2210
+msgid "One hour left until you can send the message again"
+msgstr "En timme kvar tills du kan skicka meddelandet igen"
+
+#: ../include/classes.php:2215
+msgid "You can send the message again within the hour"
+msgstr "Du kan skicka meddelandet igen inom en timme"
+
+#: ../include/classes.php:2233
+msgid "The address has been unsubscribed. Would you like to remove the address from the group?"
+msgstr "Adressen har avregistrerats. Vill du ta bort den från gruppen?"
+
+#: ../include/classes.php:2251
+msgid "Would you like to add the address to the group?"
+msgstr "Vill du lägga till adressen i gruppen?"
+
+#: ../include/classes.php:2267
 msgid "Errors"
 msgstr "Fel"
 
-#: ../include/classes.php:2415
+#: ../include/classes.php:2443
 msgid "Columns"
 msgstr "Kolumner"
+
+#~ msgid "The address has been unsubscribed"
+#~ msgstr "Adressen har avregistrerats"
 
 #~ msgid "Recover"
 #~ msgstr "Återställ"
