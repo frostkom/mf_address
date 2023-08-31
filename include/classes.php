@@ -2,6 +2,11 @@
 
 class mf_address
 {
+	var $id = 0;
+	var $type = "";
+	var $post_type = 'mf_address';
+	var $meta_prefix = "";
+
 	function __construct($data = array())
 	{
 		if(isset($data['id']) && $data['id'] > 0)
@@ -19,7 +24,7 @@ class mf_address
 
 		$this->type = (isset($data['type']) ? $data['type'] : '');
 
-		$this->post_type = 'mf_address';
+		//$this->post_type = 'mf_address';
 		$this->meta_prefix = $this->post_type.'_';
 	}
 
