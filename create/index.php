@@ -36,7 +36,7 @@ echo "<div class='wrap'>
 							."<div class='flex_flow'>"
 								.show_textfield(array('name' => 'strAddressEmail', 'text' => __("E-mail", 'lang_address'), 'value' => $obj_address->email));
 
-								if(IS_ADMIN && get_option('setting_address_extra_profile') == 'yes')
+								if(IS_ADMINISTRATOR && get_option('setting_address_extra_profile') == 'yes')
 								{
 									echo show_textfield(array('name' => 'strAddressExtra', 'text' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')), 'value' => $obj_address->extra));
 								}
@@ -76,7 +76,7 @@ echo "<div class='wrap'>
 						echo "</div>
 					</div>";
 
-					if(IS_ADMIN)
+					if(IS_ADMINISTRATOR)
 					{
 						echo "<div class='postbox'>
 							<h3 class='hndle'><span>".__("Settings", 'lang_address')."</span></h3>

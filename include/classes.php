@@ -573,7 +573,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -606,7 +606,7 @@ class mf_address
 
 	function profile_update($user_id)
 	{
-		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
 			$meta_address_permission = (isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : '');
 
@@ -782,7 +782,7 @@ class mf_address
 		foreach($result as $r)
 		{
 			//$this->trash(array('address_id' => $r->addressID));
-			do_log("Trash Address ".$r->addressID." (".$wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
+			do_log("Trash Address ".$r->addressID." (".$wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMINISTRATOR ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
 
 			$items_removed = true;
 		}
@@ -809,7 +809,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMIN && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -1001,7 +1001,7 @@ class mf_address
 				$this->workno = check_var('strAddressWorkNo');
 				$this->email = check_var('strAddressEmail');
 
-				if(IS_ADMIN)
+				if(IS_ADMINISTRATOR)
 				{
 					$this->extra = check_var('strAddressExtra');
 				}
@@ -1048,7 +1048,7 @@ class mf_address
 						{
 							$query_set = "";
 
-							if(IS_ADMIN)
+							if(IS_ADMINISTRATOR)
 							{
 								$query_set .= ", addressExtra = '".esc_sql($this->extra)."'";
 							}
@@ -1057,7 +1057,7 @@ class mf_address
 							{
 								$query_where = "";
 
-								if(IS_ADMIN)
+								if(IS_ADMINISTRATOR)
 								{
 									$query_set .= ", addressPublic = '".esc_sql($this->public)."'";
 								}
@@ -1260,7 +1260,7 @@ class mf_address
 						$this->workno = $r->addressWorkNo;
 						$this->email = $r->addressEmail;
 
-						if(IS_ADMIN)
+						if(IS_ADMINISTRATOR)
 						{
 							$this->extra = $r->addressExtra;
 						}
@@ -1618,7 +1618,7 @@ class mf_address
 			$this->id = $data['address_id'];
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMIN || $data['force_admin'] ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMINISTRATOR || $data['force_admin'] ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
 
 		return ($wpdb->rows_affected > 0);
 	}
@@ -1695,7 +1695,7 @@ class mf_address_table extends mf_list_table
 	{
 		global $wpdb; //, $obj_address, $obj_group
 
-		if(!IS_ADMIN)
+		if(!IS_ADMINISTRATOR)
 		{
 			$this->query_where .= ($this->query_where != '' ? " AND " : "")."(addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
 		}
@@ -1843,7 +1843,7 @@ class mf_address_table extends mf_list_table
 
 		if(isset($this->columns['cb']))
 		{
-			if(IS_ADMIN)
+			if(IS_ADMINISTRATOR)
 			{
 				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
 
@@ -2030,7 +2030,7 @@ class mf_address_table extends mf_list_table
 
 				if($intAddressDeleted == 0)
 				{
-					if($intAddressPublic == 0 || IS_ADMIN)
+					if($intAddressPublic == 0 || IS_ADMINISTRATOR)
 					{
 						$actions['edit'] = "<a href='".$post_edit_url."'>".__("Edit", 'lang_address')."</a>";
 
@@ -2087,7 +2087,7 @@ class mf_address_table extends mf_list_table
 			case 'addressIcons':
 				$intAddressDeleted = $item['addressDeleted'];
 
-				if(IS_ADMIN)
+				if(IS_ADMINISTRATOR)
 				{
 					$out .= ($out != '' ? "&nbsp;" : "")."<i class='fa ".($item['addressPublic'] == 1 ? "fa-check green" : "fa-times red")." fa-lg' title='".($item['addressPublic'] == 1 ? __("Public", 'lang_address') : __("Not Public", 'lang_address'))."'></i>";
 
