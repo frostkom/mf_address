@@ -2318,12 +2318,11 @@ class mf_address_table extends mf_list_table
 
 class mf_address_import extends mf_import
 {
+	var $table = "address";
+
 	function get_defaults()
 	{
-		//global $obj_address;
-
 		$this->prefix = get_address_table_prefix();
-		$this->table = "address";
 
 		$this->columns = array(
 			'addressBirthDate' => __("Social Security Number", 'lang_address'),
