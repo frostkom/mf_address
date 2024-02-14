@@ -5,7 +5,31 @@ class mf_address
 	var $id = 0;
 	var $type = "";
 	var $post_type = 'mf_address';
-	var $meta_prefix = "";
+	var $meta_prefix;
+	var $query_where = "";
+	var $name;
+	var $acceptance_email;
+	var $acceptance_subject;
+	var $acceptance_text;
+	var $reminder_subject;
+	var $reminder_text;
+	var $owner_email;
+	var $help_page;
+	var $archive_page;
+	var $group_type;
+	var $allow_registration;
+	var $verify_address;
+	var $contact_page;
+	var $registration_fields;
+	var $verify_link;
+	var $sync_users;
+	var $id_copy;
+	var $api;
+	var $api_filter;
+	var $group_id;
+	var $ids;
+	var $is_public;
+	var $result_duplicate;
 
 	function __construct($data = array())
 	{
@@ -14,17 +38,13 @@ class mf_address
 			$this->id = $data['id'];
 		}
 
-		else
+		else if(function_exists('check_var')) //MF Base might not be loaded yet
 		{
-			if(function_exists('check_var')) //MF Base might not be loaded yet
-			{
-				$this->id = check_var('intAddressID');
-			}
+			$this->id = check_var('intAddressID');
 		}
 
 		$this->type = (isset($data['type']) ? $data['type'] : '');
 
-		//$this->post_type = 'mf_address';
 		$this->meta_prefix = $this->post_type.'_';
 	}
 
@@ -1670,6 +1690,8 @@ if(!class_exists('mf_list_table'))
 
 class mf_address_table extends mf_list_table
 {
+	var $query_where = "";
+
 	function set_default()
 	{
 		global $obj_address;
@@ -1693,7 +1715,7 @@ class mf_address_table extends mf_list_table
 
 	function init_fetch()
 	{
-		global $wpdb; //, $obj_address, $obj_group
+		global $wpdb;
 
 		if(!IS_ADMINISTRATOR)
 		{
