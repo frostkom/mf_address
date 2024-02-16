@@ -30,6 +30,21 @@ class mf_address
 	var $ids;
 	var $is_public;
 	var $result_duplicate;
+	var $public;
+	var $member_id;
+	var $birthdate;
+	var $first_name;
+	var $sur_name;
+	var $address;
+	var $co;
+	var $zipcode;
+	var $city;
+	var $country;
+	var $telno;
+	var $cellno;
+	var $workno;
+	var $email;
+	var $extra;
 
 	function __construct($data = array())
 	{
