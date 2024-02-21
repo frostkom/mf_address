@@ -7,7 +7,7 @@ class mf_address
 	var $post_type = 'mf_address';
 	var $meta_prefix;
 	var $query_where = "";
-	var $name;
+	/*var $name;
 	var $acceptance_email;
 	var $acceptance_subject;
 	var $acceptance_text;
@@ -25,7 +25,7 @@ class mf_address
 	var $sync_users;
 	var $id_copy;
 	var $api;
-	var $api_filter;
+	var $api_filter;*/
 	var $group_id;
 	var $ids;
 	var $is_public;
