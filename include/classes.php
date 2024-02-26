@@ -453,6 +453,14 @@ class mf_address
 				}
 			}
 			#####################
+
+			// Delete old uploads
+			#######################
+			list($upload_path, $upload_url) = get_uploads_folder($this->post_type);
+
+			get_file_info(array('path' => $upload_path, 'callback' => 'delete_files_callback', 'time_limit' => WEEK_IN_SECONDS));
+			get_file_info(array('path' => $upload_path, 'folder_callback' => 'delete_empty_folder_callback'));
+			#######################
 		}
 
 		$obj_cron->end();
