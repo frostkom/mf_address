@@ -157,7 +157,7 @@ class mf_address
 
 									if($count_incoming > 0)
 									{
-										$count_updated = $count_updated_error = $count_inserted = $count_inserted_error = $count_error = 0;
+										$count_updated = $count_updated_error = $count_inserted = $count_inserted_error = 0;
 
 										if(get_option('setting_address_debug') == 'yes')
 										{
@@ -206,13 +206,12 @@ class mf_address
 												}
 											}
 
-											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s", $strAddressBirthDate));
+											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+											$search_query = $wpdb->last_query;
 											$rows = $wpdb->num_rows;
 
 											if($rows > 0)
 											{
-												$i = 0;
-
 												foreach($result as $r)
 												{
 													$intAddressID = $r->addressID;
@@ -222,8 +221,6 @@ class mf_address
 													if($wpdb->rows_affected > 0)
 													{
 														$count_updated++;
-
-														$i++;
 													}
 
 													else
@@ -232,14 +229,9 @@ class mf_address
 													}
 												}
 
-												if($i > 1)
+												if($rows > 1) // && get_option('setting_address_debug') == 'yes'
 												{
-													if(get_option('setting_address_debug') == 'yes')
-													{
-														do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $i, $wpdb->last_query)."</a>");
-													}
-
-													$count_error++;
+													do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s) and they were all updated", $rows, $search_query)."</a>");
 												}
 											}
 
@@ -275,7 +267,7 @@ class mf_address
 
 										if(get_option('setting_address_debug') == 'yes')
 										{
-											do_log("Address API - Report: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted, ".$count_error." errors");
+											do_log("Address API - Insert: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted");
 										}
 
 										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
@@ -359,7 +351,7 @@ class mf_address
 
 										if(get_option('setting_address_debug') == 'yes')
 										{
-											do_log("Address API - Report: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
+											do_log("Address API - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
 										}
 
 										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
@@ -375,11 +367,6 @@ class mf_address
 
 								if($count_non_synced > 0)
 								{
-									if(get_option('setting_address_debug') == 'yes')
-									{
-										do_log("Address API - Non-synced: ".$wpdb->last_query);
-									}
-
 									$count_removed = $count_removed_error = 0;
 
 									foreach($result as $r)
@@ -404,7 +391,7 @@ class mf_address
 
 									if(get_option('setting_address_debug') == 'yes')
 									{
-										do_log("Address API - Report: ".$count_non_synced." non-synced, ".$count_removed." removed, ".$count_removed_error." NOT removed");
+										do_log("Address API - Old: ".$count_non_synced." non-synced, ".$count_removed." removed, ".$count_removed_error." NOT removed");
 									}
 								}
 								############################
@@ -471,14 +458,12 @@ class mf_address
 
 							if($this->do_merge(array('ids' => $arr_ids)))
 							{
-								//do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s) so I merged them for you (%s)", $intAddressAmount, shorten_text(array('string' => $strAddressBirthDate, 'limit' => 10)), var_export($arr_ids, true))."</a>");
-
 								$merged_amount++;
 							}
 
 							else
 							{
-								do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s)", $intAddressAmount, shorten_text(array('string' => $strAddressBirthDate, 'limit' => 10)))."</a>");
+								do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s) but they could not be merged", $intAddressAmount, shorten_text(array('string' => $strAddressBirthDate, 'limit' => 10)))."</a>");
 							}
 						}
 
@@ -621,7 +606,7 @@ class mf_address
 		$setting_key = get_setting_key(__FUNCTION__);
 		$option = get_option_or_default($setting_key, 'no');
 
-		$description = setting_time_limit(array('key' => $setting_key, 'value' => $option));
+		list($option, $description) = setting_time_limit(array('key' => $setting_key, 'value' => $option, 'return' => 'array'));
 
 		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option, 'description' => $description));
 	}
