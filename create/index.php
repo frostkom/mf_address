@@ -54,7 +54,7 @@ echo "<div class='wrap'>
 
 							if($obj_address->id > 0)
 							{
-								$result = $wpdb->get_results($wpdb->prepare("SELECT addressCreated, userID FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $obj_address->id));
+								$result = $wpdb->get_results($wpdb->prepare("SELECT addressCreated, userID FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $obj_address->id));
 
 								foreach($result as $r)
 								{

@@ -50,7 +50,7 @@ class mf_address
 
 		$out = __("unknown", 'lang_address');
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT addressFirstName, addressSurName, addressEmail FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $data['address_id']));
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressFirstName, addressSurName, addressEmail FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $data['address_id']));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -91,7 +91,7 @@ class mf_address
 			$query_set .= ", addressSyncedDate = NOW()";
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedDate = NULL, addressDeletedID = NULL".$query_set." WHERE addressID = '%d'", $data['address_id']));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '0', addressDeletedDate = NULL, addressDeletedID = NULL".$query_set." WHERE addressID = '%d'", $data['address_id']));
 
 		return ($wpdb->rows_affected > 0);
 	}
@@ -187,7 +187,7 @@ class mf_address
 												}
 											}
 
-											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
 											$search_query = $wpdb->last_query;
 											$rows = $wpdb->num_rows;
 
@@ -197,7 +197,7 @@ class mf_address
 												{
 													$intAddressID = $r->addressID;
 
-													$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra, $intAddressID));
+													$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra, $intAddressID));
 
 													if($wpdb->rows_affected > 0)
 													{
@@ -218,7 +218,7 @@ class mf_address
 
 											else
 											{
-												$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra));
+												$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra));
 
 												$intAddressID = $wpdb->insert_id;
 
@@ -279,7 +279,7 @@ class mf_address
 
 											if($strMembershipEndedReason == 'exit')
 											{
-												$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".get_address_table_prefix()."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+												$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".$wpdb->prefix."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
 
 												if($wpdb->num_rows > 0)
 												{
@@ -342,7 +342,7 @@ class mf_address
 
 								// Remove old non-synced
 								############################
-								$result = $wpdb->get_results("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressBirthDate != '' AND addressDeleted = '0' AND (addressSyncedDate IS null OR addressSyncedDate < DATE_SUB(NOW(), INTERVAL 1 MONTH))");
+								$result = $wpdb->get_results("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressBirthDate != '' AND addressDeleted = '0' AND (addressSyncedDate IS null OR addressSyncedDate < DATE_SUB(NOW(), INTERVAL 1 MONTH))");
 
 								$count_non_synced = $wpdb->num_rows;
 
@@ -395,7 +395,7 @@ class mf_address
 
 			// Look for duplicates
 			#####################
-			$result = $wpdb->get_results("SELECT addressID, addressPublic, addressMemberID, addressBirthDate, COUNT(addressBirthDate) AS addressAmount FROM ".get_address_table_prefix()."address WHERE addressBirthDate != '' AND addressDeleted = '0' GROUP BY addressBirthDate ORDER BY addressAmount DESC LIMIT 0, 10");
+			$result = $wpdb->get_results("SELECT addressID, addressPublic, addressMemberID, addressBirthDate, COUNT(addressBirthDate) AS addressAmount FROM ".$wpdb->prefix."address WHERE addressBirthDate != '' AND addressDeleted = '0' GROUP BY addressBirthDate ORDER BY addressAmount DESC LIMIT 0, 10");
 			$rows = $wpdb->num_rows;
 
 			if($rows > 0)
@@ -506,12 +506,6 @@ class mf_address
 		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
 
 		$arr_settings = array();
-
-		if(IS_SUPER_ADMIN && is_multisite())
-		{
-			$arr_settings['setting_address_site_wide'] = __("Use Master Table on All Sites", 'lang_address');
-		}
-
 		$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", 'lang_address');
 		$arr_settings['setting_address_extra_profile'] = __("Display Settings for Extra in Profile", 'lang_address');
 		$arr_settings['setting_address_display_member_id'] = __("Display Member ID", 'lang_address');
@@ -530,15 +524,6 @@ class mf_address
 		$setting_key = get_setting_key(__FUNCTION__);
 
 		echo settings_header($setting_key, __("Address Book", 'lang_address'));
-	}
-
-	function setting_address_site_wide_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		settings_save_site_wide($setting_key);
-		$option = get_site_option($setting_key, 'yes');
-
-		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
 	}
 
 	function setting_address_extra_callback()
@@ -628,7 +613,7 @@ class mf_address
 
 		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
-			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
+			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
 			if($wpdb->num_rows > 0)
 			{
@@ -679,14 +664,14 @@ class mf_address
 	{
 		global $wpdb;
 
-		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
 	}
 
 	function restrict_manage_posts($post_type)
 	{
 		global $wpdb, $obj_group;
 
-		if($post_type == get_address_table_prefix()."address" && is_plugin_active("mf_group/index.php"))
+		if($post_type == $wpdb->prefix."address" && is_plugin_active("mf_group/index.php"))
 		{
 			if(get_option('setting_address_api_url') != '')
 			{
@@ -694,8 +679,8 @@ class mf_address
 
 				$arr_data = get_yes_no_for_select(array('choose_here_text' => __("Synchronized Through API", 'lang_address')));
 
-				$rows_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".get_address_table_prefix()."address WHERE addressSyncedDate >= %s", DEFAULT_DATE));
-				$rows_not_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".get_address_table_prefix()."address WHERE addressSyncedDate < %s", DEFAULT_DATE));
+				$rows_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".$wpdb->prefix."address WHERE addressSyncedDate >= %s", DEFAULT_DATE));
+				$rows_not_synced = $wpdb->get_var($wpdb->prepare("SELECT COUNT(addressID) FROM ".$wpdb->prefix."address WHERE addressSyncedDate < %s", DEFAULT_DATE));
 
 				if($rows_synced > 0)
 				{
@@ -780,7 +765,7 @@ class mf_address
 
 		$export_items = array();
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".get_address_table_prefix()."address WHERE addressEmail = %s AND addressDeleted = '0' LIMIT ".(($page - 1) * $number).", ".$number, $email_address));
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".$wpdb->prefix."address WHERE addressEmail = %s AND addressDeleted = '0' LIMIT ".(($page - 1) * $number).", ".$number, $email_address));
 
 		foreach($result as $r)
 		{
@@ -830,12 +815,12 @@ class mf_address
 
 		$items_removed = false;
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressEmail = %s AND addressDeleted = '0'", $email_address)); // LIMIT ".(($page - 1) * $number).", ".$number
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressEmail = %s AND addressDeleted = '0'", $email_address)); // LIMIT ".(($page - 1) * $number).", ".$number
 
 		foreach($result as $r)
 		{
 			//$this->trash(array('address_id' => $r->addressID));
-			do_log("Trash Address ".$r->addressID." (".$wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMINISTRATOR ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
+			do_log("Trash Address ".$r->addressID." (".$wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMINISTRATOR ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id).")");
 
 			$items_removed = true;
 		}
@@ -864,7 +849,7 @@ class mf_address
 
 		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
 		{
-			$result = $wpdb->get_results("SELECT addressExtra FROM ".get_address_table_prefix()."address WHERE addressExtra != '' GROUP BY addressExtra");
+			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
 			if($wpdb->num_rows > 0)
 			{
@@ -904,7 +889,7 @@ class mf_address
 		$strAddressBirthDate = (isset($data['item']['addressBirthDate']) ? $data['item']['addressBirthDate'] : '');
 		$strAddressEmail = (isset($data['item']['addressEmail']) ? $data['item']['addressEmail'] : '');
 
-		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressMemberID, addressBirthDate, addressEmail FROM ".get_address_table_prefix()."address WHERE ((addressMemberID > '0' AND addressMemberID = '%d') OR (addressBirthDate != '' AND addressBirthDate = %s) OR (addressEmail != '' AND addressEmail = %s)) AND addressDeleted = '0' AND addressID != '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressEmail, $intAddressID));
+		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressMemberID, addressBirthDate, addressEmail FROM ".$wpdb->prefix."address WHERE ((addressMemberID > '0' AND addressMemberID = '%d') OR (addressBirthDate != '' AND addressBirthDate = %s) OR (addressEmail != '' AND addressEmail = %s)) AND addressDeleted = '0' AND addressID != '%d'", $intAddressMemberID, $strAddressBirthDate, $strAddressEmail, $intAddressID));
 
 		foreach($result as $r)
 		{
@@ -936,7 +921,7 @@ class mf_address
 					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
 					$arr_columns = array('addressMemberID', 'addressBirthDate', 'addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
 
-					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".get_address_table_prefix()."address WHERE addressID = '%d'";
+					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".$wpdb->prefix."address WHERE addressID = '%d'";
 
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
@@ -972,7 +957,7 @@ class mf_address
 
 							if($query_set != '')
 							{
-								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET ".$query_set." WHERE addressID = '%d'", $id));
+								$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET ".$query_set." WHERE addressID = '%d'", $id));
 
 								do_log(get_user_info(array('id' => get_current_user_id()))." Merged/Updated ".$id_prev." -> ".$id." (".$wpdb->last_query.")", 'notification');
 							}
@@ -1119,7 +1104,7 @@ class mf_address
 									$query_where .= " AND (addressPublic = '1' OR addressPublic = '0' AND userID = '".get_current_user_id()."')";
 								}
 
-								$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s".$query_set." WHERE addressID = '%d'".$query_where, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, $this->id));
+								$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s".$query_set." WHERE addressID = '%d'".$query_where, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, $this->id));
 
 								if($wpdb->rows_affected > 0)
 								{
@@ -1134,7 +1119,7 @@ class mf_address
 
 							else
 							{
-								$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '%d', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'".$query_set, $this->public, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
+								$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressPublic = '%d', addressMemberID = '%d', addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressCreated = NOW(), userID = '%d'".$query_set, $this->public, $this->member_id, $this->birthdate, $this->first_name, $this->sur_name, $this->zipcode, $this->city, $this->country, $this->address, $this->co, $this->telno, $this->cellno, $this->workno, $this->email, get_current_user_id()));
 
 								$this->id = $wpdb->insert_id;
 
@@ -1293,7 +1278,7 @@ class mf_address
 			case 'create':
 				if($this->id > 0 && !isset($_POST['btnAddressUpdate']))
 				{
-					$result = $wpdb->get_results($wpdb->prepare("SELECT addressPublic, addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressExtra, addressDeleted FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressPublic, addressMemberID, addressBirthDate, addressFirstName, addressSurName, addressAddress, addressCo, addressZipCode, addressCity, addressCountry, addressTelNo, addressCellNo, addressWorkNo, addressEmail, addressExtra, addressDeleted FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
 
 					foreach($result as $r)
 					{
@@ -1321,7 +1306,7 @@ class mf_address
 
 						if($intAddressDeleted == 1)
 						{
-							$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedID = '', addressDeletedDate = '' WHERE addressPublic = '0' AND addressID = '%d' AND userID = '%d'", $this->id, get_current_user_id()));
+							$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '0', addressDeletedID = '', addressDeletedDate = '' WHERE addressPublic = '0' AND addressID = '%d' AND userID = '%d'", $this->id, get_current_user_id()));
 						}
 					}
 				}
@@ -1599,12 +1584,14 @@ class mf_address
 	{
 		global $wpdb;
 
-		$result = array();
-
 		switch($data['type'])
 		{
 			case 'sms':
-				$result = $wpdb->get_results("SELECT addressCellNo FROM ".get_address_table_prefix()."address WHERE addressCellNo != '' AND (addressFirstName LIKE '%".$data['string']."%' OR addressSurName LIKE '%".$data['string']."%' OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$data['string']."%' OR REPLACE(REPLACE(REPLACE(addressCellNo, '/', ''), '-', ''), ' ', '') LIKE '%".$data['string']."%') GROUP BY addressCellNo ORDER BY addressSurName ASC, addressFirstName ASC");
+				$result = $wpdb->get_results("SELECT addressCellNo FROM ".$wpdb->prefix."address WHERE addressCellNo != '' AND (addressFirstName LIKE '%".$data['string']."%' OR addressSurName LIKE '%".$data['string']."%' OR CONCAT(addressFirstName, ' ', addressSurName) LIKE '%".$data['string']."%' OR REPLACE(REPLACE(REPLACE(addressCellNo, '/', ''), '-', ''), ' ', '') LIKE '%".$data['string']."%') GROUP BY addressCellNo ORDER BY addressSurName ASC, addressFirstName ASC");
+			break;
+
+			default:
+				$result = array();
 			break;
 		}
 
@@ -1620,14 +1607,14 @@ class mf_address
 			$this->id = $id;
 		}
 
-		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+		return $wpdb->get_var($wpdb->prepare("SELECT addressEmail FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
 	}
 
 	function get_address_id($data)
 	{
 		global $wpdb;
 
-		$this->id = $wpdb->get_var($wpdb->prepare("SELECT addressID FROM ".get_address_table_prefix()."address WHERE addressEmail = %s", $data['email']));
+		$this->id = $wpdb->get_var($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressEmail = %s", $data['email']));
 	}
 
 	function insert($data)
@@ -1638,7 +1625,7 @@ class mf_address
 
 		if($data['email'] != '')
 		{
-			$wpdb->query($wpdb->prepare("INSERT INTO ".get_address_table_prefix()."address SET addressPublic = '%d', addressEmail = %s, addressCreated = NOW(), userID = '%d'", $data['public'], $data['email'], get_current_user_id()));
+			$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressPublic = '%d', addressEmail = %s, addressCreated = NOW(), userID = '%d'", $data['public'], $data['email'], get_current_user_id()));
 
 			return $wpdb->insert_id;
 		}
@@ -1653,7 +1640,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '0', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'", get_current_user_id(), $this->id));
 
 		return ($wpdb->rows_affected > 0);
 	}
@@ -1670,7 +1657,7 @@ class mf_address
 			$this->id = $data['address_id'];
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMINISTRATOR || $data['force_admin'] ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressDeleted = '1', addressDeletedID = '%d', addressDeletedDate = NOW() WHERE addressID = '%d'".(IS_ADMINISTRATOR || $data['force_admin'] ? "" : " AND addressPublic = '0' AND userID = '".get_current_user_id()."'"), get_current_user_id(), $this->id));
 
 		return ($wpdb->rows_affected > 0);
 	}
@@ -1684,7 +1671,7 @@ class mf_address
 			$this->id = $id;
 		}
 
-		$wpdb->query($wpdb->prepare("DELETE FROM ".get_address_table_prefix()."address WHERE addressID = '%d'", $this->id));
+		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
 
 		return ($rows_affected > 0);
 	}
@@ -1710,7 +1697,7 @@ class mf_address
 
 		if($address_error != '')
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".get_address_table_prefix()."address SET addressError = 0 WHERE addressID = '%d'", $this->id));
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressError = 0 WHERE addressID = '%d'", $this->id));
 		}
 	}
 }
@@ -1726,17 +1713,17 @@ class mf_address_table extends mf_list_table
 
 	function set_default()
 	{
-		global $obj_address;
+		global $wpdb, $obj_address;
 
 		if(!isset($obj_address))
 		{
 			$obj_address = new mf_address();
 		}
 
-		$this->arr_settings['query_from'] = get_address_table_prefix()."address";
+		$this->arr_settings['query_from'] = $wpdb->prefix."address";
 		$this->post_type = '';
 
-		$this->arr_settings['query_select_id'] = get_address_table_prefix()."address.addressID";
+		$this->arr_settings['query_select_id'] = $wpdb->prefix."address.addressID";
 		$this->arr_settings['query_all_id'] = "0";
 		$this->arr_settings['query_trash_id'] = "1";
 		$this->orderby_default = "addressSurName";
@@ -1802,7 +1789,7 @@ class mf_address_table extends mf_list_table
 
 			if($strFilterIsMember != '' || $strFilterAccepted != '' || $strFilterUnsubscribed != '')
 			{
-				$this->query_join .= " LEFT JOIN ".$wpdb->prefix."address2group ON ".get_address_table_prefix()."address.addressID = ".$wpdb->prefix."address2group.addressID AND groupID = '".$intGroupID."'";
+				$this->query_join .= " LEFT JOIN ".$wpdb->prefix."address2group ON ".$wpdb->prefix."address.addressID = ".$wpdb->prefix."address2group.addressID AND groupID = '".$intGroupID."'";
 			}
 
 			switch($strFilterIsMember)
@@ -2393,7 +2380,7 @@ class mf_address_import extends mf_import
 
 	function get_defaults()
 	{
-		$this->prefix = get_address_table_prefix();
+		$this->prefix = $wpdb->prefix;
 
 		$this->columns = array(
 			'addressBirthDate' => __("Social Security Number", 'lang_address'),
@@ -2534,7 +2521,7 @@ class mf_address_export extends mf_export
 			$arr_countries = $obj_address->get_countries_for_select();
 		}
 
-		$result = $wpdb->get_results("SELECT ".(count($this->arr_columns) > 0 ? implode(", ", $this->arr_columns) : "*")." FROM ".get_address_table_prefix()."address WHERE addressDeleted = '0' GROUP BY addressID ORDER BY addressPublic ASC, addressSurName ASC, addressFirstName ASC", ARRAY_A);
+		$result = $wpdb->get_results("SELECT ".(count($this->arr_columns) > 0 ? implode(", ", $this->arr_columns) : "*")." FROM ".$wpdb->prefix."address WHERE addressDeleted = '0' GROUP BY addressID ORDER BY addressPublic ASC, addressSurName ASC, addressFirstName ASC", ARRAY_A);
 
 		if($wpdb->num_rows > 0)
 		{

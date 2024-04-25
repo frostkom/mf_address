@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description:
-Version: 3.4.9
+Version: 3.4.10
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -17,7 +17,7 @@ GitHub Plugin URI: frostkom/mf_address
 if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_base/index.php"))
 {
 	include_once("include/classes.php");
-	include_once("include/functions.php");
+	//include_once("include/functions.php");
 
 	$obj_address = new mf_address();
 
@@ -60,11 +60,19 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	{
 		global $wpdb;
 
+		include_once("include/classes.php");
+
+		$obj_address = new mf_address();
+
+		mf_uninstall_plugin(array(
+			'options' => array('setting_address_site_wide'),
+		));
+
 		$default_charset = (DB_CHARSET != '' ? DB_CHARSET : 'utf8');
 
 		$arr_add_column = $arr_update_column = $arr_add_index = array();
 
-		$wpdb->query("CREATE TABLE IF NOT EXISTS ".get_address_table_prefix()."address (
+		$wpdb->query("CREATE TABLE IF NOT EXISTS ".$wpdb->prefix."address (
 			addressID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			addressPublic ENUM('0','1') NOT NULL DEFAULT '1',
 			addressError INT UNSIGNED NOT NULL DEFAULT '0',
@@ -92,29 +100,29 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			KEY addressDeleted (addressDeleted)
 		) DEFAULT CHARSET=".$default_charset);
 
-		$arr_add_column[get_address_table_prefix()."address"] = array(
+		$arr_add_column[$wpdb->prefix."address"] = array(
 			//'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
 			//'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
 			//'addressError' => "ALTER TABLE [table] ADD [column] INT UNSIGNED NOT NULL DEFAULT '0' AFTER addressPublic",
 			//'addressCountry' => "ALTER TABLE [table] ADD [column] TINYINT UNSIGNED DEFAULT NULL AFTER addressCity",
 		);
 
-		$arr_update_column[get_address_table_prefix()."address"] = array(
+		$arr_update_column[$wpdb->prefix."address"] = array(
 			//'addressZipCode' => "ALTER TABLE [table] CHANGE [column] [column] MEDIUMINT UNSIGNED DEFAULT NULL",
 		);
 
-		$arr_add_index[get_address_table_prefix()."address"] = array(
+		$arr_add_index[$wpdb->prefix."address"] = array(
 			//'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
 		);
 
 		if(get_option('setting_address_api_url') != '')
 		{
-			$arr_add_column[get_address_table_prefix()."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
+			$arr_add_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
 		}
 
 		else
 		{
-			$arr_update_column[get_address_table_prefix()."address"]['addressSyncedDate'] = "ALTER TABLE [table] DROP COLUMN [column]";
+			$arr_update_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] DROP COLUMN [column]";
 		}
 
 		update_columns($arr_update_column);
@@ -122,7 +130,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_index($arr_add_index);
 
 		delete_base(array(
-			'table_prefix' => get_address_table_prefix(),
+			'table_prefix' => $wpdb->prefix,
 			'table' => "address",
 			'field_prefix' => "address",
 			'child_tables' => array(
