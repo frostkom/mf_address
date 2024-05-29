@@ -33,16 +33,14 @@ echo "<div class='wrap'>
 								.show_textfield(array('name' => 'strAddressCellNo', 'text' => __("Mobile Number", 'lang_address'), 'value' => $obj_address->cellno))
 								.show_textfield(array('name' => 'strAddressWorkNo', 'text' => __("Work Number", 'lang_address'), 'value' => $obj_address->workno))
 							."</div>"
-							."<div class='flex_flow'>"
-								.show_textfield(array('name' => 'strAddressEmail', 'text' => __("E-mail", 'lang_address'), 'value' => $obj_address->email));
+							.show_textfield(array('name' => 'strAddressEmail', 'text' => __("E-mail", 'lang_address'), 'value' => $obj_address->email));
 
-								if(IS_ADMINISTRATOR && get_option('setting_address_extra_profile') == 'yes')
-								{
-									echo show_textfield(array('name' => 'strAddressExtra', 'text' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')), 'value' => $obj_address->extra));
-								}
+							if(IS_ADMINISTRATOR && in_array('address', get_option_or_default('setting_address_extra_field')))
+							{
+								echo show_textfield(array('name' => 'strAddressExtra', 'text' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')), 'value' => $obj_address->extra));
+							}
 
-							echo "</div>"
-						."</div>
+						echo "</div>
 					</div>
 				</div>
 				<div id='postbox-container-1'>

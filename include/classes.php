@@ -3,7 +3,7 @@
 class mf_address
 {
 	var $id = 0;
-	var $type = "";
+	var $type;
 	var $post_type = 'mf_address';
 	var $meta_prefix;
 	var $query_where = "";
@@ -26,6 +26,8 @@ class mf_address
 	var $workno;
 	var $email;
 	var $extra;
+	var $arr_columns = array('addressMemberID', 'addressBirthDate', 'addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail');
+	var $arr_unique_columns = array('addressBirthDate', 'addressEmail');
 
 	function __construct($data = array())
 	{
@@ -42,6 +44,57 @@ class mf_address
 		$this->type = (isset($data['type']) ? $data['type'] : '');
 
 		$this->meta_prefix = $this->post_type.'_';
+
+		$setting_address_extra_field = get_option('setting_address_extra_field');
+
+		if(is_array($setting_address_extra_field) && count($setting_address_extra_field) > 0)
+		{
+			$this->arr_columns[] = 'addressExtra';
+		}
+
+		if(get_option('setting_address_display_member_id', 'yes') == 'yes')
+		{
+			$this->arr_unique_columns[] = 'addressMemberID';
+		}
+	}
+
+	function get_columns_for_select($data = array())
+	{
+		if(!isset($data['add_choose_here'])){	$data['add_choose_here'] = false;}
+
+		$arr_data = array();
+
+		if($data['add_choose_here'] == true)
+		{
+			$arr_data[''] = "-- ".__("Choose Here", 'lang_address')." --";
+		}
+
+		if(get_option('setting_address_display_member_id', 'yes') == 'yes')
+		{
+			$arr_data['addressMemberID'] = __("Member ID", 'lang_address');
+		}
+
+		$arr_data['addressBirthDate'] = __("Social Security Number", 'lang_address');
+		$arr_data['addressFirstName'] = __("First Name", 'lang_address');
+		$arr_data['addressSurName'] = __("Last Name", 'lang_address');
+		$arr_data['addressCo'] = __("C/O", 'lang_address');
+		$arr_data['addressAddress'] = __("Address", 'lang_address');
+		$arr_data['addressZipCode'] = __("Zip Code", 'lang_address');
+		$arr_data['addressCity'] = __("City", 'lang_address');
+		$arr_data['addressCountry'] = __("Country", 'lang_address');
+		$arr_data['addressTelNo'] = __("Phone Number", 'lang_address');
+		$arr_data['addressWorkNo'] = __("Work Number", 'lang_address');
+		$arr_data['addressCellNo'] = __("Mobile Number", 'lang_address');
+		$arr_data['addressEmail'] = __("E-mail", 'lang_address');
+
+		$setting_address_extra_field = get_option('setting_address_extra_field');
+
+		if(is_array($setting_address_extra_field) && count($setting_address_extra_field) > 0)
+		{
+			$arr_data['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
+		}
+
+		return $arr_data;
 	}
 
 	function get_name($data)
@@ -471,6 +524,19 @@ class mf_address
 			get_file_info(array('path' => $upload_path, 'callback' => 'delete_files_callback', 'time_limit' => WEEK_IN_SECONDS));
 			get_file_info(array('path' => $upload_path, 'folder_callback' => 'delete_empty_folder_callback'));
 			#######################
+
+			// Convert setting_address_extra_profile into setting_address_extra_field
+			#######################
+			if(get_option('setting_address_extra_field') == "")
+			{
+				$setting_address_extra_profile = get_option('setting_address_extra_profile', 'yes');
+
+				if($setting_address_extra_profile == 'yes')
+				{
+					update_option('setting_address_extra_field', array('profile'));
+				}
+			}
+			#######################
 		}
 
 		$obj_cron->end();
@@ -506,8 +572,15 @@ class mf_address
 		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
 
 		$arr_settings = array();
-		$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", 'lang_address');
-		$arr_settings['setting_address_extra_profile'] = __("Display Settings for Extra in Profile", 'lang_address');
+		$arr_settings['setting_address_extra_field'] = __("Display Extra in", 'lang_address');
+
+		$setting_address_extra_field = get_option('setting_address_extra_field');
+
+		if(is_array($setting_address_extra_field) && count($setting_address_extra_field) > 0)
+		{
+			$arr_settings['setting_address_extra'] = __("Name for Extra Address Field", 'lang_address');
+		}
+
 		$arr_settings['setting_address_display_member_id'] = __("Display Member ID", 'lang_address');
 		$arr_settings['setting_address_api_url'] = __("API URL", 'lang_address');
 
@@ -534,12 +607,17 @@ class mf_address
 		echo show_textfield(array('name' => $setting_key, 'value' => $option));
 	}
 
-	function setting_address_extra_profile_callback()
+	function setting_address_extra_field_callback()
 	{
 		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key, 'yes');
+		$option = get_option($setting_key);
 
-		echo show_select(array('data' => get_yes_no_for_select(), 'name' => $setting_key, 'value' => $option));
+		$arr_data = array(
+			'address' => __("Address", 'lang_address'),
+			'profile' => __("Profile", 'lang_address'),
+		);
+
+		echo show_select(array('data' => $arr_data, 'name' => $setting_key."[]", 'value' => $option));
 	}
 
 	function setting_address_display_member_id_callback()
@@ -611,7 +689,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field')))
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -644,7 +722,7 @@ class mf_address
 
 	function profile_update($user_id)
 	{
-		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field')))
 		{
 			$meta_address_permission = (isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : '');
 
@@ -847,7 +925,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMINISTRATOR && get_option_or_default('setting_address_extra_profile', 'yes') == 'yes')
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field')))
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -918,19 +996,16 @@ class mf_address
 			{
 				if($id_prev > 0)
 				{
-					$arr_unique_columns = array('addressMemberID', 'addressBirthDate', 'addressEmail');
-					$arr_columns = array('addressMemberID', 'addressBirthDate', 'addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail', 'addressExtra');
-
-					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".$wpdb->prefix."address WHERE addressID = '%d'";
+					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $this->arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".$wpdb->prefix."address WHERE addressID = '%d'";
 
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
 
-					if($wpdb->num_rows > 0 && $result[0]['addressPublic'] == 1) // && $result_prev[0]['addressPublic'] == 1
+					if($wpdb->num_rows > 0 && $result[0]['addressPublic'] == 1)
 					{
 						$unique_column = '';
 
-						foreach($arr_unique_columns as $str_unique_column)
+						foreach($this->arr_unique_columns as $str_unique_column)
 						{
 							if($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0' && $result_prev[0][$str_unique_column] != '' && $result_prev[0][$str_unique_column] != '0')
 							{
@@ -1848,10 +1923,8 @@ class mf_address_table extends mf_list_table
 			),
 		));
 
-		$arr_columns = array(
-			'cb' => '<input type="checkbox">',
-		);
-
+		$arr_columns = $arr_sortable_columns = array();
+		$arr_columns['cb'] = '<input type="checkbox">';
 		$arr_columns['addressSurName'] = __("Name", 'lang_address');
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
 		$arr_columns['addressIcons'] = __("Information", 'lang_address');
@@ -1863,19 +1936,25 @@ class mf_address_table extends mf_list_table
 
 		$arr_columns['addressError'] = "";
 		$arr_columns['addressContact'] = __("Contact", 'lang_address');
-		$arr_columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
+
+		$arr_sortable_columns[] = 'addressSurName';
+
+		$setting_address_extra_field = get_option('setting_address_extra_field');
+
+		if(is_array($setting_address_extra_field) && count($setting_address_extra_field) > 0)
+		{
+			$arr_columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
+			$arr_sortable_columns[] = 'addressExtra';
+		}
 
 		$this->set_columns($arr_columns);
 
-		$this->set_sortable_columns(array(
-			'addressSurName',
-			'addressExtra'
-		));
+		$this->set_sortable_columns($arr_sortable_columns);
 	}
 
 	function column_cb($item)
 	{
-		return "<input type='checkbox' name='".$this->arr_settings['query_from']."[]' value='".$item['addressID']."'>"; //$this->arr_settings['query_select_id']
+		return "<input type='checkbox' name='".$this->arr_settings['query_from']."[]' value='".$item['addressID']."'>";
 	}
 
 	function get_bulk_actions()
@@ -2395,8 +2474,14 @@ class mf_address_import extends mf_import
 			'addressWorkNo' => __("Work Number", 'lang_address'),
 			'addressCellNo' => __("Mobile Number", 'lang_address'),
 			'addressEmail' => __("E-mail", 'lang_address'),
-			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')),
 		);
+
+		$setting_address_extra_field = get_option('setting_address_extra_field');
+
+		if(is_array($setting_address_extra_field) && count($setting_address_extra_field) > 0)
+		{
+			$this->columns['addressExtra'] = get_option_or_default('setting_address_extra', __("Extra", 'lang_address'));
+		}
 
 		$this->unique_columns = array(
 			'addressBirthDate',
@@ -2473,28 +2558,6 @@ class mf_address_export extends mf_export
 		$this->name = "address";
 	}
 
-	function get_columns_for_select()
-	{
-		$arr_data = array(
-			'addressMemberID' => __("Member ID", 'lang_address'),
-			'addressBirthDate' => __("Social Security Number", 'lang_address'),
-			'addressFirstName' => __("First Name", 'lang_address'),
-			'addressSurName' => __("Last Name", 'lang_address'),
-			'addressCo' => __("C/O", 'lang_address'),
-			'addressAddress' => __("Address", 'lang_address'),
-			'addressZipCode' => __("Zip Code", 'lang_address'),
-			'addressCity' => __("City", 'lang_address'),
-			'addressCountry' => __("Country", 'lang_address'),
-			'addressTelNo' => __("Phone Number", 'lang_address'),
-			'addressWorkNo' => __("Work Number", 'lang_address'),
-			'addressCellNo' => __("Mobile Number", 'lang_address'),
-			'addressEmail' => __("E-mail", 'lang_address'),
-			'addressExtra' => get_option_or_default('setting_address_extra', __("Extra", 'lang_address')),
-		);
-
-		return $arr_data;
-	}
-
 	function fetch_request_xtra()
 	{
 		$this->arr_columns = check_var('arrColumns');
@@ -2502,7 +2565,14 @@ class mf_address_export extends mf_export
 
 	function get_form_xtra()
 	{
-		$out = show_select(array('data' => $this->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
+		global $obj_address;
+
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
+
+		$out = show_select(array('data' => $obj_address->get_columns_for_select(), 'name' => 'arrColumns[]', 'text' => __("Columns", 'lang_address'), 'value' => $this->arr_columns));
 
 		return $out;
 	}
@@ -2511,13 +2581,13 @@ class mf_address_export extends mf_export
 	{
 		global $wpdb, $obj_address;
 
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
+
 		if(!is_array($this->arr_columns) || count($this->arr_columns) == 0 || in_array('addressCountry', $this->arr_columns))
 		{
-			if(!isset($obj_address))
-			{
-				$obj_address = new mf_address();
-			}
-
 			$arr_countries = $obj_address->get_countries_for_select();
 		}
 
@@ -2525,7 +2595,7 @@ class mf_address_export extends mf_export
 
 		if($wpdb->num_rows > 0)
 		{
-			$arr_columns = $this->get_columns_for_select();
+			$arr_columns = $obj_address->get_columns_for_select();
 
 			$data_temp = array();
 
