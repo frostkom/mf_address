@@ -2455,10 +2455,12 @@ class mf_address_table extends mf_list_table
 
 class mf_address_import extends mf_import
 {
-	var $table = "address";
-
 	function get_defaults()
 	{
+		global $wpdb;
+
+		$this->table = "address";
+
 		$this->prefix = $wpdb->prefix;
 
 		$this->columns = array(
@@ -2539,14 +2541,17 @@ class mf_address_import extends mf_import
 
 	function inserted_new($id)
 	{
-		global $obj_group;
-
-		if(!isset($obj_group))
+		if(is_plugin_active("mf_group/index.php"))
 		{
-			$obj_group = new mf_group();
-		}
+			global $obj_group;
 
-		$obj_group->add_address(array('address_id' => $id, 'group_id' => get_option('setting_group_import')));
+			if(!isset($obj_group))
+			{
+				$obj_group = new mf_group();
+			}
+
+			$obj_group->add_address(array('address_id' => $id, 'group_id' => get_option('setting_group_import')));
+		}
 	}
 }
 
