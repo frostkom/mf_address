@@ -670,19 +670,22 @@ class mf_address
 		$menu_title = __("Add New", 'lang_address');
 		add_submenu_page($menu_start, $menu_title, " - ".$menu_title, $menu_capability, $menu_root."create/index.php");
 
-		$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
-
-		$menu_title = __("Import", 'lang_address');
-		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
-
-		if(IS_SUPER_ADMIN)
+		if(IS_EDITOR)
 		{
-			$menu_title = __("Export", 'lang_address');
-			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."export/index.php");
-		}
+			$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
 
-		$menu_title = __("Settings", 'lang_address');
-		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_address"));
+			$menu_title = __("Import", 'lang_address');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
+
+			if(IS_SUPER_ADMIN)
+			{
+				$menu_title = __("Export", 'lang_address');
+				add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."export/index.php");
+			}
+
+			$menu_title = __("Settings", 'lang_address');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_address"));
+		}
 	}
 
 	function edit_user_profile($user)
