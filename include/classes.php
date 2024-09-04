@@ -149,6 +149,353 @@ class mf_address
 		return ($wpdb->rows_affected > 0);
 	}
 
+	function sync_api($data = array())
+	{
+		global $wpdb;
+
+		if(!isset($data['limit_start'])){	$data['limit_start'] = 0;}
+		if(!isset($data['limit_amount'])){	$data['limit_amount'] = 100;}
+
+		$setting_address_api_url = get_option('setting_address_api_url');
+
+		if($setting_address_api_url != '')
+		{
+			$option_address_api_full_used = get_option('option_address_api_full_used');
+
+			if($option_address_api_full_used < date("Y-m-d H:i:s", strtotime("-1 week")))
+			{
+				$option_address_api_used = date("Y-m-d H:i:s", strtotime("-10 year"));
+
+				$is_full_run = true;
+
+				if($data['limit_start'] == 0)
+				{
+					$data['limit_start'] = get_option_or_default('option_address_api_full_next', 0);
+				}
+			}
+
+			else
+			{
+				$option_address_api_used = get_option_or_default('option_address_api_used', date("Y-m-d H:i:s", strtotime("-1 year")));
+
+				$is_full_run = false;
+
+				if($data['limit_start'] == 0)
+				{
+					$data['limit_start'] = get_option_or_default('option_address_api_next', 0);
+				}
+			}
+
+			$url = str_replace("[datetime]", urlencode($option_address_api_used), $setting_address_api_url);
+
+			$url .= "&limit_start=".$data['limit_start']."&limit_amount=".$data['limit_amount'];
+
+			list($content, $headers) = get_url_content(array(
+				'url' => $url,
+				'catch_head' => true,
+			));
+
+			$log_message = "I could not get a successful result from the Address API";
+
+			switch($headers['http_code'])
+			{
+				case 200:
+					$json = json_decode($content, true);
+
+					switch($json['status'])
+					{
+						case 'true':
+							// Insert or update
+							############################
+							if(isset($json['data']))
+							{
+								$count_incoming = count($json['data']);
+
+								if($count_incoming > 0)
+								{
+									$count_updated = $count_updated_error = $count_inserted = $count_inserted_error = 0;
+
+									if(get_option('setting_address_debug') == 'yes')
+									{
+										do_log("Address API: ".$url." -> ".$count_incoming);
+									}
+
+									foreach($json['data'] as $item)
+									{
+										$strAddressBirthDate = $item['memberSSN'];
+										$strAddressFirstName = $item['memberFirstName'];
+										$strAddressSurName = $item['memberSurName'];
+										$strAddressAddress = $item['memberAddress'];
+										$strAddressCo = $item['memberCo'];
+										$intAddressZipCode = $item['memberZipCode'];
+										$strAddressCity = $item['memberCity'];
+										$intAddressCountry = $item['memberCountry'];
+										$strAddressExtra = $item['associationName'];
+
+										$intAddressID = 0;
+										$strAddressTelNo = $strAddressCellNo = $strAddressWorkNo = $strAddressEmail = '';
+
+										foreach($item['contact'] as $contact)
+										{
+											switch($contact['memberContactType'])
+											{
+												case 'phone':
+													switch($contact['memberContactLocation'])
+													{
+														case 'home':
+															$strAddressTelNo = $contact['memberContactInformation'];
+														break;
+
+														case 'sms':
+															$strAddressCellNo = $contact['memberContactInformation'];
+														break;
+
+														case 'work':
+															$strAddressWorkNo = $contact['memberContactInformation'];
+														break;
+													}
+												break;
+
+												case 'email':
+													$strAddressEmail = $contact['memberContactInformation'];
+												break;
+											}
+										}
+
+										$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+										$search_query = $wpdb->last_query;
+										$rows = $wpdb->num_rows;
+
+										if($rows > 0)
+										{
+											foreach($result as $r)
+											{
+												$intAddressID = $r->addressID;
+
+												$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra, $intAddressID));
+
+												if($wpdb->rows_affected > 0)
+												{
+													$count_updated++;
+												}
+
+												else
+												{
+													$count_updated_error++;
+												}
+											}
+
+											if($rows > 1)
+											{
+												do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s) and they were all updated", $rows, $search_query)."</a>");
+											}
+										}
+
+										else
+										{
+											$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra));
+
+											$intAddressID = $wpdb->insert_id;
+
+											if(!isset($obj_group))
+											{
+												$obj_group = new mf_group();
+											}
+
+											$obj_group->add_address(array('address_id' => $intAddressID, 'group_id' => get_option('setting_group_import')));
+
+											if($intAddressID > 0)
+											{
+												$count_inserted++;
+											}
+
+											else
+											{
+												$count_inserted_error++;
+											}
+										}
+
+										if($intAddressID > 0)
+										{
+											$this->save_sync_date(array('address_id' => $intAddressID));
+										}
+									}
+
+									if(get_option('setting_address_debug') == 'yes')
+									{
+										do_log("Address API - Insert: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted");
+									}
+
+									if(isset($json['next']) && $json['next'] > 0)
+									{
+										if($is_full_run)
+										{
+											update_option('option_address_api_full_next', $json['next'], 'no');
+										}
+
+										else
+										{
+											update_option('option_address_api_next', $json['next'], 'no');
+										}
+
+										$this->sync_api(array('limit_start' => $json['next']));
+									}
+
+									else
+									{
+										if($is_full_run)
+										{
+											update_option('option_address_api_full_used', date("Y-m-d H:i:s"), 'no');
+											update_option('option_address_api_full_next', 0, 'no');
+										}
+
+										else
+										{
+											update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+											update_option('option_address_api_next', 0, 'no');
+										}
+									}
+								}
+							}
+							############################
+
+							// Remove exited
+							############################
+							if(isset($json['ended_data']))
+							{
+								$count_ended = count($json['ended_data']);
+
+								if($count_ended > 0)
+								{
+									$count_not_exit = $count_removed = $count_removed_error = $count_not_found = 0;
+
+									if(get_option('setting_address_debug') == 'yes')
+									{
+										do_log("Address API - Ended: ".$url." -> ".$count_ended);
+									}
+
+									foreach($json['ended_data'] as $item)
+									{
+										$strAddressBirthDate = $item['memberSSN'];
+										//$ = $item['membershipEnded'];
+										$strMembershipEndedReason = $item['membershipEndedReason'];
+
+										if($strMembershipEndedReason == 'exit')
+										{
+											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".$wpdb->prefix."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
+
+											if($wpdb->num_rows > 0)
+											{
+												foreach($result as $r)
+												{
+													$intAddressID = $r->addressID;
+													$strAddressFirstName = $r->addressFirstName;
+													$strAddressSurName = $r->addressSurName;
+
+													if(is_plugin_active("mf_group/index.php"))
+													{
+														global $obj_group;
+
+														if(!isset($obj_group))
+														{
+															$obj_group = new mf_group();
+														}
+
+														$obj_group->remove_address(array('address_id' => $intAddressID));
+													}
+
+													if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
+													{
+														$count_removed++;
+
+														if(get_option('setting_address_debug') == 'yes')
+														{
+															do_log("Address API - Trashed Address ".$intAddressID." (".$strAddressFirstName." ".$strAddressSurName.") in cron_base()");
+														}
+													}
+
+													else
+													{
+														$count_removed_error++;
+													}
+												}
+											}
+
+											else
+											{
+												$count_not_found++;
+											}
+										}
+
+										else
+										{
+											$count_not_exit++;
+										}
+									}
+
+									if(get_option('setting_address_debug') == 'yes')
+									{
+										do_log("Address API - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
+									}
+
+									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+								}
+							}
+							############################
+
+							// Remove old non-synced
+							############################
+							$result = $wpdb->get_results("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressBirthDate != '' AND addressDeleted = '0' AND (addressSyncedDate IS null OR addressSyncedDate < DATE_SUB(NOW(), INTERVAL 1 MONTH))");
+
+							$count_non_synced = $wpdb->num_rows;
+
+							if($count_non_synced > 0)
+							{
+								$count_removed = $count_removed_error = 0;
+
+								foreach($result as $r)
+								{
+									$intAddressID = $r->addressID;
+
+									if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
+									{
+										$count_removed++;
+
+										if(get_option('setting_address_debug') == 'yes')
+										{
+											//do_log("Address API - Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
+										}
+									}
+
+									else
+									{
+										$count_removed_error++;
+									}
+								}
+
+								if(get_option('setting_address_debug') == 'yes')
+								{
+									do_log("Address API - Old: ".$count_non_synced." non-synced, ".$count_removed." removed, ".$count_removed_error." NOT removed");
+								}
+							}
+							############################
+						break;
+
+						default:
+							do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json, true)));
+						break;
+					}
+
+					do_log($log_message, 'trash');
+				break;
+
+				default:
+					do_log($log_message." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
+				break;
+			}
+		}
+	}
+
 	function cron_base()
 	{
 		global $wpdb, $obj_group;
@@ -160,290 +507,7 @@ class mf_address
 		{
 			// Sync API
 			#####################
-			$setting_address_api_url = get_option('setting_address_api_url');
-
-			if($setting_address_api_url != '')
-			{
-				$option_address_api_used = get_option('option_address_api_used', date("Y-m-d H:i:s", strtotime("-1 year")));
-
-				$url = str_replace("[datetime]", urlencode($option_address_api_used), $setting_address_api_url);
-
-				list($content, $headers) = get_url_content(array(
-					'url' => $url,
-					'catch_head' => true,
-				));
-
-				$log_message = "I could not get a successful result from the Address API";
-
-				switch($headers['http_code'])
-				{
-					case 200:
-						$json = json_decode($content, true);
-
-						switch($json['status'])
-						{
-							case 'true':
-								// Insert or update
-								############################
-								if(isset($json['data']))
-								{
-									$count_incoming = count($json['data']);
-
-									if($count_incoming > 0)
-									{
-										$count_updated = $count_updated_error = $count_inserted = $count_inserted_error = 0;
-
-										if(get_option('setting_address_debug') == 'yes')
-										{
-											do_log("Address API: ".$url." -> ".$count_incoming);
-										}
-
-										foreach($json['data'] as $item)
-										{
-											$strAddressBirthDate = $item['memberSSN'];
-											$strAddressFirstName = $item['memberFirstName'];
-											$strAddressSurName = $item['memberSurName'];
-											$strAddressAddress = $item['memberAddress'];
-											$strAddressCo = $item['memberCo'];
-											$intAddressZipCode = $item['memberZipCode'];
-											$strAddressCity = $item['memberCity'];
-											$intAddressCountry = $item['memberCountry'];
-											$strAddressExtra = $item['associationName'];
-
-											$intAddressID = 0;
-											$strAddressTelNo = $strAddressCellNo = $strAddressWorkNo = $strAddressEmail = '';
-
-											foreach($item['contact'] as $contact)
-											{
-												switch($contact['memberContactType'])
-												{
-													case 'phone':
-														switch($contact['memberContactLocation'])
-														{
-															case 'home':
-																$strAddressTelNo = $contact['memberContactInformation'];
-															break;
-
-															case 'sms':
-																$strAddressCellNo = $contact['memberContactInformation'];
-															break;
-
-															case 'work':
-																$strAddressWorkNo = $contact['memberContactInformation'];
-															break;
-														}
-													break;
-
-													case 'email':
-														$strAddressEmail = $contact['memberContactInformation'];
-													break;
-												}
-											}
-
-											$result = $wpdb->get_results($wpdb->prepare("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
-											$search_query = $wpdb->last_query;
-											$rows = $wpdb->num_rows;
-
-											if($rows > 0)
-											{
-												foreach($result as $r)
-												{
-													$intAddressID = $r->addressID;
-
-													$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra, $intAddressID));
-
-													if($wpdb->rows_affected > 0)
-													{
-														$count_updated++;
-													}
-
-													else
-													{
-														$count_updated_error++;
-													}
-												}
-
-												if($rows > 1) // && get_option('setting_address_debug') == 'yes'
-												{
-													do_log("<a href='".admin_url("admin.php?page=mf_address/list/index.php&s=".$strAddressBirthDate)."'>".sprintf("There were %d addresses with the same Social Security Number (%s) and they were all updated", $rows, $search_query)."</a>");
-												}
-											}
-
-											else
-											{
-												$wpdb->query($wpdb->prepare("INSERT INTO ".$wpdb->prefix."address SET addressBirthDate = %s, addressFirstName = %s, addressSurName = %s, addressZipCode = %s, addressCity = %s, addressCountry = '%d', addressAddress = %s, addressCo = %s, addressTelNo = %s, addressCellNo = %s, addressWorkNo = %s, addressEmail = %s, addressExtra = %s, addressCreated = NOW()", $strAddressBirthDate, $strAddressFirstName, $strAddressSurName, $intAddressZipCode, $strAddressCity, $intAddressCountry, $strAddressAddress, $strAddressCo, $strAddressTelNo, $strAddressCellNo, $strAddressWorkNo, $strAddressEmail, $strAddressExtra));
-
-												$intAddressID = $wpdb->insert_id;
-
-												if(!isset($obj_group))
-												{
-													$obj_group = new mf_group();
-												}
-
-												$obj_group->add_address(array('address_id' => $intAddressID, 'group_id' => get_option('setting_group_import')));
-
-												if($intAddressID > 0)
-												{
-													$count_inserted++;
-												}
-
-												else
-												{
-													$count_inserted_error++;
-												}
-											}
-
-											if($intAddressID > 0)
-											{
-												$this->save_sync_date(array('address_id' => $intAddressID));
-											}
-										}
-
-										if(get_option('setting_address_debug') == 'yes')
-										{
-											do_log("Address API - Insert: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted");
-										}
-
-										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
-									}
-								}
-								############################
-
-								// Remove exited
-								############################
-								if(isset($json['ended_data']))
-								{
-									$count_ended = count($json['ended_data']);
-
-									if($count_ended > 0)
-									{
-										$count_not_exit = $count_removed = $count_removed_error = $count_not_found = 0;
-
-										if(get_option('setting_address_debug') == 'yes')
-										{
-											do_log("Address API - Ended: ".$url." -> ".$count_ended);
-										}
-
-										foreach($json['ended_data'] as $item)
-										{
-											$strAddressBirthDate = $item['memberSSN'];
-											//$ = $item['membershipEnded'];
-											$strMembershipEndedReason = $item['membershipEndedReason'];
-
-											if($strMembershipEndedReason == 'exit')
-											{
-												$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".$wpdb->prefix."address WHERE addressBirthDate = %s AND addressDeleted = '0'", $strAddressBirthDate));
-
-												if($wpdb->num_rows > 0)
-												{
-													foreach($result as $r)
-													{
-														$intAddressID = $r->addressID;
-														$strAddressFirstName = $r->addressFirstName;
-														$strAddressSurName = $r->addressSurName;
-
-														if(is_plugin_active("mf_group/index.php"))
-														{
-															global $obj_group;
-
-															if(!isset($obj_group))
-															{
-																$obj_group = new mf_group();
-															}
-
-															$obj_group->remove_address(array('address_id' => $intAddressID));
-														}
-
-														if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
-														{
-															$count_removed++;
-
-															if(get_option('setting_address_debug') == 'yes')
-															{
-																do_log("Address API - Trashed Address ".$intAddressID." (".$strAddressFirstName." ".$strAddressSurName.") in cron_base()");
-															}
-														}
-
-														else
-														{
-															$count_removed_error++;
-														}
-													}
-												}
-
-												else
-												{
-													$count_not_found++;
-												}
-											}
-
-											else
-											{
-												$count_not_exit++;
-											}
-										}
-
-										if(get_option('setting_address_debug') == 'yes')
-										{
-											do_log("Address API - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
-										}
-
-										update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
-									}
-								}
-								############################
-
-								// Remove old non-synced
-								############################
-								$result = $wpdb->get_results("SELECT addressID FROM ".$wpdb->prefix."address WHERE addressBirthDate != '' AND addressDeleted = '0' AND (addressSyncedDate IS null OR addressSyncedDate < DATE_SUB(NOW(), INTERVAL 1 MONTH))");
-
-								$count_non_synced = $wpdb->num_rows;
-
-								if($count_non_synced > 0)
-								{
-									$count_removed = $count_removed_error = 0;
-
-									foreach($result as $r)
-									{
-										$intAddressID = $r->addressID;
-
-										if($this->trash(array('address_id' => $intAddressID, 'force_admin' => true)))
-										{
-											$count_removed++;
-
-											if(get_option('setting_address_debug') == 'yes')
-											{
-												//do_log("Address API - Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
-											}
-										}
-
-										else
-										{
-											$count_removed_error++;
-										}
-									}
-
-									if(get_option('setting_address_debug') == 'yes')
-									{
-										do_log("Address API - Old: ".$count_non_synced." non-synced, ".$count_removed." removed, ".$count_removed_error." NOT removed");
-									}
-								}
-								############################
-							break;
-
-							default:
-								do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json, true)));
-							break;
-						}
-
-						do_log($log_message, 'trash');
-					break;
-
-					default:
-						do_log($log_message." (".$content.", ".htmlspecialchars(var_export($headers, true)).")");
-					break;
-				}
-			}
+			$this->sync_api();
 			#####################
 
 			// Look for duplicates
@@ -635,11 +699,17 @@ class mf_address
 
 		$description = "";
 
+		$option_address_api_full_used = get_option('option_address_api_full_used');
 		$option_address_api_used = get_option('option_address_api_used');
 
 		if($option_address_api_used > DEFAULT_DATE)
 		{
-			$description = sprintf(__("Last Used %s", 'lang_address'), format_date($option_address_api_used));
+			$description = sprintf(__("Only Updated %s (%d)", 'lang_address'), format_date($option_address_api_used), get_option('option_address_api_next'));
+
+			if($option_address_api_full_used > DEFAULT_DATE)
+			{
+				$description .= ", ".sprintf(__("Full %s (%d)", 'lang_address'), format_date($option_address_api_full_used), get_option('option_address_api_full_next'));
+			}
 		}
 
 		echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option, 'description' => $description));
@@ -999,7 +1069,7 @@ class mf_address
 			{
 				if($id_prev > 0)
 				{
-					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $this->arr_unique_columns).", ".implode(", ", $arr_columns)." FROM ".$wpdb->prefix."address WHERE addressID = '%d'";
+					$base_query = "SELECT addressID, addressPublic, ".implode(", ", $this->arr_unique_columns).", ".implode(", ", $this->arr_columns)." FROM ".$wpdb->prefix."address WHERE addressID = '%d'";
 
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
@@ -1025,7 +1095,7 @@ class mf_address
 						{
 							$query_set = '';
 
-							foreach($arr_columns as $str_column)
+							foreach($this->arr_columns as $str_column)
 							{
 								if($result_prev[0][$str_column] != '' && strtolower($result_prev[0][$str_column]) != strtolower($result[0][$str_column]))
 								{
