@@ -608,11 +608,7 @@ class mf_address
 
 	function init()
 	{
-		// What was this used for?
-		/*if(!session_id())
-		{
-			@session_start();
-		}*/
+		load_plugin_textdomain('lang_address', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
 
 		$labels = array(
 			'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
