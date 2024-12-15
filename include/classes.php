@@ -758,7 +758,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field')))
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', array())))
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -791,7 +791,7 @@ class mf_address
 
 	function profile_update($user_id)
 	{
-		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field')))
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', array())))
 		{
 			$meta_address_permission = (isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : '');
 
@@ -994,7 +994,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field')))
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', array())))
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
