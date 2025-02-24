@@ -330,12 +330,12 @@ class mf_address
 									{
 										if($is_full_run)
 										{
-											update_option('option_address_api_full_next', $json['next'], 'no');
+											update_option('option_address_api_full_next', $json['next'], false);
 										}
 
 										else
 										{
-											update_option('option_address_api_next', $json['next'], 'no');
+											update_option('option_address_api_next', $json['next'], false);
 										}
 
 										$this->sync_api(array('limit_start' => $json['next']));
@@ -345,14 +345,14 @@ class mf_address
 									{
 										if($is_full_run)
 										{
-											update_option('option_address_api_full_used', date("Y-m-d H:i:s"), 'no');
-											update_option('option_address_api_full_next', 0, 'no');
+											update_option('option_address_api_full_used', date("Y-m-d H:i:s"), false);
+											update_option('option_address_api_full_next', 0, false);
 										}
 
 										else
 										{
-											update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
-											update_option('option_address_api_next', 0, 'no');
+											update_option('option_address_api_used', date("Y-m-d H:i:s"), false);
+											update_option('option_address_api_next', 0, false);
 										}
 									}
 								}
@@ -438,7 +438,7 @@ class mf_address
 										do_log("Address API - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
 									}
 
-									update_option('option_address_api_used', date("Y-m-d H:i:s"), 'no');
+									update_option('option_address_api_used', date("Y-m-d H:i:s"), false);
 								}
 							}
 							############################
@@ -597,7 +597,7 @@ class mf_address
 
 				if($setting_address_extra_profile == 'yes')
 				{
-					update_option('setting_address_extra_field', array('profile'));
+					update_option('setting_address_extra_field', array('profile'), false);
 				}
 			}
 			#######################
