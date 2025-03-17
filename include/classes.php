@@ -610,19 +610,18 @@ class mf_address
 	{
 		load_plugin_textdomain('lang_address', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
 
-		$labels = array(
-			'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
-			'singular_name' => _x(__("Address Book", 'lang_address'), 'post type singular name'),
-			'menu_name' => __("Address Book", 'lang_address')
-		);
-
-		$args = array(
-			'labels' => $labels,
+		// Post types
+		#######################
+		register_post_type($this->post_type, array(
+			'labels' => array(
+				'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
+				'singular_name' => _x(__("Address Book", 'lang_address'), 'post type singular name'),
+				'menu_name' => __("Address Book", 'lang_address')
+			),
 			'public' => false,
 			'exclude_from_search' => true,
-		);
-
-		register_post_type($this->post_type, $args);
+		));
+		#######################
 	}
 
 	function settings_address()
