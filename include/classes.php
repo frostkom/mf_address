@@ -1018,6 +1018,55 @@ class mf_address
 		return $arr_fields;
 	}
 
+	function api_address_table_search()
+	{
+		$json_output = array();
+
+		$tbl_group = new mf_address_table();
+
+		$tbl_group->select_data(array(
+			'select' => "addressFirstName, addressSurName, addressEmail, addressCellNo",
+			'limit' => 0, 'amount' => 10,
+		));
+
+		foreach($tbl_group->data as $r)
+		{
+			$strAddressFirstName = $r['addressFirstName'];
+			$strAddressSurName = $r['addressSurName'];
+			$strAddressEmail = $r['addressEmail'];
+			$strAddressCellNo = $r['addressCellNo'];
+
+			if($strAddressFirstName != '' && $strAddressSurName != '')
+			{
+				$strAddressName = $strAddressFirstName." ".$strAddressSurName;
+			}
+
+			else if($strAddressEmail != '')
+			{
+				$strAddressName = $strAddressEmail;
+			}
+
+			else if($strAddressCellNo != '')
+			{
+				$strAddressName = $strAddressCellNo;
+			}
+
+			else
+			{
+				$strAddressName = "(".__("unknown", 'lang_address').")";
+			}
+
+			if(!in_array($strAddressName, $json_output))
+			{
+				$json_output[] = $strAddressName;
+			}
+		}
+
+		header("Content-Type: application/json");
+		echo json_encode($json_output);
+		die();
+	}
+
 	/*function wp_login()
 	{
 		// What was this used for?
@@ -1872,7 +1921,7 @@ class mf_address_table extends mf_list_table
 		$this->orderby_default = "addressSurName";
 
 		$this->arr_settings['has_autocomplete'] = true;
-		$this->arr_settings['plugin_name'] = $obj_address->post_type;
+		$this->arr_settings['action'] = 'api_address_table_search';
 	}
 
 	function init_fetch()
