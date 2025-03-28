@@ -614,8 +614,8 @@ class mf_address
 		#######################
 		register_post_type($this->post_type, array(
 			'labels' => array(
-				'name' => _x(__("Address Book", 'lang_address'), 'post type general name'),
-				'singular_name' => _x(__("Address Book", 'lang_address'), 'post type singular name'),
+				'name' => __("Address Book", 'lang_address'),
+				'singular_name' => __("Address Book", 'lang_address'),
 				'menu_name' => __("Address Book", 'lang_address')
 			),
 			'public' => false,
