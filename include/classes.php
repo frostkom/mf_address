@@ -505,6 +505,26 @@ class mf_address
 
 		if($obj_cron->is_running == false)
 		{
+			mf_uninstall_plugin(array(
+				'options' => array('setting_address_site_wide'),
+			));
+
+			delete_base(array(
+				'table_prefix' => $wpdb->prefix,
+				'table' => "address",
+				'field_prefix' => "address",
+				'child_tables' => array(
+					'group_queue' => array(
+						'action' => "delete",
+						'field_prefix' => "address",
+					),
+					'address2group' => array(
+						'action' => "delete",
+						'field_prefix' => "address",
+					),
+				),
+			));
+
 			// Sync API
 			#####################
 			$this->sync_api();

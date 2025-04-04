@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description:
-Version: 3.5.10
+Version: 3.5.11
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -62,10 +62,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		include_once("include/classes.php");
 
 		$obj_address = new mf_address();
-
-		mf_uninstall_plugin(array(
-			'options' => array('setting_address_site_wide'),
-		));
 
 		$default_charset = (DB_CHARSET != '' ? DB_CHARSET : 'utf8');
 
@@ -127,22 +123,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		update_columns($arr_update_column);
 		add_columns($arr_add_column);
 		add_index($arr_add_index);
-
-		delete_base(array(
-			'table_prefix' => $wpdb->prefix,
-			'table' => "address",
-			'field_prefix' => "address",
-			'child_tables' => array(
-				'group_queue' => array(
-					'action' => "delete",
-					'field_prefix' => "address",
-				),
-				'address2group' => array(
-					'action' => "delete",
-					'field_prefix' => "address",
-				),
-			),
-		));
 	}
 
 	function uninstall_address()
