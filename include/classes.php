@@ -747,7 +747,7 @@ class mf_address
 	{
 		$menu_root = 'mf_address/';
 		$menu_start = $menu_root."list/index.php";
-		$menu_capability = override_capability(array('page' => $menu_start, 'default' => 'edit_posts'));
+		$menu_capability = 'edit_posts';
 
 		$menu_title = __("Address Book", 'lang_address');
 		add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt', 99);
@@ -760,7 +760,7 @@ class mf_address
 
 		if(IS_EDITOR)
 		{
-			$menu_capability = override_capability(array('page' => $menu_root."import/index.php", 'default' => 'edit_pages'));
+			$menu_capability = 'edit_pages';
 
 			$menu_title = __("Import", 'lang_address');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
@@ -836,6 +836,16 @@ class mf_address
 		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET userID = '%d' WHERE userID = '%d'", get_current_user_id(), $user_id));
 	}
 
+	function remove_table_filter($data)
+	{
+		if(!isset($data['prefix'])){	$data['prefix'] = '';}
+
+		$user_id = get_current_user_id();
+		$meta_key = 'meta_table_filter_'.$data['prefix'].$data['key'];
+
+		delete_user_meta($user_id, $meta_key);
+	}
+
 	function restrict_manage_posts($post_type)
 	{
 		global $wpdb, $obj_group;
@@ -890,7 +900,7 @@ class mf_address
 
 					else
 					{
-						remove_table_filter(array('key' => 'strFilterIsMember'));
+						$this->remove_table_filter(array('key' => 'strFilterIsMember'));
 					}
 
 					if($strFilterIsMember != 'no' && $obj_group->amount_in_group(array('id' => $intGroupID, 'accepted' => 0)) > 0)
@@ -900,7 +910,7 @@ class mf_address
 
 					else
 					{
-						remove_table_filter(array('key' => 'strFilterAccepted'));
+						$this->remove_table_filter(array('key' => 'strFilterAccepted'));
 					}
 
 					if($strFilterIsMember != 'no' && $obj_group->amount_in_group(array('id' => $intGroupID, 'unsubscribed' => 1)) > 0)
@@ -910,13 +920,13 @@ class mf_address
 
 					else
 					{
-						remove_table_filter(array('key' => 'strFilterUnsubscribed'));
+						$this->remove_table_filter(array('key' => 'strFilterUnsubscribed'));
 					}
 				}
 
 				else
 				{
-					remove_table_filter(array('key' => 'intGroupID'));
+					$this->remove_table_filter(array('key' => 'intGroupID'));
 				}
 			}
 		}
