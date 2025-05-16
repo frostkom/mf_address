@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description:
-Version: 3.5.14
+Version: 3.5.15
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -20,8 +20,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 
 	$obj_address = new mf_address();
 
-	add_action('cron_base', 'activate_address', mt_rand(1, 10));
-	add_action('cron_base', array($obj_address, 'cron_base'), mt_rand(1, 10));
+	add_action('cron_base', 'activate_address', 1);
+	add_action('cron_base', array($obj_address, 'cron_base'), mt_rand(2, 10));
 
 	if(is_admin())
 	{
