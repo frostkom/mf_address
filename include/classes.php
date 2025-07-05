@@ -29,7 +29,7 @@ class mf_address
 	var $arr_columns = array('addressMemberID', 'addressBirthDate', 'addressFirstName', 'addressSurName', 'addressCo', 'addressAddress', 'addressZipCode', 'addressCity', 'addressCountry', 'addressTelNo', 'addressWorkNo', 'addressCellNo', 'addressEmail');
 	var $arr_unique_columns = array('addressBirthDate', 'addressEmail');
 
-	function __construct($data = array())
+	function __construct($data = [])
 	{
 		if(isset($data['id']) && $data['id'] > 0)
 		{
@@ -58,11 +58,11 @@ class mf_address
 		}
 	}
 
-	function get_columns_for_select($data = array())
+	function get_columns_for_select($data = [])
 	{
 		if(!isset($data['add_choose_here'])){	$data['add_choose_here'] = false;}
 
-		$arr_data = array();
+		$arr_data = [];
 
 		if($data['add_choose_here'] == true)
 		{
@@ -149,7 +149,7 @@ class mf_address
 		return ($wpdb->rows_affected > 0);
 	}
 
-	function sync_api($data = array())
+	function sync_api($data = [])
 	{
 		global $wpdb;
 
@@ -557,7 +557,7 @@ class mf_address
 
 						if(count($arr_duplicates) > 0)
 						{
-							$arr_address_ids = array();
+							$arr_address_ids = [];
 
 							foreach($arr_duplicates as $key => $arr_value)
 							{
@@ -653,7 +653,7 @@ class mf_address
 
 		add_settings_section($options_area, "", array($this, $options_area."_callback"), BASE_OPTIONS_PAGE);
 
-		$arr_settings = array();
+		$arr_settings = [];
 		$arr_settings['setting_address_extra_field'] = __("Display Extra in", 'lang_address');
 
 		$setting_address_extra_field = get_option('setting_address_extra_field');
@@ -780,7 +780,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', array())))
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', [])))
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
@@ -789,7 +789,7 @@ class mf_address
 				$meta_address_permission = get_user_meta($user->ID, 'meta_address_permission', true);
 				$meta_address_permission = explode(",", $meta_address_permission);
 
-				$arr_data = array();
+				$arr_data = [];
 
 				foreach($result as $r)
 				{
@@ -813,7 +813,7 @@ class mf_address
 
 	function profile_update($user_id)
 	{
-		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', array())))
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', [])))
 		{
 			$meta_address_permission = (isset($_POST['meta_address_permission']) ? $_POST['meta_address_permission'] : '');
 
@@ -942,7 +942,7 @@ class mf_address
 		$group_id = $this->meta_prefix;
 		$group_label = __("Address Book", 'lang_address');
 
-		$export_items = array();
+		$export_items = [];
 
 		$result = $wpdb->get_results($wpdb->prepare("SELECT addressID, addressFirstName, addressSurName FROM ".$wpdb->prefix."address WHERE addressEmail = %s AND addressDeleted = '0' LIMIT ".(($page - 1) * $number).", ".$number, $email_address));
 
@@ -1007,7 +1007,7 @@ class mf_address
 		return array(
 			'items_removed' => $items_removed,
 			'items_retained' => false, // always false in this example
-			'messages' => array(), // no messages in this example
+			'messages' => [], // no messages in this example
 			'done' => (count($result) < $number),
 		);
 	}
@@ -1026,13 +1026,13 @@ class mf_address
 	{
 		global $wpdb;
 
-		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', array())))
+		if(IS_ADMINISTRATOR && in_array('profile', get_option_or_default('setting_address_extra_field', [])))
 		{
 			$result = $wpdb->get_results("SELECT addressExtra FROM ".$wpdb->prefix."address WHERE addressExtra != '' GROUP BY addressExtra");
 
 			if($wpdb->num_rows > 0)
 			{
-				$arr_data = array();
+				$arr_data = [];
 
 				foreach($result as $r)
 				{
@@ -1053,7 +1053,7 @@ class mf_address
 
 	function api_address_table_search()
 	{
-		$json_output = array();
+		$json_output = [];
 
 		$tbl_group = new mf_address_table();
 
@@ -1110,7 +1110,7 @@ class mf_address
 	{
 		global $wpdb;
 
-		$arr_out = array();
+		$arr_out = [];
 
 		$intAddressID = $data['item']['addressID'];
 		$intAddressMemberID = (isset($data['item']['addressMemberID']) ? $data['item']['addressMemberID'] : 0);
@@ -1539,13 +1539,13 @@ class mf_address
 		}
 	}
 
-	function get_countries_for_select($data = array())
+	function get_countries_for_select($data = [])
 	{
 		if(!isset($data['add_choose_here'])){	$data['add_choose_here'] = true;}
 		if(!isset($data['choose_here_text'])){	$data['choose_here_text'] = __("Choose Here", 'lang_address');}
-		if(!isset($data['exclude'])){			$data['exclude'] = array();}
+		if(!isset($data['exclude'])){			$data['exclude'] = [];}
 
-		$arr_data = array();
+		$arr_data = [];
 
 		if($data['add_choose_here'] == true)
 		{
@@ -1816,7 +1816,7 @@ class mf_address
 			break;
 
 			default:
-				$result = array();
+				$result = [];
 			break;
 		}
 
@@ -1870,7 +1870,7 @@ class mf_address
 		return ($wpdb->rows_affected > 0);
 	}
 
-	function trash($data = array())
+	function trash($data = [])
 	{
 		global $wpdb;
 
@@ -1901,7 +1901,7 @@ class mf_address
 		return ($rows_affected > 0);
 	}
 
-	function update_errors($data = array())
+	function update_errors($data = [])
 	{
 		global $wpdb;
 
@@ -2073,7 +2073,7 @@ class mf_address_table extends mf_list_table
 			),
 		));
 
-		$arr_columns = $arr_sortable_columns = array();
+		$arr_columns = $arr_sortable_columns = [];
 		$arr_columns['cb'] = '<input type="checkbox">';
 		$arr_columns['addressSurName'] = __("Name", 'lang_address');
 		$arr_columns['addressAddress'] = __("Address", 'lang_address');
@@ -2109,7 +2109,7 @@ class mf_address_table extends mf_list_table
 
 	function get_bulk_actions()
 	{
-		$arr_actions = array();
+		$arr_actions = [];
 
 		if(isset($this->columns['cb']))
 		{
@@ -2296,7 +2296,7 @@ class mf_address_table extends mf_list_table
 				$post_edit_url = admin_url("admin.php?page=mf_address/create/index.php&intAddressID=".$intAddressID);
 				$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID);
 
-				$arr_actions = array();
+				$arr_actions = [];
 
 				if($intAddressDeleted == 0)
 				{
@@ -2752,7 +2752,7 @@ class mf_address_export extends mf_export
 		{
 			$arr_columns = $obj_address->get_columns_for_select();
 
-			$data_temp = array();
+			$data_temp = [];
 
 			foreach($arr_columns as $key => $value)
 			{
@@ -2766,7 +2766,7 @@ class mf_address_export extends mf_export
 
 			foreach($result as $r)
 			{
-				$data_temp = array();
+				$data_temp = [];
 
 				$has_data = false;
 
