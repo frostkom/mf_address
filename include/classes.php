@@ -2109,7 +2109,7 @@ class mf_address_table extends mf_list_table
 
 	function get_bulk_actions()
 	{
-		$actions = array();
+		$arr_actions = array();
 
 		if(isset($this->columns['cb']))
 		{
@@ -2123,26 +2123,26 @@ class mf_address_table extends mf_list_table
 
 					if($strFilterIsMember == 'no')
 					{
-						$actions['add2group'] = __("Add to Group", 'lang_address');
+						$arr_actions['add2group'] = __("Add to Group", 'lang_address');
 					}
 				}
 
-				$actions['merge'] = __("Merge", 'lang_address');
+				$arr_actions['merge'] = __("Merge", 'lang_address');
 			}
 
 			if(!isset($_GET['addressDeleted']) || $_GET['addressDeleted'] != 1)
 			{
-				$actions['trash'] = __("Delete", 'lang_address');
+				$arr_actions['trash'] = __("Delete", 'lang_address');
 			}
 
 			else
 			{
-				$actions['restore'] = __("Restore", 'lang_address');
-				$actions['delete'] = __("Permanently Delete", 'lang_address');
+				$arr_actions['restore'] = __("Restore", 'lang_address');
+				$arr_actions['delete'] = __("Permanently Delete", 'lang_address');
 			}
 		}
 
-		return $actions;
+		return $arr_actions;
 	}
 
 	function process_bulk_action()
@@ -2296,37 +2296,37 @@ class mf_address_table extends mf_list_table
 				$post_edit_url = admin_url("admin.php?page=mf_address/create/index.php&intAddressID=".$intAddressID);
 				$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID);
 
-				$actions = array();
+				$arr_actions = array();
 
 				if($intAddressDeleted == 0)
 				{
 					if($intAddressPublic == 0 || IS_ADMINISTRATOR)
 					{
-						$actions['edit'] = "<a href='".$post_edit_url."'>".__("Edit", 'lang_address')."</a>";
+						$arr_actions['edit'] = "<a href='".$post_edit_url."'>".__("Edit", 'lang_address')."</a>";
 
-						$actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", 'lang_address')."</a>";
+						$arr_actions['delete'] = "<a href='".wp_nonce_url($list_url."&btnAddressDelete", 'address_delete_'.$intAddressID, '_wpnonce_address_delete')."'>".__("Delete", 'lang_address')."</a>";
 					}
 				}
 
 				else
 				{
-					$actions['recover'] = "<a href='".wp_nonce_url($list_url."&btnAddressRestore", 'address_restore_'.$intAddressID, '_wpnonce_address_restore')."' title='".sprintf(__("Removed %s by %s", 'lang_address'), format_date($dteAddressDeletedDate), get_user_info(array('id' => $intAddressDeletedID)))."'>".__("Restore", 'lang_address')."</a>";
+					$arr_actions['recover'] = "<a href='".wp_nonce_url($list_url."&btnAddressRestore", 'address_restore_'.$intAddressID, '_wpnonce_address_restore')."' title='".sprintf(__("Removed %s by %s", 'lang_address'), format_date($dteAddressDeletedDate), get_user_info(array('id' => $intAddressDeletedID)))."'>".__("Restore", 'lang_address')."</a>";
 				}
 
 				if($intAddressMemberID > 0)
 				{
-					$actions['member_id'] = $intAddressMemberID;
+					$arr_actions['member_id'] = $intAddressMemberID;
 				}
 
 				if($strAddressBirthDate != '')
 				{
-					$actions['birth_date'] = $strAddressBirthDate;
+					$arr_actions['birth_date'] = $strAddressBirthDate;
 				}
 
 				$out .= "<a href='".$post_edit_url."'>"
 					.$strAddressName
 				."</a>"
-				.$this->row_actions($actions);
+				.$this->row_actions($arr_actions);
 			break;
 
 			case 'addressAddress':
