@@ -1051,7 +1051,7 @@ class mf_address
 		return $arr_fields;
 	}
 
-	function api_address_table_search()
+	/*function api_address_table_search()
 	{
 		$json_output = [];
 
@@ -1098,12 +1098,6 @@ class mf_address
 		header("Content-Type: application/json");
 		echo json_encode($json_output);
 		die();
-	}
-
-	/*function wp_login()
-	{
-		// What was this used for?
-		//@session_destroy();
 	}*/
 
 	function has_duplicate($data)
@@ -1954,7 +1948,7 @@ class mf_address_table extends mf_list_table
 		$this->orderby_default = "addressSurName";
 
 		$this->arr_settings['has_autocomplete'] = true;
-		$this->arr_settings['action'] = 'api_address_table_search';
+		//$this->arr_settings['action'] = 'api_address_table_search';
 	}
 
 	function init_fetch()
