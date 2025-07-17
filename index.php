@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description:
-Version: 3.5.18
+Version: 3.5.19
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -49,8 +49,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	{
 		add_filter('filter_profile_fields', array($obj_address, 'filter_profile_fields'));
 	}
-
-	//add_action('wp_ajax_api_address_table_search', array($obj_address, 'api_address_table_search'));
 
 	function activate_address()
 	{
