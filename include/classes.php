@@ -642,7 +642,6 @@ class mf_address
 				'menu_name' => __("Address Book", 'lang_address')
 			),
 			'public' => false,
-			'exclude_from_search' => true,
 		));
 		#######################
 	}
