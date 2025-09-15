@@ -6,19 +6,9 @@ echo $obj_address->save_data();
 
 echo "<div class='wrap'>
 	<h2>"
-		.__("Address Book", 'lang_address');
-
-		/*if(is_plugin_active("mf_group/index.php") && $obj_group->id > 0)
-		{
-			echo "<span class='grey'>".$obj_group->get_name()."<a href='".admin_url("admin.php?page=mf_group/list/index.php")."'><i class='fa fa-times fa-lg red'></i></a></span>";
-		}
-
-		else
-		{*/
-			echo "<a href='".admin_url("admin.php?page=mf_address/create/index.php")."' class='add-new-h2'>".__("Add New", 'lang_address')."</a>";
-		//}
-
-	echo "</h2>"
+		.__("Address Book", 'lang_address')
+		."<a href='".admin_url("admin.php?page=mf_address/create/index.php")."' class='add-new-h2'>".__("Add New", 'lang_address')."</a>"
+	."</h2>"
 	.get_notification();
 
 	$tbl_group = new mf_address_table(array(

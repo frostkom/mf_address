@@ -639,7 +639,7 @@ class mf_address
 			'labels' => array(
 				'name' => __("Address Book", 'lang_address'),
 				'singular_name' => __("Address Book", 'lang_address'),
-				'menu_name' => __("Address Book", 'lang_address')
+				'menu_name' => __("Address Book", 'lang_address'),
 			),
 			'public' => false,
 		));
