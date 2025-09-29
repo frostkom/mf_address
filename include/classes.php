@@ -640,6 +640,10 @@ class mf_address
 				'name' => __("Address Book", 'lang_address'),
 				'singular_name' => __("Address Book", 'lang_address'),
 				'menu_name' => __("Address Book", 'lang_address'),
+				'all_items' => __('List', 'lang_address'),
+				'edit_item' => __('Edit', 'lang_address'),
+				'view_item' => __('View', 'lang_address'),
+				'add_new_item' => __('Add New', 'lang_address'),
 			),
 			'public' => false,
 		));

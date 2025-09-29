@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description:
-Version: 3.5.22
+Version: 3.5.23
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -87,21 +87,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			KEY addressDeleted (addressDeleted)
 		) DEFAULT CHARSET=".$default_charset);
 
-		$arr_add_column[$wpdb->prefix."address"] = array(
-			//'addressCity' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressZipCode",
-			//'addressExtra' => "ALTER TABLE [table] ADD [column] VARCHAR(100) AFTER addressEmail",
-			//'addressError' => "ALTER TABLE [table] ADD [column] INT UNSIGNED NOT NULL DEFAULT '0' AFTER addressPublic",
-			//'addressCountry' => "ALTER TABLE [table] ADD [column] TINYINT UNSIGNED DEFAULT NULL AFTER addressCity",
-		);
-
-		$arr_update_column[$wpdb->prefix."address"] = array(
-			//'addressZipCode' => "ALTER TABLE [table] CHANGE [column] [column] MEDIUMINT UNSIGNED DEFAULT NULL",
-		);
-
-		$arr_add_index[$wpdb->prefix."address"] = array(
-			//'addressDeleted' => "ALTER TABLE [table] ADD INDEX [column] ([column])",
-		);
-
 		if(get_option('setting_address_api_url') != '')
 		{
 			$arr_add_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
@@ -126,7 +111,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		mf_uninstall_plugin(array(
 			'uploads' => $obj_address->post_type,
 			'options' => array('setting_address_site_wide', 'setting_address_extra', 'setting_address_extra_field', 'setting_address_extra_profile', 'setting_address_display_member_id', 'setting_address_api_url', 'setting_address_debug', 'option_address_api_full_used', 'option_address_api_full_next', 'option_address_api_used', 'option_address_api_next'),
-			'meta' => array('meta_address_permission'),
+			'user_meta' => array('meta_address_permission'),
 			'post_types' => array($obj_address->post_type),
 			'tables' => array('address'),
 		));
