@@ -2336,7 +2336,7 @@ class mf_address_table extends mf_list_table
 							}
 						}
 
-						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>" // rel='confirm'
+						$out .= ($out != '' ? "&nbsp;" : "")."<a href='".wp_nonce_url($list_url."&btnAddressMerge&intAddressID=".$intAddressID."&is_public=".($item['addressPublic'] == 1)."&ids=".$str_ids."&paged=".check_var('paged'), 'address_merge_'.$intAddressID, '_wpnonce_address_merge')."'>"
 							."<i class='far fa-clone red fa-lg' title='".sprintf(__("Merge with %d other because %s is equal", 'lang_address'), count($arr_duplicates), $str_reason)."'></i>"
 						."</a>";
 					}
