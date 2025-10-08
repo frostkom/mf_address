@@ -2406,7 +2406,7 @@ class mf_address_table extends mf_list_table
 									$out .= "<i class='set_tr_color' rel='red'></i>";
 								}
 
-								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("Would you like to remove the address from the group?", 'lang_address')."'>
+								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' title='".__("Would you like to remove the address from the group?", 'lang_address')."'".make_link_confirm().">
 									<i class='fa fa-minus-square fa-lg red'></i>
 								</a>";
 							}
@@ -2417,7 +2417,7 @@ class mf_address_table extends mf_list_table
 
 								if(IS_SUPER_ADMIN)
 								{
-									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."' rel='confirm'>
+									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."'".make_link_confirm().">
 										<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
 									</a>";
 
@@ -2430,7 +2430,7 @@ class mf_address_table extends mf_list_table
 
 											if($dteGroupAcceptanceSent < $dteGroupAcceptanceLimit)
 											{
-												$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."' rel='confirm'>
+												$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."'".make_link_confirm().">
 													<i class='fa fa-recycle fa-lg' title='".__("Do you want to send the message again?", 'lang_address')."'></i>
 												</a>";
 											}
@@ -2469,7 +2469,7 @@ class mf_address_table extends mf_list_table
 
 						else
 						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' rel='confirm' title='".__("The address has been unsubscribed. Would you like to remove the address from the group?", 'lang_address')."'>
+							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' title='".__("The address has been unsubscribed. Would you like to remove the address from the group?", 'lang_address')."'".make_link_confirm().">
 								<span class='fa-stack fa-lg'>
 									<i class='fa fa-envelope fa-stack-1x'></i>
 									<i class='fa fa-ban fa-stack-2x red'></i>
