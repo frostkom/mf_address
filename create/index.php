@@ -45,6 +45,7 @@ echo "<div class='wrap'>
 				</div>
 				<div id='postbox-container-1'>
 					<div class='postbox'>
+						<h3 class='hndle'><span>".__("Save", 'lang_address')."</span></h3>
 						<div class='inside'>"
 							.show_button(array('name' => 'btnAddressUpdate', 'text' => ($obj_address->id > 0 ? __("Update", 'lang_address') : __("Add", 'lang_address'))))
 							.input_hidden(array('name' => 'intAddressID', 'value' => $obj_address->id))
