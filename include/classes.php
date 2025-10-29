@@ -849,6 +849,48 @@ class mf_address
 		delete_user_meta($user_id, $meta_key);
 	}
 
+	function get_or_set_table_filter($data)
+	{
+		if(!isset($data['prefix'])){	$data['prefix'] = '';}
+		if(!isset($data['save'])){		$data['save'] = false;}
+		if(!isset($data['default'])){	$data['default'] = '';}
+
+		$meta_value = '';
+
+		$user_id = get_current_user_id();
+		$meta_key = 'meta_table_filter_'.$data['prefix'].$data['key'];
+
+		if(isset($_GET['filter_action']) || isset($_REQUEST[$data['key']]))
+		{
+			$meta_value = check_var($data['key']);
+
+			if($data['save'] == true)
+			{
+				if($meta_value != '')
+				{
+					update_user_meta($user_id, $meta_key, $meta_value);
+				}
+
+				else
+				{
+					delete_user_meta($user_id, $meta_key, $meta_value);
+				}
+			}
+		}
+
+		else
+		{
+			$meta_value = get_the_author_meta($meta_key, $user_id);
+		}
+
+		if($meta_value == '')
+		{
+			$meta_value = $data['default'];
+		}
+
+		return $meta_value;
+	}
+
 	function restrict_manage_posts($post_type)
 	{
 		global $wpdb, $obj_group;
@@ -857,7 +899,7 @@ class mf_address
 		{
 			if(get_option('setting_address_api_url') != '')
 			{
-				$strFilterIsSynced = get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
+				$strFilterIsSynced = $this->get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
 
 				$arr_data = get_yes_no_for_select(array('choose_here_text' => __("Synchronized Through API", 'lang_address')));
 
@@ -886,15 +928,15 @@ class mf_address
 
 			if(count($arr_data) > 0)
 			{
-				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID', 'save' => true));
+				$intGroupID = $this->get_or_set_table_filter(array('key' => 'intGroupID', 'save' => true));
 
 				echo show_select(array('data' => $arr_data, 'name' => 'intGroupID', 'value' => $intGroupID));
 
 				if($intGroupID > 0)
 				{
-					$strFilterIsMember = get_or_set_table_filter(array('key' => 'strFilterIsMember', 'save' => true));
-					$strFilterAccepted = get_or_set_table_filter(array('key' => 'strFilterAccepted', 'save' => true));
-					$strFilterUnsubscribed = get_or_set_table_filter(array('key' => 'strFilterUnsubscribed', 'save' => true));
+					$strFilterIsMember = $this->get_or_set_table_filter(array('key' => 'strFilterIsMember', 'save' => true));
+					$strFilterAccepted = $this->get_or_set_table_filter(array('key' => 'strFilterAccepted', 'save' => true));
+					$strFilterUnsubscribed = $this->get_or_set_table_filter(array('key' => 'strFilterUnsubscribed', 'save' => true));
 
 					if($obj_group->amount_in_group(array('id' => $intGroupID)) > 0)
 					{
@@ -1888,11 +1930,6 @@ class mf_address_table extends mf_list_table
 	{
 		global $wpdb, $obj_address;
 
-		if(!isset($obj_address))
-		{
-			$obj_address = new mf_address();
-		}
-
 		$this->arr_settings['query_from'] = $wpdb->prefix."address";
 		$this->post_type = '';
 
@@ -1904,7 +1941,12 @@ class mf_address_table extends mf_list_table
 
 	function init_fetch()
 	{
-		global $wpdb;
+		global $wpdb, $obj_address;
+
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
 
 		if(!IS_ADMINISTRATOR)
 		{
@@ -1935,7 +1977,7 @@ class mf_address_table extends mf_list_table
 
 		if(get_option('setting_address_api_url') != '')
 		{
-			$strFilterIsSynced = get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
+			$strFilterIsSynced = $obj_address->get_or_set_table_filter(array('key' => 'strFilterIsSynced', 'save' => true));
 
 			switch($strFilterIsSynced)
 			{
@@ -1949,13 +1991,13 @@ class mf_address_table extends mf_list_table
 			}
 		}
 
-		$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+		$intGroupID = $obj_address->get_or_set_table_filter(array('key' => 'intGroupID'));
 
 		if($intGroupID > 0)
 		{
-			$strFilterIsMember = get_or_set_table_filter(array('key' => 'strFilterIsMember'));
-			$strFilterAccepted = get_or_set_table_filter(array('key' => 'strFilterAccepted'));
-			$strFilterUnsubscribed = get_or_set_table_filter(array('key' => 'strFilterUnsubscribed'));
+			$strFilterIsMember = $obj_address->get_or_set_table_filter(array('key' => 'strFilterIsMember'));
+			$strFilterAccepted = $obj_address->get_or_set_table_filter(array('key' => 'strFilterAccepted'));
+			$strFilterUnsubscribed = $obj_address->get_or_set_table_filter(array('key' => 'strFilterUnsubscribed'));
 
 			if($strFilterIsMember != '' || $strFilterAccepted != '' || $strFilterUnsubscribed != '')
 			{
@@ -2054,17 +2096,24 @@ class mf_address_table extends mf_list_table
 
 	function get_bulk_actions()
 	{
+		global $obj_address;
+
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
+
 		$arr_actions = [];
 
 		if(isset($this->columns['cb']))
 		{
 			if(IS_ADMINISTRATOR)
 			{
-				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+				$intGroupID = $obj_address->get_or_set_table_filter(array('key' => 'intGroupID'));
 
 				if($intGroupID > 0)
 				{
-					$strFilterIsMember = get_or_set_table_filter(array('key' => 'strFilterIsMember'));
+					$strFilterIsMember = $obj_address->get_or_set_table_filter(array('key' => 'strFilterIsMember'));
 
 					if($strFilterIsMember == 'no')
 					{
@@ -2184,16 +2233,21 @@ class mf_address_table extends mf_list_table
 
 	function bulk_add2group()
 	{
-		global $obj_group, $error_text, $done_text;
+		global $obj_address, $obj_group, $error_text, $done_text;
 
-		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+		if(!isset($obj_address))
+		{
+			$obj_address = new mf_address();
+		}
 
 		if(!isset($obj_group))
 		{
 			$obj_group = new mf_group();
 		}
 
-		$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+		$arr_ids = check_var($this->arr_settings['query_from'], 'array');
+
+		$intGroupID = $obj_address->get_or_set_table_filter(array('key' => 'intGroupID'));
 
 		foreach($arr_ids as $id)
 		{
@@ -2212,6 +2266,11 @@ class mf_address_table extends mf_list_table
 		if(!isset($obj_address))
 		{
 			$obj_address = new mf_address();
+		}
+
+		if(!isset($obj_group))
+		{
+			$obj_group = new mf_group();
 		}
 
 		$intAddressID = $item['addressID'];
@@ -2367,7 +2426,7 @@ class mf_address_table extends mf_list_table
 			break;
 
 			case 'is_part_of_group':
-				$intGroupID = get_or_set_table_filter(array('key' => 'intGroupID'));
+				$intGroupID = $obj_address->get_or_set_table_filter(array('key' => 'intGroupID'));
 
 				if($intGroupID > 0)
 				{

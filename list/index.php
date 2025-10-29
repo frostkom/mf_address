@@ -11,9 +11,7 @@ echo "<div class='wrap'>
 	."</h2>"
 	.get_notification();
 
-	$tbl_group = new mf_address_table(array(
-		'remember_search' => true,
-	));
+	$tbl_group = new mf_address_table();
 
 	$query_select = "";
 
