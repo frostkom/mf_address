@@ -1900,8 +1900,6 @@ class mf_address_table extends mf_list_table
 		$this->arr_settings['query_all_id'] = "0";
 		$this->arr_settings['query_trash_id'] = "1";
 		$this->orderby_default = "addressSurName";
-
-		//$this->arr_settings['has_autocomplete'] = true;
 	}
 
 	function init_fetch()
