@@ -1943,6 +1943,8 @@ class mf_address_table extends mf_list_table
 	{
 		global $wpdb, $obj_address;
 
+		do_action('load_font_awesome');
+
 		if(!isset($obj_address))
 		{
 			$obj_address = new mf_address();
@@ -2547,11 +2549,6 @@ class mf_address_table extends mf_list_table
 							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."' title='".__("Would you like to add the address to the group?", 'lang_address')."'>
 								<i class='fa fa-plus-square fa-lg green'></i>
 							</a>";
-
-							/*if(IS_SUPER_ADMIN)
-							{
-								$out .= " (".var_export($item, true).")";
-							}*/
 						}
 					}
 				}
