@@ -15,7 +15,7 @@ echo "<div class='wrap'>
 					<div class='postbox'>
 						<h3 class='hndle'><span>".__("Information", 'lang_address')."</span></h3>
 						<div class='inside'>
-							<div class='flex_flow'>";
+							<div".apply_filters('get_flex_flow', "").">";
 
 								if(get_option('setting_address_display_member_id') != 'no')
 								{
@@ -24,11 +24,11 @@ echo "<div class='wrap'>
 
 								echo show_textfield(array('name' => 'strAddressBirthDate', 'text' => __("Social Security Number", 'lang_address'), 'value' => $obj_address->birthdate))
 							."</div>"
-							."<div class='flex_flow'>"
+							."<div".apply_filters('get_flex_flow', "").">"
 								.show_textfield(array('name' => 'strAddressFirstName', 'text' => __("First Name", 'lang_address'), 'value' => $obj_address->first_name))
 								.show_textfield(array('name' => 'strAddressSurName', 'text' => __("Last Name", 'lang_address'), 'value' => $obj_address->sur_name))
 							."</div>"
-							."<div class='flex_flow'>"
+							."<div".apply_filters('get_flex_flow', "").">"
 								.show_textfield(array('name' => 'strAddressTelNo', 'text' => __("Phone Number", 'lang_address'), 'value' => $obj_address->telno))
 								.show_textfield(array('name' => 'strAddressCellNo', 'text' => __("Mobile Number", 'lang_address'), 'value' => $obj_address->cellno))
 								.show_textfield(array('name' => 'strAddressWorkNo', 'text' => __("Work Number", 'lang_address'), 'value' => $obj_address->workno))
@@ -90,7 +90,7 @@ echo "<div class='wrap'>
 						<div class='inside'>"
 							.show_textfield(array('name' => 'strAddressAddress', 'text' => __("Address", 'lang_address'), 'value' => $obj_address->address))
 							.show_textfield(array('name' => 'strAddressCo', 'text' => __("C/O", 'lang_address'), 'value' => $obj_address->co))
-							."<div class='flex_flow'>"
+							."<div".apply_filters('get_flex_flow', "").">"
 								.show_textfield(array('type' => 'number', 'name' => 'intAddressZipCode', 'text' => __("Zip Code", 'lang_address'), 'value' => ($obj_address->zipcode > 0 ? $obj_address->zipcode : '')))
 								.show_textfield(array('name' => 'strAddressCity', 'text' => __("City", 'lang_address'), 'value' => $obj_address->city))
 							."</div>"

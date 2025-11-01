@@ -4,7 +4,7 @@ class mf_address
 {
 	var $id = 0;
 	var $type;
-	var $post_type = 'mf_address';
+	var $post_type = __CLASS__;
 	var $meta_prefix;
 	var $query_where = "";
 	var $group_id;
