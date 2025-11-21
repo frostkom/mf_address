@@ -2242,7 +2242,7 @@ class mf_address_table extends mf_list_table
 			$obj_address = new mf_address();
 		}
 
-		if(!isset($obj_group))
+		if(is_plugin_active("mf_group/index.php") && !isset($obj_group))
 		{
 			$obj_group = new mf_group();
 		}
@@ -2270,7 +2270,7 @@ class mf_address_table extends mf_list_table
 			$obj_address = new mf_address();
 		}
 
-		if(!isset($obj_group))
+		if(is_plugin_active("mf_group/index.php") && !isset($obj_group))
 		{
 			$obj_group = new mf_group();
 		}
