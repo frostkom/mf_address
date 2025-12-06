@@ -750,7 +750,7 @@ class mf_address
 	{
 		$menu_root = 'mf_address/';
 		$menu_start = $menu_root."list/index.php";
-		$menu_capability = 'edit_posts';
+		$menu_capability = 'edit_pages';
 
 		$menu_title = __("Address Book", 'lang_address');
 		add_menu_page("", $menu_title, $menu_capability, $menu_start, '', 'dashicons-email-alt', 99);
@@ -2456,9 +2456,9 @@ class mf_address_table extends mf_list_table
 
 							else
 							{
-								$arr_stop_list_recipients = $obj_group->get_stop_list_recipients();
+								$obj_group->get_stop_list_recipients();
 
-								if(!in_array($intGroupID, $obj_group->arr_stop_list_groups) && in_array($intAddressID, $arr_stop_list_recipients))
+								if(!in_array($intGroupID, $obj_group->arr_stop_list['groups']) && in_array($intAddressID, $obj_group->arr_stop_list['recipients']))
 								{
 									$out .= "<i class='fa fa-exclamation-triangle yellow' title='".__("This address is part of a stop list and will not be sent to", 'lang_address')."'></i> ";
 
