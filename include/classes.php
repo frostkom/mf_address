@@ -200,16 +200,16 @@ class mf_address
 			switch($headers['http_code'])
 			{
 				case 200:
-					$json = json_decode($content, true);
+					$arr_json = json_decode($content, true);
 
-					switch($json['status'])
+					switch($arr_json['status'])
 					{
 						case 'true':
 							// Insert or update
 							############################
-							if(isset($json['data']))
+							if(isset($arr_json['data']))
 							{
-								$count_incoming = count($json['data']);
+								$count_incoming = count($arr_json['data']);
 
 								if($count_incoming > 0)
 								{
@@ -217,10 +217,10 @@ class mf_address
 
 									if(get_option('setting_address_debug') == 'yes')
 									{
-										do_log("Address API: ".$url." -> ".$count_incoming);
+										do_log(__FUNCTION__.": ".$url." -> ".$count_incoming);
 									}
 
-									foreach($json['data'] as $item)
+									foreach($arr_json['data'] as $item)
 									{
 										$strAddressBirthDate = $item['memberSSN'];
 										$strAddressFirstName = $item['memberFirstName'];
@@ -323,22 +323,22 @@ class mf_address
 
 									if(get_option('setting_address_debug') == 'yes')
 									{
-										do_log("Address API - Insert: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted");
+										do_log(__FUNCTION__." - Insert: ".$count_incoming." incoming, ".$count_updated." updated, ".$count_updated_error." NOT updated, ".$count_inserted." inserted, ".$count_inserted_error." NOT inserted");
 									}
 
-									if(isset($json['next']) && $json['next'] > 0)
+									if(isset($arr_json['next']) && $arr_json['next'] > 0)
 									{
 										if($is_full_run)
 										{
-											update_option('option_address_api_full_next', $json['next'], false);
+											update_option('option_address_api_full_next', $arr_json['next'], false);
 										}
 
 										else
 										{
-											update_option('option_address_api_next', $json['next'], false);
+											update_option('option_address_api_next', $arr_json['next'], false);
 										}
 
-										$this->sync_api(array('limit_start' => $json['next']));
+										$this->sync_api(array('limit_start' => $arr_json['next']));
 									}
 
 									else
@@ -361,9 +361,9 @@ class mf_address
 
 							// Remove exited
 							############################
-							if(isset($json['ended_data']))
+							if(isset($arr_json['ended_data']))
 							{
-								$count_ended = count($json['ended_data']);
+								$count_ended = count($arr_json['ended_data']);
 
 								if($count_ended > 0)
 								{
@@ -371,13 +371,12 @@ class mf_address
 
 									if(get_option('setting_address_debug') == 'yes')
 									{
-										do_log("Address API - Ended: ".$url." -> ".$count_ended);
+										do_log(__FUNCTION__." - Ended: ".$url." -> ".$count_ended);
 									}
 
-									foreach($json['ended_data'] as $item)
+									foreach($arr_json['ended_data'] as $item)
 									{
 										$strAddressBirthDate = $item['memberSSN'];
-										//$ = $item['membershipEnded'];
 										$strMembershipEndedReason = $item['membershipEndedReason'];
 
 										if($strMembershipEndedReason == 'exit')
@@ -410,7 +409,7 @@ class mf_address
 
 														if(get_option('setting_address_debug') == 'yes')
 														{
-															do_log("Address API - Trashed Address ".$intAddressID." (".$strAddressFirstName." ".$strAddressSurName.") in cron_base()");
+															do_log(__FUNCTION__." - Trashed Address ".$intAddressID." (".$strAddressFirstName." ".$strAddressSurName.") in cron_base()");
 														}
 													}
 
@@ -435,7 +434,7 @@ class mf_address
 
 									if(get_option('setting_address_debug') == 'yes')
 									{
-										do_log("Address API - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
+										do_log(__FUNCTION__." - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
 									}
 
 									update_option('option_address_api_used', date("Y-m-d H:i:s"), false);
@@ -463,7 +462,7 @@ class mf_address
 
 										if(get_option('setting_address_debug') == 'yes')
 										{
-											//do_log("Address API - Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
+											//do_log(__FUNCTION__." - Trashed Address ".$intAddressID." (".$this->get_name(array('address_id' => $intAddressID)).") in cron_base()");
 										}
 									}
 
@@ -475,14 +474,14 @@ class mf_address
 
 								if(get_option('setting_address_debug') == 'yes')
 								{
-									do_log("Address API - Old: ".$count_non_synced." non-synced, ".$count_removed." removed, ".$count_removed_error." NOT removed");
+									do_log(__FUNCTION__." - Old: ".$count_non_synced." non-synced, ".$count_removed." removed, ".$count_removed_error." NOT removed");
 								}
 							}
 							############################
 						break;
 
 						default:
-							do_log("Address API Error: ".$url." -> ".htmlspecialchars(var_export($json, true)));
+							do_log(__FUNCTION__." Error: ".$url." -> ".htmlspecialchars(var_export($arr_json, true)));
 						break;
 					}
 
