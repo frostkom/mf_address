@@ -2569,6 +2569,12 @@ class mf_address_table extends mf_list_table
 				if($strAddressEmail != '')
 				{
 					$out .= "<a href='mailto:".$strAddressEmail."'>".$strAddressEmail."</a><br>";
+
+					/*if(strpos($strAddressEmail, "@") === false)
+					{
+						$out .= " (deleted)";
+						$obj_address->trash(array('address_id' => $intAddressID));
+					}*/
 				}
 
 				$str_numbers = "";

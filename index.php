@@ -2,8 +2,8 @@
 /*
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
-Description:
-Version: 3.6.6
+Description: Add support for an address book
+Version: 3.6.7
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
