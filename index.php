@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: Add support for an address book
-Version: 3.6.7
+Version: 3.6.8
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -78,6 +78,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			addressEmail VARCHAR(60) DEFAULT NULL,
 			addressExtra VARCHAR(100),
 			addressCreated DATETIME DEFAULT NULL,
+			addressSyncedDate DATETIME DEFAULT NULL,
 			userID INT UNSIGNED DEFAULT NULL,
 			addressDeleted ENUM('0','1') NOT NULL DEFAULT '0',
 			addressDeletedDate DATETIME DEFAULT NULL,
@@ -87,15 +88,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			KEY addressDeleted (addressDeleted)
 		) DEFAULT CHARSET=".$default_charset);
 
-		if(get_option('setting_address_api_url') != '')
-		{
-			$arr_add_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
-		}
-
-		else
-		{
-			$arr_update_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] DROP COLUMN [column]";
-		}
+		$arr_add_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
 
 		update_columns($arr_update_column);
 		add_columns($arr_add_column);
