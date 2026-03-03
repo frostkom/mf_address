@@ -345,13 +345,13 @@ class mf_address
 									{
 										if($is_full_run)
 										{
-											update_option('option_address_api_full_used', date("Y-m-d H:i:s"), false);
+											update_option('option_address_api_full_used', current_time('mysql'), false);
 											update_option('option_address_api_full_next', 0, false);
 										}
 
 										else
 										{
-											update_option('option_address_api_used', date("Y-m-d H:i:s"), false);
+											update_option('option_address_api_used', current_time('mysql'), false);
 											update_option('option_address_api_next', 0, false);
 										}
 									}
@@ -437,7 +437,7 @@ class mf_address
 										do_log(__FUNCTION__." - Ended: ".$count_ended." ended, ".$count_removed." removed, ".$count_removed_error." NOT removed, ".$count_not_exit." NOT exit, ".$count_not_found." NOT found");
 									}
 
-									update_option('option_address_api_used', date("Y-m-d H:i:s"), false);
+									update_option('option_address_api_used', current_time('mysql'), false);
 								}
 							}
 							############################
@@ -595,7 +595,7 @@ class mf_address
 
 				if($rows_amount > 0)
 				{
-					do_log("Merged ".$merged_amount." / ".$rows_amount." (".date("Y-m-d H:i:s").")", 'notification');
+					do_log("Merged ".$merged_amount." / ".$rows_amount." (".current_time('mysql').")", 'notification');
 				}
 			}
 			#####################
