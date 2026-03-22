@@ -762,8 +762,6 @@ class mf_address
 
 		if(IS_EDITOR)
 		{
-			$menu_capability = 'edit_pages';
-
 			$menu_title = __("Import", 'lang_address');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
 
