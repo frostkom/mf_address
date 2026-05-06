@@ -162,9 +162,9 @@ class mf_address
 		{
 			$option_address_api_full_used = get_option('option_address_api_full_used');
 
-			if($option_address_api_full_used < date("Y-m-d H:i:s", strtotime("-1 week")))
+			if($option_address_api_full_used < date("Y-m-d H:i:s", strtotime(current_time('mysql')." -1 week")))
 			{
-				$option_address_api_used = date("Y-m-d H:i:s", strtotime("-10 year"));
+				$option_address_api_used = date("Y-m-d H:i:s", strtotime(current_time('mysql')." -10 year"));
 
 				$is_full_run = true;
 
@@ -176,7 +176,7 @@ class mf_address
 
 			else
 			{
-				$option_address_api_used = get_option_or_default('option_address_api_used', date("Y-m-d H:i:s", strtotime("-1 year")));
+				$option_address_api_used = get_option_or_default('option_address_api_used', date("Y-m-d H:i:s", strtotime(current_time('mysql')." -1 year")));
 
 				$is_full_run = false;
 
@@ -2481,7 +2481,7 @@ class mf_address_table extends mf_list_table
 									{
 										if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
 										{
-											$dteGroupAcceptanceLimit = date("Y-m-d H:i:s", strtotime("-6 hour"));
+											$dteGroupAcceptanceLimit = date("Y-m-d H:i:s", strtotime(current_time('mysql')." -6 hour"));
 											$dteGroupAcceptanceSent = $obj_group->get_acceptance_sent(array('address_id' => $intAddressID, 'group_id' => $intGroupID));
 
 											if($dteGroupAcceptanceSent < $dteGroupAcceptanceLimit)
