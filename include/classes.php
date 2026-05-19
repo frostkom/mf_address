@@ -764,13 +764,16 @@ class mf_address
 		{
 			$menu_title = __("Import", 'lang_address');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."import/index.php");
+		}
 
-			if(IS_SUPER_ADMIN)
-			{
-				$menu_title = __("Export", 'lang_address');
-				add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."export/index.php");
-			}
+		if(IS_SUPER_ADMIN)
+		{
+			$menu_title = __("Export", 'lang_address');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."export/index.php");
+		}
 
+		if(IS_ADMINISTRATOR)
+		{
 			$menu_title = __("Settings", 'lang_address');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_address"));
 		}
