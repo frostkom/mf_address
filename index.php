@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: Add support for an address book
-Version: 3.6.12
+Version: 3.7.0
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -72,9 +72,9 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 			addressZipCode MEDIUMINT UNSIGNED DEFAULT NULL,
 			addressCity VARCHAR(100),
 			addressCountry TINYINT UNSIGNED DEFAULT NULL,
-			addressTelNo VARCHAR(13) DEFAULT NULL,
-			addressWorkNo VARCHAR(13) DEFAULT NULL,
-			addressCellNo VARCHAR(13) DEFAULT NULL,
+			addressTelNo VARCHAR(15) DEFAULT NULL,
+			addressWorkNo VARCHAR(15) DEFAULT NULL,
+			addressCellNo VARCHAR(15) DEFAULT NULL,
 			addressEmail VARCHAR(60) DEFAULT NULL,
 			addressExtra VARCHAR(100),
 			addressCreated DATETIME DEFAULT NULL,
@@ -89,6 +89,12 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		) DEFAULT CHARSET=".$default_charset);
 
 		$arr_add_column[$wpdb->prefix."address"]['addressSyncedDate'] = "ALTER TABLE [table] ADD [column] DATETIME DEFAULT NULL AFTER addressCreated";
+
+		$arr_update_column[$wpdb->prefix."address"] = array(
+			'addressTelNo' => "ALTER TABLE [table] CHANGE [column] [column] VARCHAR(15) DEFAULT NULL", // 260526
+			'addressWorkNo' => "ALTER TABLE [table] CHANGE [column] [column] VARCHAR(15) DEFAULT NULL", // 260526
+			'addressCellNo' => "ALTER TABLE [table] CHANGE [column] [column] VARCHAR(15) DEFAULT NULL", // 260526
+		);
 
 		update_columns($arr_update_column);
 		add_columns($arr_add_column);
