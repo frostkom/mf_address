@@ -1888,7 +1888,7 @@ class mf_address
 
 		$wpdb->query($wpdb->prepare("DELETE FROM ".$wpdb->prefix."address WHERE addressID = '%d'", $this->id));
 
-		return ($rows_affected > 0);
+		return ($wpdb->rows_affected > 0);
 	}
 
 	function update_errors($data = [])
