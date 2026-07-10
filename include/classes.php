@@ -600,6 +600,73 @@ class mf_address
 			}
 			#####################
 
+			// Look for e-mails with names
+			#####################
+			$result = $wpdb->get_results("SELECT addressID, addressFirstName, addressSurName, addressEmail FROM ".$wpdb->prefix."address WHERE (addressEmail LIKE '%<%' OR addressEmail LIKE '%&lt;%') AND addressDeleted = '0'");
+
+			/*echo "<p>Error: ".$wpdb->last_error."</p>";
+			echo "<p>DB: ".$wpdb->dbname."</p>";
+			echo "<p>Query: ".htmlspecialchars($wpdb->last_query)."</p>";
+
+			$count = $wpdb->get_var("SELECT COUNT(*) FROM ".$wpdb->prefix."address WHERE addressDeleted = '0'");
+			echo "<p>All rows: ".$count."</p>";
+
+			echo "<p>Rows: ".count($result)."</p>";*/
+
+			foreach($result as $r)
+			{
+				$intAddressID = $r->addressID;
+				$strAddressFirstName = $r->addressFirstName;
+				$strAddressSurName = $r->addressSurName;
+				$strAddressEmail_orig = $strAddressEmail = $r->addressEmail;
+
+				// Trim trailing comma/whitespace first
+				$strAddressEmail_orig = trim($strAddressEmail_orig, " ,");
+				$strAddressEmail_orig = html_entity_decode($strAddressEmail_orig, ENT_QUOTES, 'UTF-8');
+				$strAddressEmail_orig = stripslashes($strAddressEmail_orig);
+
+				//if(preg_match('/^(\S+)\s+(\S+)\s*<([^>]+)>$/', $strAddressEmail_orig, $matches))
+				if(preg_match('/^(.+?)\s*<([^>]+)>$/', $strAddressEmail_orig, $matches))
+				{
+					$fullName = trim($matches[1]);
+
+					$lastSpacePos = strrpos($fullName, ' ');
+
+					if($lastSpacePos !== false)
+					{
+						$nameFirst = substr($fullName, 0, $lastSpacePos);
+						$nameLast  = substr($fullName, $lastSpacePos + 1);
+					}
+					
+					else
+					{
+						$nameFirst = $fullName;
+						$nameLast  = '';
+					}
+
+					if($strAddressFirstName == '')
+					{
+						$strAddressFirstName = $nameFirst;
+					}
+
+					if($strAddressSurName == '')
+					{
+						$strAddressSurName = $nameLast;
+					}
+
+					$strAddressEmail = $matches[2];
+
+					echo "<p>#".$intAddressID.": ".$strAddressEmail_orig." -> ".$strAddressFirstName." + ".$strAddressSurName." + ".$strAddressEmail."</p>";
+					$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET addressFirstName = %s, addressSurName = %s, addressEmail = %s WHERE addressID = '%d'", $strAddressFirstName, $strAddressSurName, $strAddressEmail, $intAddressID));
+				}
+
+				else
+				{
+					//echo "<p>No match on ".$strAddressEmail_orig."</p>";
+				}
+			}
+			#####################
+
 			// Delete old uploads
 			#######################
 			list($upload_path, $upload_url) = get_uploads_folder($this->post_type, true, false);
@@ -1141,8 +1208,8 @@ class mf_address
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
 
-					if($wpdb->num_rows > 0 && $result[0]['addressPublic'] == 1)
-					{
+					/*if($wpdb->num_rows > 0 && $result[0]['addressPublic'] == 1)
+					{*/
 						$unique_column = '';
 
 						foreach($this->arr_unique_columns as $str_unique_column)
@@ -1198,14 +1265,14 @@ class mf_address
 
 							break;
 						}
-					}
+					/*}
 
 					else
 					{
 						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", 'lang_address');
 
 						break;
-					}
+					}*/
 				}
 
 				$id_prev = $id;
