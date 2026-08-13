@@ -1208,71 +1208,54 @@ class mf_address
 					$result_prev = $wpdb->get_results($wpdb->prepare($base_query, $id_prev), ARRAY_A);
 					$result = $wpdb->get_results($wpdb->prepare($base_query, $id), ARRAY_A);
 
-					/*if($wpdb->num_rows > 0 && $result[0]['addressPublic'] == 1)
-					{*/
-						$unique_column = '';
+					$unique_column = '';
 
-						foreach($this->arr_unique_columns as $str_unique_column)
+					foreach($this->arr_unique_columns as $str_unique_column)
+					{
+						if($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0' && $result_prev[0][$str_unique_column] != '' && $result_prev[0][$str_unique_column] != '0')
 						{
-							if($result[0][$str_unique_column] != '' && $result[0][$str_unique_column] != '0' && $result_prev[0][$str_unique_column] != '' && $result_prev[0][$str_unique_column] != '0')
+							if(strtolower($result_prev[0][$str_unique_column]) == strtolower($result[0][$str_unique_column]))
 							{
-								if(strtolower($result_prev[0][$str_unique_column]) == strtolower($result[0][$str_unique_column]))
-								{
-									$unique_column = $str_unique_column;
-								}
-
-								break;
+								$unique_column = $str_unique_column;
 							}
-						}
-
-						if($unique_column != '')
-						{
-							$query_set = '';
-
-							foreach($this->arr_columns as $str_column)
-							{
-								if($result_prev[0][$str_column] != '' && strtolower($result_prev[0][$str_column]) != strtolower($result[0][$str_column]))
-								{
-									$query_set .= ($query_set != '' ? ", " : "").$str_column." = '".esc_sql($result_prev[0][$str_column])."'";
-								}
-							}
-
-							if($query_set != '')
-							{
-								$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET ".$query_set." WHERE addressID = '%d'", $id));
-
-								do_log(get_user_info(array('id' => get_current_user_id()))." Merged/Updated ".$id_prev." -> ".$id." (".$wpdb->last_query.")", 'notification');
-							}
-
-							do_action('merge_address', $id_prev, $id);
-
-							if($this->trash(array('address_id' => $id_prev, 'force_admin' => true)))
-							{
-								//do_log("Trashed Address ".$id_prev." (".$this->get_name(array('address_id' => $id_prev)).") in do_merge()");
-
-								$merged_amount++;
-							}
-						}
-
-						else
-						{
-							$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
-
-							/*if(IS_SUPER_ADMIN)
-							{
-								$error_text .= " (".var_export($result_prev[0], true)." -> ".var_export($result[0], true).")";
-							}*/
 
 							break;
 						}
-					/*}
+					}
+
+					if($unique_column != '')
+					{
+						$query_set = '';
+
+						foreach($this->arr_columns as $str_column)
+						{
+							if($result_prev[0][$str_column] != '' && strtolower($result_prev[0][$str_column] ?? '') != strtolower($result[0][$str_column] ?? ''))
+							{
+								$query_set .= ($query_set != '' ? ", " : "").$str_column." = '".esc_sql($result_prev[0][$str_column])."'";
+							}
+						}
+
+						if($query_set != '')
+						{
+							$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."address SET ".$query_set." WHERE addressID = '%d'", $id));
+
+							do_log(get_user_info(array('id' => get_current_user_id()))." Merged/Updated ".$id_prev." -> ".$id." (".$wpdb->last_query.")", 'notification');
+						}
+
+						do_action('merge_address', $id_prev, $id);
+
+						if($this->trash(array('address_id' => $id_prev, 'force_admin' => true)))
+						{
+							$merged_amount++;
+						}
+					}
 
 					else
 					{
-						$error_text = __("I could not merge the addresses for you because only public addresses are possible to merge", 'lang_address');
+						$error_text = __("I could not merge the addresses for you because no unique column matched", 'lang_address');
 
 						break;
-					}*/
+					}
 				}
 
 				$id_prev = $id;
