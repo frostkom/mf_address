@@ -637,7 +637,7 @@ class mf_address
 						$nameFirst = substr($fullName, 0, $lastSpacePos);
 						$nameLast  = substr($fullName, $lastSpacePos + 1);
 					}
-					
+
 					else
 					{
 						$nameFirst = $fullName;
@@ -2120,7 +2120,9 @@ class mf_address_table extends mf_list_table
 
 		if($intGroupID > 0)
 		{
-			$arr_columns['is_part_of_group'] = "<span class='nowrap'><i class='fa fa-plus-square'></i> / <i class='fa fa-minus-square'></i></span>";
+			$arr_columns['is_part_of_group'] = ""; //<span class='nowrap'><i class='fa fa-plus-square'></i> / <i class='fa fa-minus-square'></i></span>
+			$arr_columns['addressAdded'] = __("Added", 'lang_address');
+			$arr_sortable_columns[] = 'addressAdded';
 		}
 
 		$arr_columns['addressError'] = "";
@@ -2463,9 +2465,9 @@ class mf_address_table extends mf_list_table
 				{
 					$str_groups = "";
 
-					$resultGroups = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = %s AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID, $obj_group->post_type));
+					$result = $wpdb->get_results($wpdb->prepare("SELECT groupID FROM ".$wpdb->posts." INNER JOIN ".$wpdb->prefix."address2group ON ".$wpdb->posts.".ID = ".$wpdb->prefix."address2group.groupID WHERE addressID = '%d' AND post_type = %s AND post_status NOT IN ('trash', 'ignore') GROUP BY groupID", $intAddressID, $obj_group->post_type));
 
-					foreach($resultGroups as $r)
+					foreach($result as $r)
 					{
 						$str_groups .= ($str_groups != '' ? "\n" : "").$obj_group->get_name(array('id' => $r->groupID));
 					}
@@ -2484,106 +2486,103 @@ class mf_address_table extends mf_list_table
 				{
 					$list_url = admin_url("admin.php?page=mf_address/list/index.php&intAddressID=".$intAddressID."&intGroupID=".$intGroupID);
 
-					$intGroupID_check = $intGroupAccepted = $intGroupUnsubscribed = 0;
+					$result = $wpdb->get_results($wpdb->prepare("SELECT groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $intGroupID));
 
-					$result_check = $wpdb->get_results($wpdb->prepare("SELECT groupID, groupAccepted, groupUnsubscribed FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' LIMIT 0, 1", $intAddressID, $intGroupID));
-
-					foreach($result_check as $r)
+					if($wpdb->num_rows > 0)
 					{
-						$intGroupID_check = $r->groupID;
-						$intGroupAccepted = $r->groupAccepted;
-						$intGroupUnsubscribed = $r->groupUnsubscribed;
-					}
-
-					if($intGroupID == $intGroupID_check)
-					{
-						if($intGroupUnsubscribed == 0)
+						foreach($result as $r)
 						{
-							if($obj_group->is_synced($intGroupID))
-							{
-								$out .= "<i class='fa fa-minus-square fa-lg grey' title='".__("The group is synced so you can not add or remove manually", 'lang_address')."'></i>";
-							}
+							$intGroupAccepted = $r->groupAccepted;
+							$intGroupUnsubscribed = $r->groupUnsubscribed;
 
-							else
+							if($intGroupUnsubscribed == 0)
 							{
-								$obj_group->get_stop_list_recipients();
-
-								if(!in_array($intGroupID, $obj_group->arr_stop_list['groups']) && in_array($intAddressID, $obj_group->arr_stop_list['recipients']))
+								if($obj_group->is_synced($intGroupID))
 								{
-									$out .= "<i class='fa fa-exclamation-triangle yellow' title='".__("This address is part of a stop list and will not be sent to", 'lang_address')."'></i> ";
-
-									$out .= "<i class='set_tr_color' rel='red'></i>";
-								}
-
-								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' title='".__("Would you like to remove the address from the group?", 'lang_address')."'".make_link_confirm().">
-									<i class='fa fa-minus-square fa-lg red'></i>
-								</a>";
-							}
-
-							if($intGroupAccepted == 0)
-							{
-								$out .= "&nbsp;";
-
-								if(IS_SUPER_ADMIN)
-								{
-									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."'".make_link_confirm().">
-										<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
-									</a>";
-
-									if(get_post_meta($intGroupID, 'group_reminder_subject') != '' && get_post_meta($intGroupID, 'group_reminder_text') != '')
-									{
-										if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
-										{
-											$dteGroupAcceptanceLimit = date("Y-m-d H:i:s", strtotime(current_time('mysql')." -6 hour"));
-											$dteGroupAcceptanceSent = $obj_group->get_acceptance_sent(array('address_id' => $intAddressID, 'group_id' => $intGroupID));
-
-											if($dteGroupAcceptanceSent < $dteGroupAcceptanceLimit)
-											{
-												$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."'".make_link_confirm().">
-													<i class='fa fa-recycle fa-lg' title='".__("Do you want to send the message again?", 'lang_address')."'></i>
-												</a>";
-											}
-
-											else
-											{
-												$hours_left = time_between_dates(array('start' => $dteGroupAcceptanceLimit, 'end' => $dteGroupAcceptanceSent, 'type' => 'round', 'return' => 'hours'));
-
-												if($hours_left > 1)
-												{
-													$icon_title = sprintf(__("%d hours left until you can send the message again", 'lang_address'), $hours_left);
-												}
-
-												else if($hours_left == 1)
-												{
-													$icon_title = __("One hour left until you can send the message again", 'lang_address');
-												}
-
-												else
-												{
-													$icon_title = __("You can send the message again within the hour", 'lang_address');
-												}
-
-												$out .= "<i class='fa fa-recycle fa-lg grey' title='".$icon_title."'></i>";
-											}
-										}
-									}
+									$out .= "<i class='fa fa-minus-square fa-lg grey' title='".__("The group is synced so you can not add or remove manually", 'lang_address')."'></i>";
 								}
 
 								else
 								{
-									$out .= "<i class='fa fa-info-circle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')."'></i>";
+									$obj_group->get_stop_list_recipients();
+
+									if(!in_array($intGroupID, $obj_group->arr_stop_list['groups']) && in_array($intAddressID, $obj_group->arr_stop_list['recipients']))
+									{
+										$out .= "<i class='fa fa-exclamation-triangle yellow' title='".__("This address is part of a stop list and will not be sent to", 'lang_address')."'></i> ";
+
+										$out .= "<i class='set_tr_color' rel='red'></i>";
+									}
+
+									$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' title='".__("Would you like to remove the address from the group?", 'lang_address')."'".make_link_confirm().">
+										<i class='fa fa-minus-square fa-lg red'></i>
+									</a>";
+								}
+
+								if($intGroupAccepted == 0)
+								{
+									$out .= "&nbsp;";
+
+									if(IS_SUPER_ADMIN)
+									{
+										$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAccept", 'address_accept_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_accept')."'".make_link_confirm().">
+											<i class='fa fa-check-square fa-lg grey' title='".__("The address has not been accepted to this group yet.", 'lang_address')." ".__("Do you want to manually accept it?", 'lang_address')."'></i>
+										</a>";
+
+										if(get_post_meta($intGroupID, 'group_reminder_subject') != '' && get_post_meta($intGroupID, 'group_reminder_text') != '')
+										{
+											if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_group/index.php") && isset($obj_group))
+											{
+												$dteGroupAcceptanceLimit = date("Y-m-d H:i:s", strtotime(current_time('mysql')." -6 hour"));
+												$dteGroupAcceptanceSent = $obj_group->get_acceptance_sent(array('address_id' => $intAddressID, 'group_id' => $intGroupID));
+
+												if($dteGroupAcceptanceSent < $dteGroupAcceptanceLimit)
+												{
+													$out .= "<a href='".wp_nonce_url($list_url."&btnAddressResend", 'address_resend_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_resend')."'".make_link_confirm().">
+														<i class='fa fa-recycle fa-lg' title='".__("Do you want to send the message again?", 'lang_address')."'></i>
+													</a>";
+												}
+
+												else
+												{
+													$hours_left = time_between_dates(array('start' => $dteGroupAcceptanceLimit, 'end' => $dteGroupAcceptanceSent, 'type' => 'round', 'return' => 'hours'));
+
+													if($hours_left > 1)
+													{
+														$icon_title = sprintf(__("%d hours left until you can send the message again", 'lang_address'), $hours_left);
+													}
+
+													else if($hours_left == 1)
+													{
+														$icon_title = __("One hour left until you can send the message again", 'lang_address');
+													}
+
+													else
+													{
+														$icon_title = __("You can send the message again within the hour", 'lang_address');
+													}
+
+													$out .= "<i class='fa fa-recycle fa-lg grey' title='".$icon_title."'></i>";
+												}
+											}
+										}
+									}
+
+									else
+									{
+										$out .= "<i class='fa fa-info-circle fa-lg' title='".__("The address has not been accepted to this group yet.", 'lang_address')."'></i>";
+									}
 								}
 							}
-						}
 
-						else
-						{
-							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' title='".__("The address has been unsubscribed. Would you like to remove the address from the group?", 'lang_address')."'".make_link_confirm().">
-								<span class='fa-stack fa-lg'>
-									<i class='fa fa-envelope fa-stack-1x'></i>
-									<i class='fa fa-ban fa-stack-2x red'></i>
-								</span>
-							</a>";
+							else
+							{
+								$out .= "<a href='".wp_nonce_url($list_url."&btnAddressRemove", 'address_remove_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_remove')."' title='".__("The address has been unsubscribed. Would you like to remove the address from the group?", 'lang_address')."'".make_link_confirm().">
+									<span class='fa-stack fa-lg'>
+										<i class='fa fa-envelope fa-stack-1x'></i>
+										<i class='fa fa-ban fa-stack-2x red'></i>
+									</span>
+								</a>";
+							}
 						}
 					}
 
@@ -2599,6 +2598,25 @@ class mf_address_table extends mf_list_table
 							$out .= "<a href='".wp_nonce_url($list_url."&btnAddressAdd", 'address_add_'.$intAddressID.'_'.$intGroupID, '_wpnonce_address_add')."' title='".__("Would you like to add the address to the group?", 'lang_address')."'>
 								<i class='fa fa-plus-square fa-lg green'></i>
 							</a>";
+						}
+					}
+				}
+			break;
+
+			case 'addressAdded':
+				$intGroupID = $obj_address->get_or_set_table_filter(array('key' => 'intGroupID'));
+
+				if($intGroupID > 0)
+				{
+					$result = $wpdb->get_results($wpdb->prepare("SELECT addressAdded FROM ".$wpdb->prefix."address2group WHERE addressID = '%d' AND groupID = '%d' AND groupAccepted = '1' AND groupUnsubscribed = '0' LIMIT 0, 1", $intAddressID, $intGroupID));
+
+					if($wpdb->num_rows > 0)
+					{
+						foreach($result as $r)
+						{
+							$dteAddressAdded = $r->addressAdded;
+
+							$out .= format_date($dteAddressAdded);
 						}
 					}
 				}

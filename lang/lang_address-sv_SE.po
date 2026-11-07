@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-13 08:43+0100\n"
+"POT-Creation-Date: 2026-11-07 17:12+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -35,61 +35,61 @@ msgstr ""
 
 #: ../create/index.php:22
 #: ../include/classes.php:74
-#: ../include/classes.php:2434
-#: ../include/classes.php:2709
+#: ../include/classes.php:2436
+#: ../include/classes.php:2727
 msgid "Member ID"
 msgstr "Medlemsnummer"
 
 #: ../create/index.php:25
 #: ../include/classes.php:77
-#: ../include/classes.php:2439
-#: ../include/classes.php:2674
+#: ../include/classes.php:2441
+#: ../include/classes.php:2692
 msgid "Social Security Number"
 msgstr "Personnummer"
 
 #: ../create/index.php:28
 #: ../include/classes.php:78
 #: ../include/classes.php:1067
-#: ../include/classes.php:2675
+#: ../include/classes.php:2693
 msgid "First Name"
 msgstr "Förnamn"
 
 #: ../create/index.php:29
 #: ../include/classes.php:79
 #: ../include/classes.php:1071
-#: ../include/classes.php:2676
+#: ../include/classes.php:2694
 msgid "Last Name"
 msgstr "Efternamn"
 
 #: ../create/index.php:32
 #: ../include/classes.php:85
-#: ../include/classes.php:2682
+#: ../include/classes.php:2700
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
 #: ../create/index.php:33
 #: ../include/classes.php:87
-#: ../include/classes.php:2684
+#: ../include/classes.php:2702
 msgid "Mobile Number"
 msgstr "Mobilnummer"
 
 #: ../create/index.php:34
 #: ../include/classes.php:86
-#: ../include/classes.php:2683
+#: ../include/classes.php:2701
 msgid "Work Number"
 msgstr "Jobbnummer"
 
 #: ../create/index.php:36
 #: ../include/classes.php:88
-#: ../include/classes.php:2444
-#: ../include/classes.php:2685
+#: ../include/classes.php:2446
+#: ../include/classes.php:2703
 msgid "E-mail"
 msgstr "E-post"
 
 #: ../create/index.php:40
 #: ../include/classes.php:94
-#: ../include/classes.php:2135
-#: ../include/classes.php:2692
+#: ../include/classes.php:2137
+#: ../include/classes.php:2710
 msgid "Extra"
 msgstr ""
 
@@ -121,7 +121,7 @@ msgid "Settings"
 msgstr "Inställningar"
 
 #: ../create/index.php:83
-#: ../include/classes.php:2418
+#: ../include/classes.php:2420
 msgid "Public"
 msgstr "Publik"
 
@@ -130,31 +130,31 @@ msgstr "Publik"
 #: ../include/classes.php:81
 #: ../include/classes.php:767
 #: ../include/classes.php:2118
-#: ../include/classes.php:2678
+#: ../include/classes.php:2696
 msgid "Address"
 msgstr "Adress"
 
 #: ../create/index.php:92
 #: ../include/classes.php:80
-#: ../include/classes.php:2677
+#: ../include/classes.php:2695
 msgid "C/O"
 msgstr ""
 
 #: ../create/index.php:94
 #: ../include/classes.php:82
-#: ../include/classes.php:2679
+#: ../include/classes.php:2697
 msgid "Zip Code"
 msgstr "Postnummer"
 
 #: ../create/index.php:95
 #: ../include/classes.php:83
-#: ../include/classes.php:2680
+#: ../include/classes.php:2698
 msgid "City"
 msgstr "Ort"
 
 #: ../create/index.php:97
 #: ../include/classes.php:84
-#: ../include/classes.php:2681
+#: ../include/classes.php:2699
 msgid "Country"
 msgstr "Land"
 
@@ -174,7 +174,7 @@ msgid "Choose Here"
 msgstr "Välj här"
 
 #: ../include/classes.php:104
-#: ../include/classes.php:2349
+#: ../include/classes.php:2351
 msgid "unknown"
 msgstr "okänd"
 
@@ -184,7 +184,7 @@ msgid "List"
 msgstr "Lista"
 
 #: ../include/classes.php:710
-#: ../include/classes.php:2361
+#: ../include/classes.php:2363
 msgid "Edit"
 msgstr "Redigera"
 
@@ -1305,103 +1305,107 @@ msgstr "Papperskorg"
 msgid "Name"
 msgstr "Namn"
 
-#: ../include/classes.php:2127
+#: ../include/classes.php:2124
+msgid "Added"
+msgstr "Tillagd"
+
+#: ../include/classes.php:2129
 msgid "Contact"
 msgstr "Kontakt"
 
-#: ../include/classes.php:2172
+#: ../include/classes.php:2174
 msgid "Add to Group"
 msgstr "Lägg till i grupp"
 
-#: ../include/classes.php:2176
+#: ../include/classes.php:2178
 msgid "Merge"
 msgstr "Slå ihop"
 
-#: ../include/classes.php:2181
-#: ../include/classes.php:2363
+#: ../include/classes.php:2183
+#: ../include/classes.php:2365
 msgid "Delete"
 msgstr "Radera"
 
-#: ../include/classes.php:2186
-#: ../include/classes.php:2369
+#: ../include/classes.php:2188
+#: ../include/classes.php:2371
 msgid "Restore"
 msgstr "Återställ"
 
-#: ../include/classes.php:2187
+#: ../include/classes.php:2189
 msgid "Permanently Delete"
 msgstr "Radera permanent"
 
-#: ../include/classes.php:2369
+#: ../include/classes.php:2371
 #, php-format
 msgid "Removed %s by %s"
 msgstr "Borttagen %s av %s"
 
-#: ../include/classes.php:2418
+#: ../include/classes.php:2420
 msgid "Not Public"
 msgstr "Inte publik"
 
-#: ../include/classes.php:2449
+#: ../include/classes.php:2451
 #, php-format
 msgid "Merge with %d other because %s is equal"
 msgstr "Slå ihop med %d andra pga. att %s är samma"
 
-#: ../include/classes.php:2458
+#: ../include/classes.php:2460
 #, php-format
 msgid "Synchronized %s"
 msgstr "Synkroniserad %s"
 
-#: ../include/classes.php:2504
-#: ../include/classes.php:2594
+#: ../include/classes.php:2502
+#: ../include/classes.php:2593
 msgid "The group is synced so you can not add or remove manually"
 msgstr "Gryppen är synkroniserad så du kan inte lägga till eller ta bort manuellt"
 
-#: ../include/classes.php:2513
+#: ../include/classes.php:2511
 msgid "This address is part of a stop list and will not be sent to"
 msgstr "Denna adress är med i en stopplista och kommer inte att skickas till"
 
-#: ../include/classes.php:2518
+#: ../include/classes.php:2516
 msgid "Would you like to remove the address from the group?"
 msgstr "Vill du ta bort adressen från gruppen?"
 
-#: ../include/classes.php:2530
-#: ../include/classes.php:2574
+#: ../include/classes.php:2528
+#: ../include/classes.php:2572
 msgid "The address has not been accepted to this group yet."
 msgstr "Adressen har inte accepterats i gruppen ännu."
 
-#: ../include/classes.php:2530
+#: ../include/classes.php:2528
 msgid "Do you want to manually accept it?"
 msgstr "Vill du acceptera det manuellt?"
 
-#: ../include/classes.php:2543
+#: ../include/classes.php:2541
 msgid "Do you want to send the message again?"
 msgstr "Vill du skicka meddelandet igen?"
 
-#: ../include/classes.php:2553
+#: ../include/classes.php:2551
 #, php-format
 msgid "%d hours left until you can send the message again"
 msgstr "%d timmar kvar tills du kan skicka meddelandet igen"
 
-#: ../include/classes.php:2558
+#: ../include/classes.php:2556
 msgid "One hour left until you can send the message again"
 msgstr "En timme kvar tills du kan skicka meddelandet igen"
 
-#: ../include/classes.php:2563
+#: ../include/classes.php:2561
 msgid "You can send the message again within the hour"
 msgstr "Du kan skicka meddelandet igen inom en timme"
 
-#: ../include/classes.php:2581
+#: ../include/classes.php:2579
 msgid "The address has been unsubscribed. Would you like to remove the address from the group?"
 msgstr "Adressen har avregistrerats. Vill du ta bort den från gruppen?"
 
-#: ../include/classes.php:2599
+#: ../include/classes.php:2598
 msgid "Would you like to add the address to the group?"
 msgstr "Vill du lägga till adressen i gruppen?"
 
-#: ../include/classes.php:2610
+#: ../include/classes.php:2628
 msgid "Errors"
 msgstr "Fel"
 
-#: ../include/classes.php:2787
+#: ../include/classes.php:2805
 msgid "Columns"
 msgstr "Kolumner"
 
