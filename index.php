@@ -3,7 +3,7 @@
 Plugin Name: MF Address Book
 Plugin URI: https://github.com/frostkom/mf_address
 Description: Add support for an address book
-Version: 3.7.4
+Version: 3.7.5
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -30,6 +30,10 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('admin_init', array($obj_address, 'settings_address'));
 		add_action('admin_menu', array($obj_address, 'admin_menu'));
 
+		add_filter('filter_user_profile_fields_settings', array($obj_address, 'filter_user_profile_fields_settings'), 10);
+		add_filter('filter_user_profile_fields_public', array($obj_address, 'filter_user_profile_fields_public'), 10, 2);
+		add_action('filter_user_profile_fields_admin', array($obj_address, 'filter_user_profile_fields_admin'), 10, 3);
+		add_action('update_user_profile_fields', array($obj_address, 'update_user_profile_fields'), 10, 2);
 		add_action('show_user_profile', array($obj_address, 'edit_user_profile'));
 		add_action('edit_user_profile', array($obj_address, 'edit_user_profile'));
 		add_action('profile_update', array($obj_address, 'profile_update'));
@@ -110,7 +114,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		mf_uninstall_plugin(array(
 			'uploads' => $obj_address->post_type,
 			'options' => array('setting_address_site_wide', 'setting_address_extra', 'setting_address_extra_field', 'setting_address_extra_profile', 'setting_address_display_member_id', 'setting_address_api_url', 'setting_address_debug', 'option_address_api_full_used', 'option_address_api_full_next', 'option_address_api_used', 'option_address_api_next'),
-			'user_meta' => array('meta_address_permission'),
+			'user_meta' => array('meta_address_permission', 'profile_country'),
 			'post_types' => array($obj_address->post_type),
 			'tables' => array('address'),
 		));
